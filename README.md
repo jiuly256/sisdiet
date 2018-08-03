@@ -1,20 +1,107 @@
-Sisdiet
-==========
-sistema para el control de dietas para mascotas - Sisdiet es un sistema para el control de diferentes dietas que se venden en una tienda de mascotas. Fue hecho con un diseño bastante amigable, aunque sencillo. 
+# Sisdiet
+
+_sistema para el control de dietas para mascotas - Sisdiet es un sistema para el control de diferentes dietas que se venden en una tienda de mascotas. Fue hecho con un diseño bastante amigable, aunque sencillo._
+
+## Comenzando 🚀
+
+_Módulo Cliente: consisteirá en un registro e inventario de la cartera de clietes de la empresa, esto permitirá en el futuro utilizar esta información para multas de facturación, control de direcciones y registro telefónico para enviar ofertas, o lo que la empresa considere necesario para enviar a tus clientes_
+
+_Módulo de mascota: en este módulo, tendrá un registro de todas las mascotas a las que la compañía genere la dieta. Puede ver las características principales, como la raza, las medidas, el peso y las condiciones físicas, si tiene alergia a algún vegetal o proteína._
+
+_Módulo de alimentos: registro de registrador las diferentes proteínas y verduras con las de la empresa crea la dieta para la mascota. Además de llevar a cabo el inventario de los montos con el precio para que el sistema indique el monto que el cliente debe pagar en el momento de la facturación_
+
+_Módulo de dieta: en este sistema, los análisis de la dieta, considerando como principal el que siempre debe ser 70% de proteína y 30% de vegetales, frutas o suplementos._
+
+_Internamente se trata de un total de proteínas o vegetales, debe agregarse 70 o 30 respectivamente._
+
+_Para el caso de las hortalizas, si es más de una, la división para que suceda un 30% es estrictamente proporcional, es decir, la selección 2, sería 15 y 15_
+
+_Descarga una copia_
 
 
-El sistema tiene los siguientes módulos:
---------------------
-Módulo Cliente: consistirá en un registro e inventario de la cartera de clietes de la empresa, esto permitirá en el futuro utilizar esta información para fines de facturación, control de direcciones y registro telefónico para enviar ofertas, o lo que la empresa considere necesario para envía a tus clientes
 
-Módulo de mascota: en este módulo, tendrá un registro de todas las mascotas a las que la compañía genera la dieta. Puede ver las características principales, como la raza, las medidas, el peso y las condiciones físicas, si tiene alguna alergia a algún vegetal o proteína.
+### Pre-requisitos 📋
 
-Módulo de alimentos: permitirá registrar las diferentes proteínas y verduras con las que la empresa crea la dieta para la mascota. Además de llevar el inventario de los montos con el precio para que el sistema indique el monto que el cliente debe pagar en el momento de la facturación
+_php5_
+_Apache2_
+_Wampserver_
+_Postgresql9.x_
+_Yii framework_
 
-Módulo de dieta: en este el sistema realizará los cálculos de la dieta, considerando como premisa principal que siempre debe ser 70% de proteína y 30% de vegetales, frutas o suplementos.
+```
+Descargar en instalar estos paquetes en tu maquina
+```
 
-Internamente se cuida ese total de proteínas o vegetales, debe agregar 70 o 30 respectivamente.
+### Instalación 🔧
 
-Para el caso de las hortalizas, si es más de una, la división para que sume un 30% es estrictamente proporcional, es decir, la selección 2, sería 15 y 15
+_Para poner a funcionar Sisdiet necesitas:_
 
+_Descrgar y pegar el proyecto en tu www, en mi caso_
+
+```
+c:/
+	wamp64
+		www
+			sisdiet
+			yii
+
+```
+
+_Luego en la carpeta donde esta la Bd vamos a restaurar la misma_
+
+```
+	sisdiet
+		bd_backup
+		
+```
+
+_recuerda si quieres que corra mejor tu proyecto deberas crear un dominio local_
+
+```
+	sisdiet.loc:80
+		
+```
+
+_la demo para probarlo esta en http://sisdiet.jiuly.com.ve/_
+
+_admin / admin usuario y clave_
+
+
+## Construido con 🛠️
+
+_yii framework y php_
+
+* [Yii](https://www.yiiframework.com/) - El framework web usado
+
+
+## Contribuyendo 🖇️
+
+Por favor lee el [CONTRIBUTING.md](https://gist.github.com/jiuly256/sisdiet) para detalles de nuestro código de conducta, y el proceso para enviarnos pull requests.
+
+## Versionado 📌
+
+Usamos [Github](https://github.com) para el versionado. Para todas las versiones disponibles, mira los [tags en este repositorio](https://github.com/jiuly256/sisdiet/).
+
+## Autores ✒️
+
+_Espero que pronto seamos mas_
+
+* **Jiuly Alexandra Rojas** - *Trabajo Inicial* - [jiuly256](https://github.com/jiuly256)
+
+
+También puedes mirar la lista de todos los [contribuyentes](https://github.com/jiuly256/sisdiet/contributors) quíenes han participado en este proyecto. 
+
+## Licencia 📄
+
+Este proyecto está bajo la Licencia (Licencia BSD 3) - mira el archivo [LICENSE.md](LICENSE.md) para detalles
+
+## Gracias 🎁
+
+* si quieres unirte de verdad seria genial
+* Contribuye a que crezca
+* Gracias
+
+[![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat)](https://www.yiiframework.com/)
+
+---
 
