@@ -1,0 +1,157 @@
+<?php
+
+/**
+ * This is the model class for table "maquinaria.tblevento_critico".
+ *
+ * The followings are the available columns in table 'maquinaria.tblevento_critico':
+ * @property integer $id
+ * @property integer $id_actividad_diaria
+ * @property boolean $evento_emitido
+ * @property string $evento_critico
+ * @property string $fecha_evento
+ * @property integer $id_estatus
+ * @property boolean $blnborrado
+ * @property integer $created_by
+ * @property string $created_date
+ * @property integer $modified_by
+ * @property string $modified_date
+ * @property integer $id_obra_pk
+ */
+class TbleventoCritico extends CActiveRecord
+{
+	/**
+	 * @return string the associated database table name
+	 */
+	public function tableName()
+	{
+		return 'maquinaria.tblevento_critico';
+	}
+
+	/**
+	 * @return array validation rules for model attributes.
+	 */
+	public function rules()
+	{
+		// NOTE: you should only define rules for those attributes that
+		// will receive user inputs.
+		return array(
+			array('id_actividad_diaria, id_estatus, created_by, modified_by, id_obra_pk, id_estado', 'numerical', 'integerOnly'=>true),
+			array('evento_emitido, evento_critico, fecha_evento, blnborrado, created_date, modified_date, fecha_culminacion, observacion', 'safe'),
+                                            array('id_estatus, id_obra_pk, evento_critico, fecha_evento', 'required'),    
+
+			// The following rule is used by search().
+			// @todo Please remove those attributes that should not be searched.
+			array('id, id_actividad_diaria, evento_emitido, id_estado, fecha_culminacion, observacion, evento_critico, fecha_evento, id_estatus, blnborrado, created_by, created_date, modified_by, modified_date, id_obra_pk', 'safe', 'on'=>'search'),
+		);
+	}
+
+	/**
+	 * @return array relational rules.
+	 */
+	public function relations()
+	{
+		// NOTE: you may need to adjust the relation name and the related
+		// class name for the relations automatically generated below.
+		return array(
+			
+			
+			'EstatusCri' => array(self::BELONGS_TO, 'TblstatusEvento', 'id_estatus'),
+		);
+	}
+
+	/**
+	 * @return array customized attribute labels (name=>label)
+	 */
+	public function attributeLabels()
+	{
+		return array(
+			'id' => 'ID',
+			'id_actividad_diaria' => 'Id Actividad Diaria',
+			'evento_emitido' => 'Evento Emitido',
+			'evento_critico' => 'Evento Critico',
+			'fecha_evento' => 'Fecha Evento',
+			'id_estatus' => 'Estatus',
+			'blnborrado' => 'Blnborrado',
+			'created_by' => 'Created By',
+			'created_date' => 'Created Date',
+			'modified_by' => 'Modified By',
+			'modified_date' => 'Modified Date',
+			'id_obra_pk' => 'Id Obra Pk',
+		);
+	}
+
+	/**
+	 * Retrieves a list of models based on the current search/filter conditions.
+	 *
+	 * Typical usecase:
+	 * - Initialize the model fields with values from filter form.
+	 * - Execute this method to get CActiveDataProvider instance which will filter
+	 * models according to data in model fields.
+	 * - Pass data provider to CGridView, CListView or any similar widget.
+	 *
+	 * @return CActiveDataProvider the data provider that can return the models
+	 * based on the search/filter conditions.
+	 */
+	public function search()
+	{
+		// @todo Please modify the following code to remove attributes that should not be searched.
+
+		$criteria=new CDbCriteria;
+                $sort=new CSort();
+
+
+		$criteria->compare('id',$this->id);
+		$criteria->compare('id_actividad_diaria',$this->id_actividad_diaria);
+		$criteria->compare('evento_emitido',$this->evento_emitido);
+		$criteria->compare('evento_critico',$this->evento_critico,true);
+		$criteria->compare('fecha_evento',$this->fecha_evento,true);
+		$criteria->compare('id_estatus',$this->id_estatus);
+		$criteria->compare('blnborrado',$this->blnborrado);
+		$criteria->compare('created_by',$this->created_by);
+		$criteria->compare('created_date',$this->created_date,true);
+		$criteria->compare('modified_by',$this->modified_by);
+		$criteria->compare('modified_date',$this->modified_date,true);
+		$criteria->compare('id_obra_pk',$this->id_obra_pk);
+
+	 $_SESSION['datos_filtrados'] = new CActiveDataProvider($this, array(
+                      'criteria'=>$criteria,
+                      'sort'=>$sort,
+                      'pagination'=>false,
+              ));
+
+		return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+		));
+	}
+
+
+	/**
+	 * Returns the static model of the specified AR class.
+	 * Please note that you should have this exact method in all your CActiveRecord descendants!
+	 * @param string $className active record class name.
+	 * @return TbleventoCritico the static model class
+	 */
+	public static function model($className=__CLASS__)
+	{
+		return parent::model($className);
+	}
+        
+                             public function behaviors()
+{
+    return array(
+        'CTimestampBehavior' => array(
+            'class' => 'zii.behaviors.CTimestampBehavior',
+            'createAttribute' => 'created_date',
+            'updateAttribute' => 'modified_date',
+            'setUpdateOnCreate' => true,
+        ),
+        'BlameableBehavior' => array(
+            'class' => 'application.components.behaviors.BlameableBehavior',
+            'createdByColumn' => 'created_by', 
+            'updatedByColumn' => 'modified_by',  
+        ),
+    );  
+}
+        
+        
+}

@@ -1,0 +1,214 @@
+<?php
+
+/**
+ * This is the model class for table "sismaq.sismaq".
+ *
+ * The followings are the available columns in table 'sismaq.sismaq':
+ * @property integer $id_sismaq_pk
+ * @property string $str_clase
+ * @property string $str_modelo
+ * @property string $srt_serial_chasis
+ * @property string $str_serial_motor
+ * @property integer $int_ano
+ * @property string $str_numero
+ * @property string $str_placa
+ * @property double $dob_horometro
+ * @property integer $id_estatus_fk
+ * @property integer $id_tipo_fk
+ * @property string $str_procedencia
+ * @property boolean $bln_borrado
+ * @property double $dob_odometro
+ * @property integer $int_num_nac
+ * @property integer $int_num_est
+ * @property string $str_estado_administrador
+ * @property integer $id_estado_fk
+ * @property integer $id_municipio_fk
+ * @property integer $id_parroquia_fk
+ * @property integer $int_km_prog
+ * @property integer $int_km_logr
+ * @property integer $int_por_km
+ * @property integer $int_m3_prog
+ * @property integer $int_m3_logr
+ * @property integer $int_por_m3
+ * @property string $txt_observaciones
+ * @property integer $id_persona_contacto
+ * @property integer $id_obra_fk
+ */
+class Sismaq extends CActiveRecord
+{
+	/**
+	 * Returns the static model of the specified AR class.
+	 * @param string $className active record class name.
+	 * @return Sismaq the static model class
+	 */
+	public static function model($className=__CLASS__)
+	{
+		return parent::model($className);
+	}
+
+	/**
+	 * @return string the associated database table name
+	 */
+	public function tableName()
+	{
+		return 'sismaq.sismaq';
+	}
+
+	/**
+	 * @return array validation rules for model attributes.
+	 */
+	public function rules()
+	{
+		// NOTE: you should only define rules for those attributes that
+		// will receive user inputs.
+		return array(
+			array('int_ano, id_estatus_fk, id_tipo_fk, int_num_nac, int_num_est, id_persona_contacto, id_estado, str_procedencia, id_obra_fk,id_operador_fk,clase,modelo,tipo_modelo', 'numerical', 'integerOnly'=>true),
+			array('dob_horometro, dob_odometro,id_tipo_fk', 'numerical'),
+                        array('id_estatus_fk,id_tipo_fk,clase, modelo, tipo_modelo, id_estado, str_procedencia','required'),
+			array('str_clase', 'length', 'max'=>100),
+			array('str_modelo, srt_serial_chasis, str_serial_motor, str_modelo_tipo, str_carroceria', 'length', 'max'=>50),
+			array('str_numero', 'length', 'max'=>20),
+			array('str_placa', 'length', 'max'=>10),
+			array('str_procedencia, str_estado_administrador', 'length', 'max'=>150),
+			array('bln_borrado, txt_observaciones, id_perfil_direccion, id_estado, str_placa', 'safe'),
+			// The following rule is used by search().
+			// Please remove those attributes that should not be searched.
+			array('id_sismaq_pk, str_clase, modelo, clase, tipo_modelo, str_modelo, srt_serial_chasis, str_serial_motor, int_ano, str_numero, str_placa, dob_horometro, id_estatus_fk, id_tipo_fk, str_procedencia, bln_borrado, dob_odometro, int_num_nac, int_num_est, str_estado_administrador,  txt_observaciones, id_persona_contacto, id_obra_fk,id_operador_fk, str_modelo_tipo, str_carroceria, id_perfil_direccion, id_estado', 'safe', 'on'=>'search'),
+		);
+	}
+
+	/**
+	 * @return array relational rules.
+	 */
+	public function relations()
+	{
+		// NOTE: you may need to adjust the relation name and the related
+		// class name for the relations automatically generated below.
+		return array(
+                  
+                  'Obra' => array(self::BELONGS_TO, 'Obra', 'id_obra_fk'),
+                  'Persona' => array(self::BELONGS_TO, 'VswPersonaResponsable', 'id_persona_contacto'),
+                  'PersonaC' => array(self::BELONGS_TO, 'Funcionario', 'id_persona_contacto'),
+                  'Estatus' => array(self::BELONGS_TO, 'Estatus', 'id_estatus_fk'),
+                  'Ubicacion' => array(self::BELONGS_TO, 'VswUbicacion', 'id_sismaq_pk'),
+                  'Tipo' => array(self::BELONGS_TO, 'Tipo', 'id_tipo_fk'),
+                  'Modelo' => array(self::BELONGS_TO, 'TblModelo', 'modelo'),
+                  'Clase' => array(self::BELONGS_TO, 'VswSismaq', 'clase'),
+                  'Clase2' => array(self::BELONGS_TO, 'TblClase', 'clase'),
+                  'Tipo2' => array(self::BELONGS_TO, 'TblTipoModelo', 'tipo_modelo'),
+                  'Custodia' => array(self::BELONGS_TO, 'TblCustodia', 'str_procedencia'),
+		    'Estado7' => array(self::BELONGS_TO, 'TblEstado', 'id_estado'),
+		);
+                
+                  
+	}
+
+	/**
+	 * @return array customized attribute labels (name=>label)
+	 */
+	public function attributeLabels()
+	{
+		return array(
+			'id_sismaq_pk' => 'N° Maquinaria',
+			'str_clase' => 'Clase (Sismaq Tipo)',
+			'str_modelo' => 'Marca',
+                        'modelo'=>'Marca',
+                        'clase'=>'Clase (Sismaq Tipo)',
+                        'tipo_modelo'=>'Modelo',
+			'srt_serial_chasis' => 'Serial Carroceria',
+			'str_serial_motor' => 'Serial Motor',
+			'int_ano' => 'Año',
+			'str_numero' => 'Numero',
+                        'str_modelo_tipo'=>'Modelo',
+                        'str_carroceria'=>'Serial Carroceria',
+			'str_placa' => 'Placa',
+			'dob_horometro' => 'Horometro',
+			'id_estatus_fk' => 'Estatus',
+			'id_tipo_fk' => 'Clase Maquinaria',
+			'str_procedencia' => 'En custodia de',
+			'bln_borrado' => 'Bln Borrado',
+			'dob_odometro' => 'Odometro',
+			'int_num_nac' => 'Num Nac',
+			'int_num_est' => 'Num Est',
+			'id_estado' => 'Estado',
+			'str_estado_administrador' => 'Estado Administrador',
+			'txt_observaciones' => 'Observaciones',
+			'id_persona_contacto' => 'Persona Contacto',
+			'id_obra_fk' => 'Obra',
+			'id_operador_fk' => 'Operador',
+			'Clase2.str_descripcion'=>'Clase (Tipo)',
+			'Modelo.str_descripcion'=>'Marca',
+			'Tipo2.str_descripcion'=>'Modelo',
+			'Tipo.str_descripcion'=>'Tipo Maquinaria',
+			'Estatus.str_descripcion'=>'Estatus',
+			'Custodia.str_descripcion'=>'En Custodia de',
+		);
+	}
+
+	/**
+	 * Retrieves a list of models based on the current search/filter conditions.
+	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+	 */
+	public function search()
+	{
+		// Warning: Please modify the following code to remove attributes that
+		// should not be searched.
+
+		    $id=Yii::app()->user->id; 
+		$sql='select * from maquinaria.usuario where id='.$id.';'; 
+                $connection=Yii::app()->db;
+                $command=$connection->createCommand($sql); 
+                $row=$command->queryRow(); 
+                $id_perfil=$row["id_perfil_direccion"];
+                $estado=$row["id_estado"];
+		// Warning: Please modify the following code to remove attributes that
+		// should not be searched.
+
+		$criteria=new CDbCriteria;
+                //$sort=new CSort();
+
+            //    $criteria->condition = "id_perfil_direccion=$id_perfil and id_estado=$estado and bln_borrado=false";
+		$sort=new CSort();
+                $criteria->condition= "bln_borrado=false";
+		$criteria->order="clase asc";  
+
+		$criteria->compare('id_sismaq_pk',$this->id_sismaq_pk);
+		//$criteria->compare('LOWER(str_clase)',  strtolower($this->str_clase),true);
+		$criteria->compare('modelo', $this->modelo);
+		$criteria->compare('clase',  $this->clase);
+		$criteria->compare('id_estado',  $this->id_estado);
+		$criteria->compare('tipo_modelo', $this->tipo_modelo);
+		//$criteria->compare('LOWER(str_modelo)',  strtolower($this->str_modelo),true);
+		$criteria->compare('LOWER(srt_serial_chasis)',  strtolower($this->srt_serial_chasis),true);
+                //$criteria->compare('LOWER(str_modelo_tipo)',  strtolower($this->str_modelo_tipo),true);
+                $criteria->compare('LOWER(str_carroceria)',  strtolower($this->str_carroceria),true);
+		$criteria->compare('LOWER(str_serial_motor)',  strtolower($this->str_serial_motor),true);
+		$criteria->compare('int_ano',$this->int_ano);
+		$criteria->compare('str_numero',$this->str_numero,true);
+		$criteria->compare('str_placa',$this->str_placa,true);
+		$criteria->compare('dob_horometro',$this->dob_horometro);
+		$criteria->compare('id_estatus_fk',$this->id_estatus_fk);
+		$criteria->compare('id_tipo_fk',$this->id_tipo_fk);
+		$criteria->compare('str_procedencia',$this->str_procedencia);
+		$criteria->compare('bln_borrado',$this->bln_borrado);
+		$criteria->compare('dob_odometro',$this->dob_odometro);
+		$criteria->compare('int_num_nac',$this->int_num_nac);
+		$criteria->compare('int_num_est',$this->int_num_est);
+		$criteria->compare('str_estado_administrador',$this->str_estado_administrador,true);
+		
+		
+		$criteria->compare('txt_observaciones',$this->txt_observaciones,true);
+		$criteria->compare('id_persona_contacto',$this->id_persona_contacto);
+		$criteria->compare('id_operador_fk',$this->id_operador_fk);
+		$criteria->compare('id_obra_fk',$this->id_obra_fk);
+
+                 $_SESSION['datos_filtrados'] = new CActiveDataProvider($this, array(
+                      'criteria'=>$criteria,
+                      'sort'=>$sort,
+                      'pagination'=>false,
+              ));
+		return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+		));
+	}
+}

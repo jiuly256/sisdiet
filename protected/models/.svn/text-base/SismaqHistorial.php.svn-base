@@ -1,0 +1,166 @@
+<?php
+
+/**
+ * This is the model class for table "sismaq.sismaq_historial".
+ *
+ * The followings are the available columns in table 'sismaq.sismaq_historial':
+ * @property integer $id_historial_pk
+ * @property string $dt_fecha_registro
+ * @property string $dt_fecha_movimiento
+ * @property string $str_observaciones
+ * @property double $dob_horometro
+ * @property integer $id_estatus_fk
+ * @property integer $id_tipo_movimiento_fk
+ * @property integer $id_sismaq_fk
+ * @property boolean $bln_borrado
+ * @property integer $id_perfil_direccion
+ * @property integer $id_estado
+ *
+ * The followings are the available model relations:
+ * @property Estatus $idEstatusFk
+ * @property Sismaq $idSismaqFk
+ * @property TipoMovimiento $idTipoMovimientoFk
+ */
+class SismaqHistorial extends CActiveRecord
+{        public $dt_fecha_movimiento_range = array(); 
+	/**
+	 * @return string the associated database table name
+	 */
+	public function tableName()
+	{
+		return 'sismaq.sismaq_historial';
+	}
+
+	/**
+	 * @return array validation rules for model attributes.
+	 */
+	public function rules()
+	{
+		// NOTE: you should only define rules for those attributes that
+		// will receive user inputs.
+		return array(
+			array('id_estatus_fk, id_tipo_movimiento_fk, id_sismaq_fk', 'numerical', 'integerOnly'=>true),
+			array('dob_horometro', 'numerical'),
+			array('dob_horometro,dt_fecha_movimiento,str_observaciones,id_estatus_fk,id_tipo_movimiento_fk', 'required'),
+			array('str_observaciones', 'length', 'max'=>200),
+			array('dt_fecha_registro, dt_fecha_movimiento, id_perfil_direccion, id_estado', 'safe'),
+			// The following rule is used by search().
+			// Please remove those attributes that should not be searched.
+			array('id_historial_pk, dt_fecha_registro, dt_fecha_movimiento, str_observaciones, dob_horometro, id_estatus_fk, id_tipo_movimiento_fk, id_sismaq_fk, dt_fecha_movimiento_range, id_perfil_direccion, id_estado', 'safe', 'on'=>'search'),
+		);
+	}
+
+	/**
+	 * @return array relational rules.
+	 */
+	public function relations()
+	{
+		// NOTE: you may need to adjust the relation name and the related
+		// class name for the relations automatically generated below.
+		return array(
+                    'Estatus' => array(self::BELONGS_TO, 'Estatus', 'id_estatus_fk'),
+                    'Tipo' => array(self::BELONGS_TO, 'TipoMovimiento', 'id_tipo_movimiento_fk'),
+                    'Maquinariam' => array(self::BELONGS_TO, 'Sismaq', 'id_sismaq_fk'),
+		);
+	}
+
+	/**
+	 * @return array customized attribute labels (name=>label)
+	 */
+	public function attributeLabels()
+	{
+		return array(
+			'id_historial_pk' => 'Historial',
+			'dt_fecha_registro' => 'Fecha Registro',
+			'dt_fecha_movimiento' => 'Fecha Movimiento',
+			'str_observaciones' => 'Observaciones',
+			'dob_horometro' => 'Horometro',
+			'id_estatus_fk' => 'Estatus',
+			'id_tipo_movimiento_fk' => 'Tipo Movimiento',
+			'id_sismaq_fk' => 'Maquinaria',
+			'Estatus.str_descripcion' => 'Estatus',
+			'Tipo.str_descripcion' => 'Tipo Movimiento',
+		);
+	}
+
+	/**
+	 * Retrieves a list of models based on the current search/filter conditions.
+	 *
+	 * Typical usecase:
+	 * - Initialize the model fields with values from filter form.
+	 * - Execute this method to get CActiveDataProvider instance which will filter
+	 * models according to data in model fields.
+	 * - Pass data provider to CGridView, CListView or any similar widget.
+	 *
+	 * @return CActiveDataProvider the data provider that can return the models
+	 * based on the search/filter conditions.
+	 */
+	public function search()
+	{
+		// @todo Please modify the following code to remove attributes that should not be searched.
+                $id=Yii::app()->user->id; 
+		$sql='select * from maquinaria.usuario where id='.$id.';'; 
+                $connection=Yii::app()->db;
+                $command=$connection->createCommand($sql); 
+                $row=$command->queryRow(); 
+                $id_perfil=$row["id_perfil_direccion"];
+                $estado=$row["id_estado"];
+                
+		$criteria=new CDbCriteria;
+                $criteria->condition = "id_perfil_direccion=$id_perfil and id_estado=$estado";
+                $criteria->condition= 'bln_borrado=false';
+                
+		$criteria->compare('id_historial_pk',$this->id_historial_pk);
+		$criteria->compare('dt_fecha_registro',$this->dt_fecha_registro,true);
+		$criteria->compare('dt_fecha_movimiento',$this->dt_fecha_movimiento,true);
+		$criteria->compare('LOWER(str_observaciones)',strtolower($this->str_observaciones),true);
+		$criteria->compare('dob_horometro',$this->dob_horometro);
+		$criteria->compare('id_estatus_fk',$this->id_estatus_fk);
+		$criteria->compare('id_tipo_movimiento_fk',$this->id_tipo_movimiento_fk);
+		$criteria->compare('id_sismaq_fk',$this->id_sismaq_fk);
+		$criteria->compare('bln_borrado',$this->bln_borrado);
+		$criteria->compare('id_perfil_direccion',$this->id_perfil_direccion);
+		$criteria->compare('id_estado',$this->id_estado);
+                $from = $to = '';
+                 if (count($this->dt_fecha_movimiento_range)>=1) {
+              if (isset($this->dt_fecha_movimiento_range['from'])) {
+                  $from = $this->dt_fecha_movimiento_range['from'];
+              }
+              if (isset($this->dt_fecha_movimiento_range['to'])) {
+                  $to= $this->dt_fecha_movimiento_range['to'];
+              }
+          }
+          if ($from!='' || $to !='') {
+              if ($from!='' && $to!='') {
+                  $from = date("Y-m-d", strtotime($from));
+                  $to = date("Y-m-d", strtotime($to));
+                  $criteria->compare('dt_fecha_movimiento',">= $from",false);
+                  $criteria->compare('dt_fecha_movimiento',"<= $to",false);
+              }
+              else {
+                  if ($from!='') $creation_time = $from;
+                  if ($to != '') $creation_time = $to;
+                  $creation_time = date("Y-m-d", strtotime($creation_time));
+                  $criteria->compare('dt_fecha_movimiento', "$creation_time" ,false);
+              }
+          }
+                
+                
+                
+                
+		return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+		));
+	}
+
+	/**
+	 * Returns the static model of the specified AR class.
+	 * Please note that you should have this exact method in all your CActiveRecord descendants!
+	 * @param string $className active record class name.
+	 * @return SismaqHistorial the static model class
+	 */
+	public static function model($className=__CLASS__)
+	{
+		return parent::model($className);
+	}
+}

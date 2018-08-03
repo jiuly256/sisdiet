@@ -1,0 +1,226 @@
+<?php
+
+/**
+ * This is the model class for table "maquinaria.usuario".
+ *
+ * The followings are the available columns in table 'maquinaria.usuario':
+ * @property integer $id
+ * @property string $username
+ * @property string $password
+ * @property boolean $blnborrado
+ * @property string $created_date
+ * @property string $modified_date
+ * @property integer $created_by
+ * @property integer $modified_by
+ * @property integer $id_perfil
+ * @property string $str_nombre
+ * @property string $str_apellido
+ * @property integer $int_cedula
+ */
+class Usuario extends CActiveRecord
+{
+	/**
+	 * @return string the associated database table name
+	 */
+	public function tableName()
+	{
+		return 'maquinaria.usuario';
+	}
+
+	/**
+	 * @return array validation rules for model attributes.
+	 */
+        
+        
+        public static function model($className=__CLASS__)
+	{
+		return parent::model($className);
+	}
+        
+        
+            public function validatePassword($password)
+           {
+              return $this->hashPassword($password)===$this->password;
+           }
+         public function hashPassword($password)
+           {
+              return md5($password);
+           }
+        
+        
+	public function rules()
+	{
+		// NOTE: you should only define rules for those attributes that
+		// will receive user inputs.
+		return array(
+			array('username, password', 'required'),
+			array('created_by, modified_by, id_perfil, int_cedula', 'numerical', 'integerOnly'=>true),
+			array('username, password', 'length', 'max'=>128),
+			array('str_nombre, str_apellido', 'length', 'max'=>150),
+			array('blnborrado, created_date, modified_date, id_perfil_direccion, id_estado', 'safe'),
+			// The following rule is used by search().
+			// @todo Please remove those attributes that should not be searched.
+			array('id, username, password, blnborrado, created_date, modified_date, created_by, id_perfil_direccion, id_estado, modified_by, id_perfil, str_nombre, str_apellido, int_cedula', 'safe', 'on'=>'search'),
+		);
+	}
+
+	/**
+	 * @return array relational rules.
+	 */
+	public function relations()
+	{
+		// NOTE: you may need to adjust the relation name and the related
+		// class name for the relations automatically generated below.
+		return array(
+                       'idperfil' => array(self::BELONGS_TO, 'Perfil', 'id_perfil'),
+                    'idPerfilDireccion' => array(self::BELONGS_TO, 'PerfilDireccion', 'id_perfil_direccion'),
+                    'idEstado' => array(self::BELONGS_TO, 'TblEstado', 'id_estado'),
+		);
+	}
+
+	/**
+	 * @return array customized attribute labels (name=>label)
+	 */
+	public function attributeLabels()
+	{
+		return array(
+			'id' => 'ID',
+			'username' => 'Usuario',
+			'password' => 'Contraseña',
+			'blnborrado' => 'Blnborrado',
+			'created_date' => 'Created Date',
+			'modified_date' => 'Modified Date',
+			'created_by' => 'Created By',
+			'modified_by' => 'Modified By',
+			'id_perfil' => 'Id Perfil',
+			'str_nombre' => 'Nombre',
+			'str_apellido' => 'Apellido',
+			'int_cedula' => 'Cedula',
+                        'id_perfil_direccion'=>'Perfil Sede',
+                        'id_estado'=>'Estado',
+                        'idEstado.descripcion'=>'Estado',
+                         'idPerfilDireccion.nombre_descripcion'=>'Perfil Direccion',
+                    );
+	}
+
+	/**
+	 * Retrieves a list of models based on the current search/filter conditions.
+	 *
+	 * Typical usecase:
+	 * - Initialize the model fields with values from filter form.
+	 * - Execute this method to get CActiveDataProvider instance which will filter
+	 * models according to data in model fields.
+	 * - Pass data provider to CGridView, CListView or any similar widget.
+	 *
+	 * @return CActiveDataProvider the data provider that can return the models
+	 * based on the search/filter conditions.
+	 */
+	public function search()
+	{
+            
+              $id=Yii::app()->user->id; 
+		$sql='select * from maquinaria.usuario where id='.$id.';'; 
+                $connection=Yii::app()->db;
+                $command=$connection->createCommand($sql); 
+                $row=$command->queryRow(); 
+                $id_perfil=$row["id_perfil_direccion"];
+                $estado=$row["id_estado"];
+		// Warning: Please modify the following code to remove attributes that
+		// should not be searched.
+
+		 	     $criteria=new CDbCriteria;
+                $sort=new CSort();
+                if($estado==99)
+                {
+                 $criteria->condition = "id_perfil_direccion=$id_perfil";
+		$criteria->compare('id', $this->id);
+		$criteria->order='id Asc';
+		$criteria->compare('username',$this->username);
+		$criteria->compare('password',$this->password,true);
+		$criteria->compare('blnborrado',$this->blnborrado);
+		$criteria->compare('created_date',$this->created_date,true);
+		$criteria->compare('modified_date',$this->modified_date,true);
+		$criteria->compare('created_by',$this->created_by);
+		$criteria->compare('modified_by',$this->modified_by);
+		$criteria->compare('int_cedula',$this->int_cedula);
+		$criteria->compare('LOWER(str_nombre)',  strtolower($this->str_nombre));
+		$criteria->compare('LOWER(str_apellido)',  strtolower($this->str_apellido));
+		$criteria->compare('id_perfil',$this->id_perfil);
+                }
+                else
+                {
+                     $criteria->condition = "id_perfil_direccion=$id_perfil and id_estado=$estado";
+		$criteria->compare('id', $this->id);
+		$criteria->order='id Asc';
+		$criteria->compare('username',$this->username);
+		$criteria->compare('password',$this->password,true);
+		$criteria->compare('blnborrado',$this->blnborrado);
+		$criteria->compare('created_date',$this->created_date,true);
+		$criteria->compare('modified_date',$this->modified_date,true);
+		$criteria->compare('created_by',$this->created_by);
+		$criteria->compare('modified_by',$this->modified_by);
+		$criteria->compare('int_cedula',$this->int_cedula);
+		$criteria->compare('LOWER(str_nombre)',  strtolower($this->str_nombre));
+		$criteria->compare('LOWER(str_apellido)',  strtolower($this->str_apellido));
+		$criteria->compare('id_perfil',$this->id_perfil);
+                }
+                return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+		));
+                
+	}
+
+    
+        
+           
+          /*         protected function afterValidate() {
+        parent::afterValidate();
+        $this->password = $this->encrypt($this->password);
+    }
+
+ /*   public function encrypt($value) {
+        return md5($value);
+    }
+       */
+           
+           
+                     public function behaviors()
+{
+    return array(
+        'CTimestampBehavior' => array(
+            'class' => 'zii.behaviors.CTimestampBehavior',
+            'createAttribute' => 'created_date',
+            'updateAttribute' => 'modified_date',
+            'setUpdateOnCreate' => true,
+        ),
+        'BlameableBehavior' => array(
+            'class' => 'application.components.behaviors.BlameableBehavior',
+            'createdByColumn' => 'created_by', 
+            'updatedByColumn' => 'modified_by',  
+        ),
+    );
+}
+           
+        
+	/**
+	 * Returns the static model of the specified AR class.
+	 * Please note that you should have this exact method in all your CActiveRecord descendants!
+	 * @param string $className active record class name.
+	 * @return Usuario the static model class
+	 */
+	
+        
+        
+            public static function getUserRoleOptions() {
+        
+        
+        return CHtml::listData(Yii::app()->authManager->getRoles(), 'name', 'name');
+    }
+    
+    public static function getUserOperationsOptions() {
+        return CHtml::listData(Yii::app()->authManager->getOperations(), 'name', 'name');
+    }
+
+        
+        
+}

@@ -1,0 +1,50 @@
+div.form .errorMessage {
+    color: #FF0000;
+}
+
+div.form div.error input, 
+div.form div.error textarea,
+div.form div.error select,
+div.form input.error,
+div.form textarea.error,
+div.form select.error {
+    background: none repeat scroll 0 0 #FFEEEE;
+    border-color: #CC0000;
+}
+
+div.form div.success input,
+div.form div.success textarea,
+div.form div.success select,
+div.form input.success,
+div.form textarea.success,
+div.form select.success {
+    background: none repeat scroll 0 0 #E6EFC2;
+    border-color: #C6D880;
+}
+
+p{
+    max-width: 600px;
+}
+
+#footer {display: none;}
+
+#page { 
+    background: none;
+    box-shadow: none;
+    border: 0;
+}
+
+.bg-login {
+    background: none repeat scroll 0 0 rgba(255, 255, 255, 0.75);
+    border: 1px solid #E5E5E5;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    margin: 20px auto 20px;
+    max-width: 240px;
+    padding: 19px 29px 5px;
+    text-align: left;
+}
+
+.navbar {display:none;}
+
+.logo {padding-left: 5px; width: 204px; height: 271px;}

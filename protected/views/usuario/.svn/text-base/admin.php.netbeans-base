@@ -1,0 +1,74 @@
+<?php
+$this->breadcrumbs=array(
+	'Usuarios'=>array('index'),
+	'Manage',
+);
+
+$this->menu=array(
+	///array('label'=>'List Usuario', 'url'=>array('index')),
+	array('label'=>'Crear', 'url'=>array('create')),
+);
+
+Yii::app()->clientScript->registerScript('search', "
+$('.search-button').click(function(){
+	$('.search-form').toggle();
+	return false;
+});
+$('.search-form form').submit(function(){
+	$.fn.yiiGridView.update('usuario-grid', {
+		data: $(this).serialize()
+	});
+	return false;
+});
+");
+?>
+
+<center><h1> Usuarios</h1></center>
+
+
+<?php $this->widget('zii.widgets.grid.CGridView', array(
+	'id'=>'usuario-grid',
+	'dataProvider'=>$model->search(),
+        'cssFile' => Yii::app()->request->baseUrl . '/css/cgridview.css',
+	'filter'=>$model,
+	'columns'=>array(
+		'id',
+		'username',
+		//'password',
+                array(
+                      'header'=>'Perfil',
+                      'name'=>'id_perfil',
+                      'value' => '$data->idperfil->nombre_perfil',                                               // Valor a mostrar
+               'htmlOptions'=>array('style'=>'text-align: center','width'=>'125px'),                     // Opciones HTML
+               'filter' => CHtml::listData(Perfil::model()->findAll(), 'id',
+                       'nombre_perfil'), // Colocamos un combo en el filtro
+                 ),
+		'int_cedula',
+		'str_nombre',
+		'str_apellido',
+		/*'blnborrado',
+		'created_date',
+		'modified_date',
+		
+		'created_by',
+		'modified_by',
+		*/
+			array(
+                     'class'=>'CButtonColumn',
+			   'htmlOptions'=>array('width'=>'75px','style' => 'text-align: center;'),
+               'template' => ' {update} {delete} {view} ',
+              'buttons'=>array(
+                  
+                      'delete' => array(
+                                    
+                                         'visible' =>'Yii::app()->authManager->checkAccess("Administrador", Yii::app()->user->id)'
+                                     ),
+                      'update' => array(
+                                    
+                                         'visible' =>'Yii::app()->authManager->checkAccess("Avanzado", Yii::app()->user->id)'
+                                     ),
+               
+              ),
+      ),
+	),
+)); ?>

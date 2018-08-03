@@ -1,0 +1,178 @@
+<?php
+
+/**
+ * This is the model class for table "valuaciones.tblvaluaciones2".
+ *
+ * The followings are the available columns in table 'valuaciones.tblvaluaciones2':
+ * @property integer $id
+ * @property integer $id_contrato
+ * @property integer $id_tipo
+ * @property string $npresupuesto
+ * @property string $nprorroga
+ * @property string $observacion
+ * @property string $fechaprorroga
+ * @property integer $id_estatus
+ * @property boolean $blnborrado
+ * @property string $created_date
+ * @property string $modified_date
+ * @property integer $created_by
+ * @property integer $modified_by
+ * @property double $monto
+ * @property integer $id_obra_pk
+ * @property string $hora
+ * @property integer $fuente
+ * @property integer $contratista
+ * @property string $punto_cuenta
+ * @property string $npunto_cuenta
+ */
+class Tblvaluaciones2 extends CActiveRecord
+{
+	/**
+	 * @return string the associated database table name
+	 */
+	public function tableName()
+	{
+		return 'valuaciones.tblvaluaciones2';
+	}
+
+	/**
+	 * @return array validation rules for model attributes.
+	 */
+	public function rules()
+	{
+		// NOTE: you should only define rules for those attributes that
+		// will receive user inputs.
+		return array(
+			array('id_contrato, id_tipo, id_estatus, created_by, modified_by, id_obra_pk, fuente, contratista', 'numerical', 'integerOnly'=>true),
+			array('monto', 'numerical'),
+                        array('id_contrato, id_tipo, id_estatus', 'required'),
+			array('npresupuesto, nprorroga, observacion, fechaprorroga, blnborrado, created_date, modified_date, hora, punto_cuenta, npunto_cuenta', 'safe'),
+			// The following rule is used by search().
+			// @todo Please remove those attributes that should not be searched.
+			array('id, id_contrato, id_tipo, npresupuesto, nprorroga, observacion, fechaprorroga, id_estatus, blnborrado, created_date, modified_date, created_by, modified_by, monto, id_obra_pk, hora, fuente, contratista, punto_cuenta, npunto_cuenta', 'safe', 'on'=>'search'),
+		);
+	}
+
+	/**
+	 * @return array relational rules.
+	 */
+	public function relations()
+	{
+		// NOTE: you may need to adjust the relation name and the related
+		// class name for the relations automatically generated below.
+		return array(
+                    'Rtipov' => array(self::BELONGS_TO, 'Tbltipo2', 'id_tipo'),
+                    'Rstatusv' => array(self::BELONGS_TO, 'Estatusvaluacion', 'id_estatus'),
+                
+                    
+                     'Obra1' => array(self::BELONGS_TO, 'Obra', 'id_obra_pk'),
+                
+                     'Cont1' => array(self::BELONGS_TO, 'Contrato', 'id_contrato'),
+                    
+		);
+	}
+
+	/**
+	 * @return array customized attribute labels (name=>label)
+	 */
+	public function attributeLabels()
+	{
+		return array(
+			'id' => 'ID',
+			'id_contrato' => 'Id Contrato',
+			'id_tipo' => 'Tipo',
+			'npresupuesto' => 'N° Presupuesto',
+			'nprorroga' => 'N° Prorroga',
+			'observacion' => 'Observacion',
+			'fechaprorroga' => 'Fecha Prorroga',
+			'id_estatus' => 'Estatus',
+			'blnborrado' => 'Blnborrado',
+			'created_date' => 'Created Date',
+			'modified_date' => 'Modified Date',
+			'created_by' => 'Created By',
+			'modified_by' => 'Modified By',
+			'monto' => 'Monto',
+			'id_obra_pk' => 'Id Obra Pk',
+			'hora' => 'Hora',
+			'fuente' => 'Fuente',
+			'contratista' => 'Contratista',
+			'punto_cuenta' => 'N° Agenda',
+			'npunto_cuenta' => 'N°',
+		);
+	}
+
+	/**
+	 * Retrieves a list of models based on the current search/filter conditions.
+	 *
+	 * Typical usecase:
+	 * - Initialize the model fields with values from filter form.
+	 * - Execute this method to get CActiveDataProvider instance which will filter
+	 * models according to data in model fields.
+	 * - Pass data provider to CGridView, CListView or any similar widget.
+	 *
+	 * @return CActiveDataProvider the data provider that can return the models
+	 * based on the search/filter conditions.
+	 */
+	public function search()
+	{
+		// @todo Please modify the following code to remove attributes that should not be searched.
+
+		$criteria=new CDbCriteria;
+
+		$criteria->compare('id',$this->id);
+		$criteria->compare('id_contrato',$this->id_contrato);
+		$criteria->compare('id_tipo',$this->id_tipo);
+		$criteria->compare('npresupuesto',$this->npresupuesto,true);
+		$criteria->compare('nprorroga',$this->nprorroga,true);
+		$criteria->compare('observacion',$this->observacion,true);
+		$criteria->compare('fechaprorroga',$this->fechaprorroga,true);
+		$criteria->compare('id_estatus',$this->id_estatus);
+		$criteria->compare('blnborrado',$this->blnborrado);
+		$criteria->compare('created_date',$this->created_date,true);
+		$criteria->compare('modified_date',$this->modified_date,true);
+		$criteria->compare('created_by',$this->created_by);
+		$criteria->compare('modified_by',$this->modified_by);
+		$criteria->compare('monto',$this->monto);
+		$criteria->compare('id_obra_pk',$this->id_obra_pk);
+		$criteria->compare('hora',$this->hora,true);
+		$criteria->compare('fuente',$this->fuente);
+		$criteria->compare('contratista',$this->contratista);
+		$criteria->compare('punto_cuenta',$this->punto_cuenta,true);
+		$criteria->compare('npunto_cuenta',$this->npunto_cuenta,true);
+
+		return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+		));
+	}
+
+        
+        
+               public function behaviors()
+{
+    return array(
+        'CTimestampBehavior' => array(
+            'class' => 'zii.behaviors.CTimestampBehavior',
+            'createAttribute' => 'created_date',
+            'updateAttribute' => 'modified_date',
+            'setUpdateOnCreate' => true,
+        ),
+        'BlameableBehavior' => array(
+            'class' => 'application.components.behaviors.BlameableBehavior',
+            'createdByColumn' => 'created_by', 
+            'updatedByColumn' => 'modified_by',  
+        ),
+    );  
+}
+        
+        
+	/**
+	 * Returns the static model of the specified AR class.
+	 * Please note that you should have this exact method in all your CActiveRecord descendants!
+	 * @param string $className active record class name.
+	 * @return Tblvaluaciones2 the static model class
+	 */
+	public static function model($className=__CLASS__)
+	{
+		return parent::model($className);
+	}
+}

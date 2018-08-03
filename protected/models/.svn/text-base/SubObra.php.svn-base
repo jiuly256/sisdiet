@@ -1,0 +1,126 @@
+<?php
+
+/**
+ * This is the model class for table "maquinaria.sub_obra".
+ *
+ * The followings are the available columns in table 'maquinaria.sub_obra':
+ * @property integer $id
+ * @property integer $id_obra_pk
+ * @property integer $id_estado_fk
+ *
+ * The followings are the available model relations:
+ * @property Obra $idObraPk
+ * @property TblEstado $idEstadoFk
+ */
+class SubObra extends CActiveRecord
+{
+	/**
+	 * @return string the associated database table name
+	 */
+	public function tableName()
+	{
+		return 'maquinaria.sub_obra';
+	}
+
+	/**
+	 * @return array validation rules for model attributes.
+	 */
+	public function rules()
+	{
+		// NOTE: you should only define rules for those attributes that
+		// will receive user inputs.
+		return array(
+			array('id_obra_pk, id_estado_fk, id_obra_pk2', 'numerical', 'integerOnly'=>true),
+			// The following rule is used by search().
+			// @todo Please remove those attributes that should not be searched.
+			array('id, id_obra_pk, id_estado_fk, id_obra_pk2', 'safe', 'on'=>'search'),
+		);
+	}
+
+	/**
+	 * @return array relational rules.
+	 */
+	public function relations()
+	{
+		// NOTE: you may need to adjust the relation name and the related
+		// class name for the relations automatically generated below.
+		return array(
+			'idObra' => array(self::BELONGS_TO, 'Obra', 'id_obra_pk2'),
+			'idObra2' => array(self::BELONGS_TO, 'Obra', 'id_obra_pk'),
+			'idEstadoFk' => array(self::BELONGS_TO, 'TblEstado', 'id_estado_fk'),
+		);
+	}
+
+	/**
+	 * @return array customized attribute labels (name=>label)
+	 */
+	public function attributeLabels()
+	{
+		return array(
+			'id' => 'ID',
+			'id_obra_pk' => 'Id Obra Pk',
+			'id_estado_fk' => 'Estado',
+			'id_obra_pk2' => 'Obra',
+		);
+	}
+
+
+
+	   public function obradireccion(){
+        return Yii::app()->request->hostInfo.'/obra/view_1/'.$this->id_obra_pk2;
+        }
+	
+
+	/**
+	 * Retrieves a list of models based on the current search/filter conditions.
+	 *
+	 * Typical usecase:
+	 * - Initialize the model fields with values from filter form.
+	 * - Execute this method to get CActiveDataProvider instance which will filter
+	 * models according to data in model fields.
+	 * - Pass data provider to CGridView, CListView or any similar widget.
+	 *
+	 * @return CActiveDataProvider the data provider that can return the models
+	 * based on the search/filter conditions.
+	 */
+	public function search()
+	{
+		// @todo Please modify the following code to remove attributes that should not be searched.
+
+		$criteria=new CDbCriteria;
+
+	/*	$criteria->compare('id',$this->id);
+		 $criteria->with =array('idObra');
+                //declaro la condicion de la busqueda con el case sensitive (buscar mayusculas minusculas)
+                $criteria->addSearchCondition('LOWER("idObra"."str_descripcion")',strtolower($this->id_obra_pk2),true);
+		 $criteria->with =array('idObra');
+                //declaro la condicion de la busqueda con el case sensitive (buscar mayusculas minusculas)
+                $criteria->addSearchCondition('LOWER("idObra"."str_codigo_contrato")',strtolower($this->id_obra_pk2),true);
+		 $criteria->with =array('idObra');
+                //declaro la condicion de la busqueda con el case sensitive (buscar mayusculas minusculas)
+                //$criteria->addSearchCondition('LOWER("idObra"."db_avance_fisico")',strtolower($this->id_obra_pk2),true);
+	//	 $criteria->with =array('idObra');
+                //declaro la condicion de la busqueda con el case sensitive (buscar mayusculas minusculas)
+                //$criteria->addSearchCondition('LOWER("idObra"."fechainicio")',strtolower($this->fechainicio),true);
+		// $criteria->with =array('idObra');
+                //declaro la condicion de la busqueda con el case sensitive (buscar mayusculas minusculas)
+               // $criteria->addSearchCondition('LOWER("idObra"."fechap")',strtolower($this->fechap),true);
+		$criteria->compare('id_estado_fk',$this->id_estado_fk);
+		$criteria->compare('id_obra_pk',$this->id_obra_pk);
+*/
+		return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+		));
+	}
+
+	/**
+	 * Returns the static model of the specified AR class.
+	 * Please note that you should have this exact method in all your CActiveRecord descendants!
+	 * @param string $className active record class name.
+	 * @return SubObra the static model class
+	 */
+	public static function model($className=__CLASS__)
+	{
+		return parent::model($className);
+	}
+}

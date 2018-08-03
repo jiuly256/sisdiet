@@ -1,0 +1,343 @@
+<?php
+
+/**
+ * This is the model class for table "maquinaria.actividad_diaria".
+ *
+ * The followings are the available columns in table 'maquinaria.actividad_diaria':
+ * @property integer $id
+ * @property string $fecha
+ * @property string $actividad
+ * @property string $regfotografico
+ * @property integer $id_cumplimiento
+ */
+class ActividadDiaria extends CActiveRecord
+{
+       public $fecha_range = array(); 
+      public $regfotografico;
+	/**
+	 * @return string the associated database table name
+	 */
+      
+      
+      
+	public function tableName()
+	{
+		return 'maquinaria.actividad_diaria';
+	}
+
+	/**
+	 * @return array validation rules for model attributes.
+	 */
+	public function rules()
+	{
+		// NOTE: you should only define rules for those attributes that
+		// will receive user inputs.
+		return array(
+			array('id_cumplimiento, id_obra_pk1, id_perfil_direccion, dias, id_usuario_asig, responsable, id_estatus, id_estado_fk3, tipo_fecha', 'numerical', 'integerOnly'=>true),
+                        array('regfotografico', 'file','types'=>'jpg, gif, png,jpeg', 'allowEmpty'=>true, 'on'=>'safe'),
+                        array('regfotografico', 'file','types'=>'jpg, gif, png,jpeg,JPG,JPEG', 'allowEmpty'=>true, 'on'=>'update'),
+			array('actividad, observacion', 'length', 'max'=>2500),
+			array('fecha, regfotografico ,dias, avance_fisico, bnlborrado, id_usuario_asig, fecha_range, id_estatus, observacion, tipo_fecha, fechap', 'safe'),
+                        array('regfotografico', 'length', 'max'=>555, 'on'=>'insert,update'),
+			array( 'fecha, id_cumplimiento, actividad, id_estatus, avance_fisico', 'required'),
+			array('regfotografico', 'unique'),
+			// The following rule is used by search().
+			// @todo Please remove those attributes that should not be searched.
+			array('id, fecha, actividad, bnlborrado, avance_fisico, regfotografico, dias, fecha_range, fechap, tipo_fecha, id_estatus, id_usuario_asig, observacion, id_cumplimiento, id_obra_pk1, id_perfil_direccion, id_estado_fk3', 'safe', 'on'=>'search'),
+		);
+	}
+
+	/**
+	 * @return array relational rules.
+	 */
+	public function relations()
+	{
+            
+             
+                      
+		// NOTE: you may need to adjust the relation name and the related
+		// class name for the relations automatically generated below.
+		return array(
+                  'idCumplimineto' => array(self::BELONGS_TO, 'CumplimientoPrograma', 'id_cumplimiento'),
+                  'idObra' => array(self::BELONGS_TO, 'Obra', 'id_obra_pk1'),
+                  'Estatus' => array(self::BELONGS_TO, 'EstatusObra', 'id_estatus'),
+		   'Estado' => array(self::BELONGS_TO, 'TblEstado', 'id_estado_fk3'),
+                  'materiales' => array(self::BELONGS_TO, 'MaterialesObra', 'id_materiales'),
+                //  'idUsuario' => array(self::BELONGS_TO, 'Obra', 'id_obra_pk'),
+		);
+	}
+
+	/**
+	 * @return array customized attribute labels (name=>label)
+	 */
+	public function attributeLabels()
+	{
+		return array(
+			'id' => 'ID',
+			'fecha' => 'Fecha',
+			'actividad' => 'Actividad',
+			'regfotografico' => 'Registro Fotografico',
+			'id_cumplimiento' => 'Cumplimiento del Programa',
+                        'observacion'=>'Observacion',
+                        'id_estatus'=>'Estatus',
+                        'dias'=>'Día de Paralización',
+                        'avance_fisico'=>'Avance Fisico (%)',
+                        'fechap'=>'Fecha Propuesta',
+                        'responsable'=>'Responsable',
+                        'tipo_fecha'=>'',
+                        'id_materiales'=>'Material',
+                        'cantidad_utilizada_a'=>'Cantidad Utilizada',
+		);
+	}
+
+	/**
+	 * Retrieves a list of models based on the current search/filter conditions.
+	 *
+	 * Typical usecase:
+	 * - Initialize the model fields with values from filter form.
+	 * - Execute this method to get CActiveDataProvider instance which will filter
+	 * models according to data in model fields.
+	 * - Pass data provider to CGridView, CListView or any similar widget.
+	 *
+	 * @return CActiveDataProvider the data provider that can return the models
+	 * based on the search/filter conditions.
+	 */
+	public function search()
+	{
+		// @todo Please modify the following code to remove attributes that should not be searched.
+            
+             $id=Yii::app()->user->id; 
+            $sql='select * from maquinaria.usuario where id='.$id.';'; 
+                $connection=Yii::app()->db;
+                $command=$connection->createCommand($sql); 
+                $row=$command->queryRow(); 
+                $id_perfil=$row["id_perfil_direccion"];
+                $perfil=$row["id_perfil"];
+                $estado=$row["id_estado"];
+                
+            
+
+		     $criteria=new CDbCriteria;
+                $sort=new CSort();
+                   if($id_perfil=='2' || $id_perfil=='1' || $id_perfil=='3')
+                {
+                    if($perfil=='1' || $perfil=='5' || $perfil=='3')
+                    {
+                 $criteria->order="fecha desc, id_estado_fk3 asc";     
+               $criteria->condition="bnlborrado=false";
+		$criteria->compare('id',$this->id);
+		$criteria->compare('fecha',$this->fecha);
+		$criteria->compare('LOWER(actividad)',  strtolower($this->actividad),true);
+		$criteria->compare('regfotografico',$this->regfotografico,true);
+		$criteria->compare('id_estado_fk3',$this->id_estado_fk3);
+		$criteria->compare('id_estatus',$this->id_estatus);
+		$criteria->compare('dias',$this->dias);
+		$criteria->compare('id_cumplimiento',$this->id_cumplimiento);
+		 //Buscar obra en valuaciones declao un arreglo con el nombre de la relacion
+                $criteria->with =array('idObra');
+                //declaro la condicion de la busqueda con el case sensitive (buscar mayusculas minusculas)
+                $criteria->addSearchCondition('LOWER("idObra"."str_descripcion")',strtolower($this->id_obra_pk1),true);
+                }
+                elseif ($perfil=='2' || $perfil=='4'){
+
+		 $criteria->order="fecha desc, id_estado_fk3 asc";
+                $criteria->condition="bnlborrado=false";
+		$criteria->compare('id',$this->id);
+		$criteria->compare('fecha',$this->fecha);
+		$criteria->compare('LOWER(actividad)',  strtolower($this->actividad),true);
+		$criteria->compare('regfotografico',$this->regfotografico,true);
+		$criteria->compare('id_cumplimiento',$this->id_cumplimiento);
+		$criteria->compare('id_estado_fk3',$this->id_estado_fk3);
+		$criteria->compare('id_estatus',$this->id_estatus);
+		$criteria->compare('dias',$this->dias);
+		$criteria->compare('responsable',$this->responsable);
+		 //Buscar obra en valuaciones declao un arreglo con el nombre de la relacion
+                $criteria->with =array('idObra');
+                //declaro la condicion de la busqueda con el case sensitive (buscar mayusculas minusculas)
+                $criteria->addSearchCondition('LOWER("idObra"."str_descripcion")',strtolower($this->id_obra_pk1),true);
+                }
+                }
+                
+                  $from = $to = '';
+          if (count($this->fecha_range)>=1) {
+              if (isset($this->fecha_range['from'])) {
+                  $from = $this->fecha_range['from'];
+              }
+              if (isset($this->fecha_range['to'])) {
+                  $to= $this->fecha_range['to'];
+              }
+          }
+          if ($from!='' || $to !='') {
+              if ($from!='' && $to!='') {
+                  $from = date("Y-m-d", strtotime($from));
+                  $to = date("Y-m-d", strtotime($to));
+                  $criteria->compare('fecha',">= $from",false);
+                  $criteria->compare('fecha',"<= $to",false);
+              }
+              else {
+                  if ($from!='') $creation_time = $from;
+                  if ($to != '') $creation_time = $to;
+                  $creation_time = date("Y-m-d", strtotime($creation_time));
+                  $criteria->compare('fecha', "$creation_time" ,false);
+              }
+          }
+                
+                
+                 $_SESSION['datos_filtrados'] = new CActiveDataProvider($this, array(
+                      'criteria'=>$criteria,
+                      'sort'=>$sort,
+                      'pagination'=>false,
+              ));
+
+		return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+		));
+	}
+
+
+
+	public function search_2()
+	{
+		// @todo Please modify the following code to remove attributes that should not be searched.
+            
+             $id=Yii::app()->user->id; 
+            $sql='select * from maquinaria.usuario where id='.$id.';'; 
+                $connection=Yii::app()->db;
+                $command=$connection->createCommand($sql); 
+                $row=$command->queryRow(); 
+                $id_perfil=$row["id_perfil_direccion"];
+                $perfil=$row["id_perfil"];
+                $estado=$row["id_estado"];
+                
+            
+            $sql1='select * from maquinaria.obra where idclasificacionobr=1 and bln_borrado=false ;'; 
+                $connection=Yii::app()->db;
+                $command=$connection->createCommand($sql1); 
+                $row1=$command->queryAll(); 
+              
+                $a=0;
+                $total=count($row1);
+           //     echo $total; exit;
+                while($a<$total){
+                    $id_obra=$row1[$a]["id_obra_pk"];
+                    
+                     if($a==0){ $id_obra1=$id_obra; }else{ $id_obra1=$id_obra1.','.$id_obra;}
+
+                     $a++;
+                }
+               // echo $id_obra1; exit;
+		 
+                
+                $criteria=new CDbCriteria;
+                $sort=new CSort();
+                   if($id_perfil=='2' || $id_perfil=='1' || $id_perfil=='3')
+                {
+                    if($perfil=='1' || $perfil=='5' || $perfil=='3' || $perfil=='4')
+                    {
+                 $criteria->order="fecha desc, id_estado_fk3 asc";     
+               $criteria->condition="bnlborrado=false and id_obra_pk1 in ($id_obra1)";
+		$criteria->compare('id',$this->id);
+		$criteria->compare('fecha',$this->fecha,true);
+		$criteria->compare('LOWER(actividad)',  strtolower($this->actividad),true);
+		$criteria->compare('regfotografico',$this->regfotografico,true);
+		$criteria->compare('id_estado_fk3',$this->id_estado_fk3);
+		$criteria->compare('id_estatus',$this->id_estatus);
+	$criteria->compare('dias',$this->dias);
+		$criteria->compare('id_cumplimiento',$this->id_cumplimiento);
+		 //Buscar obra en valuaciones declao un arreglo con el nombre de la relacion
+                $criteria->with =array('idObra');
+                //declaro la condicion de la busqueda con el case sensitive (buscar mayusculas minusculas)
+                $criteria->addSearchCondition('LOWER("idObra"."str_descripcion")',strtolower($this->id_obra_pk1),true);
+                }
+                
+                }
+                
+                
+                
+                
+                    
+                 $from = $to = '';
+                $_SESSION['from_emi'] = $_SESSION['to_emi'] = $_SESSION['cuenta'] = '';
+            if (count($this->fecha_range)>=1) {
+                if (isset($this->fecha_range['from'])) {
+                    $from = $this->fecha_range['from'];
+                    $_SESSION['from_emi'] = $from; //Aca guardamos en sesion para tener el valor en el reporte y lo pasamos a traves del controlador
+                }
+                if (isset($this->fecha_range['to'])) {
+                    $to= $this->fecha_range['to'];
+                    $_SESSION['to_emi'] = $to; //Aca guardamos en sesion para tener el valor en el reporte y lo pasamos a traves del controlador
+                }
+            }
+           
+                
+                
+                
+               
+                  $from = $to = '';
+          if (count($this->fecha_range)>=1) {
+              if (isset($this->fecha_range['from'])) {
+                  $from = $this->fecha_range['from'];
+              }
+              if (isset($this->fecha_range['to'])) {
+                  $to= $this->fecha_range['to'];
+              }
+          }
+          if ($from!='' || $to !='') {
+              if ($from!='' && $to!='') {
+                  $from = date("Y-m-d", strtotime($from));
+                  $to = date("Y-m-d", strtotime($to));
+                  $criteria->compare('fecha',">= $from",false);
+                  $criteria->compare('fecha',"<= $to",false);
+              }
+              else {
+                  if ($from!='') $creation_time = $from;
+                  if ($to != '') $creation_time = $to;
+                  $creation_time = date("Y-m-d", strtotime($creation_time));
+                  $criteria->compare('fecha', "$creation_time" ,false);
+              }
+          }
+               
+                
+                 $_SESSION['datos_filtrados'] = new CActiveDataProvider($this, array(
+                      'criteria'=>$criteria,
+                      'sort'=>$sort,
+                      'pagination'=>false,
+              ));
+
+		return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+		));
+	}
+
+
+
+	/**
+	 * Returns the static model of the specified AR class.
+	 * Please note that you should have this exact method in all your CActiveRecord descendants!
+	 * @param string $className active record class name.
+	 * @return ActividadDiaria the static model class
+	 */
+	public static function model($className=__CLASS__)
+	{
+		return parent::model($className);
+	}
+        
+        
+                 public function behaviors()
+{
+    return array(
+        'CTimestampBehavior' => array(
+            'class' => 'zii.behaviors.CTimestampBehavior',
+            'createAttribute' => 'created_date',
+            'updateAttribute' => 'modified_date',
+            'setUpdateOnCreate' => true,
+        ),
+        'BlameableBehavior' => array(
+            'class' => 'application.components.behaviors.BlameableBehavior',
+            'createdByColumn' => 'created_by', 
+            'updatedByColumn' => 'modified_by',  
+        ),
+    );  
+}
+        
+}

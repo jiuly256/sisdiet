@@ -1,0 +1,166 @@
+<?php
+
+/**
+ * This is the model class for table "plantas.tblhistorico_planta".
+ *
+ * The followings are the available columns in table 'plantas.tblhistorico_planta':
+ * @property integer $id_historial
+ * @property integer $id_planta
+ * @property string $observacion
+ * @property string $fecha
+ * @property integer $id_tipo_movimiento
+ * @property integer $id_estatus
+ */
+class TblhistoricoPlanta extends CActiveRecord
+{
+        public $fecha_range = array();
+    
+	/**
+	 * @return string the associated database table name
+	 */
+	public function tableName()
+	{
+		return 'plantas.tblhistorico_planta';
+	}
+
+	/**
+	 * @return array validation rules for model attributes.
+	 */
+	public function rules()
+	{
+		// NOTE: you should only define rules for those attributes that
+		// will receive user inputs.
+		return array(
+                    	array( 'fecha, id_estatus, id_estado, id_obra', 'required'),
+			array('id_planta, id_estatus, dias, id_organismo, id_obra, id_estado', 'numerical', 'integerOnly'=>true),
+			array('observacion, fecha, id_organismo, cantidad_producida', 'safe'),
+			// The following rule is used by search().
+			// @todo Please remove those attributes that should not be searched.
+			array('id_historial, id_planta, observacion, dias, id_organismo, fecha_range, id_obra, cantidad_producida, fecha, id_estado, id_estatus', 'safe', 'on'=>'search'),
+		);
+	}
+
+	/**
+	 * @return array relational rules.
+	 */
+	public function relations()
+	{
+		// NOTE: you may need to adjust the relation name and the related
+		// class name for the relations automatically generated below.
+		return array(
+                    'Estatus' => array(self::BELONGS_TO, 'Tblestatus', 'id_estatus'),
+                    'Tipo' => array(self::BELONGS_TO, 'Tbltipomaquinaria', 'id_tipo_movimiento'),
+                    'idObra' => array(self::BELONGS_TO, 'Obra', 'id_obra'),
+                    'Tipo' => array(self::BELONGS_TO, 'Tbltipomaquinaria', 'id_tipo_movimiento'),
+                    'planta1' => array(self::BELONGS_TO, 'Tblplanta', 'id_planta'),
+                  'Estado' => array(self::BELONGS_TO, 'TblEstado', 'id_estado'),
+                  'Organismo' => array(self::BELONGS_TO, 'Tblorganismo', 'id_organismo'),
+                    //'Maquinariam' => array(self::BELONGS_TO, 'Sismaq', 'id_sismaq_fk'),
+		);
+	}
+
+	/**
+	 * @return array customized attribute labels (name=>label)
+	 */
+	public function attributeLabels()
+	{
+		return array(
+			'id_historial' => 'Id Historial',
+			'id_planta' => 'Planta',
+			'observacion' => 'Observacion',
+			'fecha' => 'Fecha',
+			'id_tipo_movimiento' => 'Tipo Movimiento',
+			'id_estatus' => 'Estatus',
+			'dias' => 'Dias Paralizacion',
+			'id_estado' => 'Estado',
+			'id_obra' => 'Obra',
+			'id_organismo' => 'Organismo',
+			'cantidad_producida' => 'Cantidad Producida',
+		);
+	}
+
+	/**
+	 * Retrieves a list of models based on the current search/filter conditions.
+	 *
+	 * Typical usecase:
+	 * - Initialize the model fields with values from filter form.
+	 * - Execute this method to get CActiveDataProvider instance which will filter
+	 * models according to data in model fields.
+	 * - Pass data provider to CGridView, CListView or any similar widget.
+	 *
+	 * @return CActiveDataProvider the data provider that can return the models
+	 * based on the search/filter conditions.
+	 */
+	public function search()
+	{
+		// @todo Please modify the following code to remove attributes that should not be searched.
+
+		$criteria=new CDbCriteria;
+                $sort=new CSort();
+
+                $criteria->order="fecha desc";
+                
+		$criteria->compare('id_historial',$this->id_historial);
+		$criteria->compare('id_planta',$this->id_planta);
+		$criteria->compare('observacion',$this->observacion,true);
+		$criteria->compare('fecha',$this->fecha,true);
+		$criteria->compare('id_estado',$this->id_estado);
+		  $criteria->with =array('idObra');
+                //declaro la condicion de la busqueda con el case sensitive (buscar mayusculas minusculas)
+                $criteria->addSearchCondition('LOWER("idObra"."str_descripcion")',strtolower($this->id_obra),true);
+	//	  $criteria->with =array('Organismo');
+                //declaro la condicion de la busqueda con el case sensitive (buscar mayusculas minusculas)
+          //      $criteria->addSearchCondition('LOWER("Organismo"."descripcion")',strtolower($this->id_organismo),true);
+		$criteria->compare('cantidad_producida',$this->cantidad_producida);
+		$criteria->compare('dias',$this->dias);
+		$criteria->compare('id_organismo',$this->id_organismo);
+
+		return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+		));
+                
+                
+                
+                  $from = $to = '';
+          if (count($this->fecha_range)>=1) {
+              if (isset($this->fecha_range['from'])) {
+                  $from = $this->fecha_range['from'];
+              }
+              if (isset($this->fecha_range['to'])) {
+                  $to= $this->fecha_range['to'];
+              }
+          }
+          if ($from!='' || $to !='') {
+              if ($from!='' && $to!='') {
+                  $from = date("Y-m-d", strtotime($from));
+                  $to = date("Y-m-d", strtotime($to));
+                  $criteria->compare('fecha',">= $from",false);
+                  $criteria->compare('fecha',"<= $to",false);
+              }
+              else {
+                  if ($from!='') $creation_time = $from;
+                  if ($to != '') $creation_time = $to;
+                  $creation_time = date("Y-m-d", strtotime($creation_time));
+                  $criteria->compare('fecha', "$creation_time" ,false);
+              }
+          }
+                    //fechainicio_range
+        
+                
+                
+	}
+        
+        
+        
+
+	/**
+	 * Returns the static model of the specified AR class.
+	 * Please note that you should have this exact method in all your CActiveRecord descendants!
+	 * @param string $className active record class name.
+	 * @return TblhistoricoPlanta the static model class
+	 */
+	public static function model($className=__CLASS__)
+	{
+		return parent::model($className);
+	}
+}

@@ -1,0 +1,1559 @@
+<?php
+
+/**
+ * This is the model class for table "maquinaria.obra".
+ *
+ * The followings are the available columns in table 'maquinaria.obra':
+ * @property integer $id_obra_pk
+ * @property string $str_descripcion
+ * @property string $dt_dt_fecha_inicio
+ * @property integer $id_estado_fk
+ * @property integer $id_municipio_fk
+ * @property integer $id_parroquia_fk
+ * @property string $str_ubicacion
+ */
+class Obra extends CActiveRecord
+{
+     public $dt_fecha_inicio_range = array(); 
+     public $fechainicio_range = array(); 
+     public $fechacul_range = array();
+     public $fechap_range = array();  
+     public $imagen, $imagen2, $imagen3, $imagen4, $imagen5, $imagen6, $imagen7, $imagen8;
+    
+	/**
+	 * Returns the static model of the specified AR class.
+	 * @param string $className active record class name.
+	 * @return Obra the static model class
+	 */
+	public static function model($className=__CLASS__)
+	{
+		return parent::model($className);
+	}
+
+	/**
+	 * @return string the associated database table name
+	 */
+	public function tableName()
+	{
+		return 'maquinaria.obra';
+	}
+
+	/**
+	 * @return array validation rules for model attributes.
+	 */
+	public function rules()
+	{
+		// NOTE: you should only define rules for those attributes that
+		// will receive user inputs.
+		return array(
+                        array('id_estado_fk, str_descripcion,id_estatus_obra_fk, id_redi, id_fuente_financiamiento, fechainicio, fechacul, str_codigo_contrato, id_contratista, monto, id_accionobra, idclasificacionobr, id_tipo_accion', 'required'),                       
+			array('id_estado_fk, id_municipio_fk, igestadal, perfil_usuario,id_municipio_fk2, id_estado_fk2, id_parroquia_fk, int_km_prog, int_km_logr, int_por_km, int_m3_prog, int_m3_logr, created_by, modified_by,  int_por_m3, id_estatus_obra_fk, id_organismo_ejecutor_fk, id_consejo_comunal_fk, id_tipo_obra, id_obra_relacionada, id_persona_contacto_fk,id_tipo_accion,id_tipo,id_fuente_financiamiento, idclasificacionobr, asig_usuario, idingcontacto, id_redi, id_fase, id_tipo_accion, id_estado_fk_3', 'numerical', 'integerOnly'=>true),
+			array('db_total_horas_maquinaria, db_avance_fisico, db_total_horas_hombres, db_total_costo_asociado, db_empleo_directo, db_empleo_indirecto, db_cantidad_beneficiario,dob_avance_fisicor,id_contratista,alcance,avance_financiero,dias_paralizacion,id_formato_paralizacion,monto', 'numerical'),
+			array('str_descripcion, str_ubicacion, str_lapso_ejecucion, txt_avances_impacto', 'length', 'max'=>15000),
+			array('str_alias', 'length', 'max'=>150),
+                     /*   array('str_codigo_contrato','unique',
+                              'caseSensitive'=>true,
+                              'allowEmpty'=>true,
+                             ),*/
+                     //array('fechainicio', 'comparar_fechas','type' => 'date', 'dateFormat' => 'yyyy-MM-dd'),
+                  /*  array(
+                                'fechacul',
+                                'compare',
+                                'compareAttribute'=>'fechainicio',
+                                'operator'=>'>',
+                                'allowEmpty'=>false ,
+                                'message'=>'{attribute} must be greater than "{compareValue}".'
+                            ),   */     
+                  // array('fechacul','compare','compareAttribute'=>'fechainicio','operator'=>'<','message'=>'Fecha de inicio no puede ser mayor a la fecha de culminacion'),
+                        array('documento', 'file','types'=>'jpg, gif, png,jpeg,JPG,JPEG,pdf,doc,ods', 'allowEmpty'=>true, 'on'=>'update'),
+                        array('documento', 'file','types'=>'jpg, gif, png,jpeg,JPG,JPEG,pdf,doc,ods', 'allowEmpty'=>true, 'on'=>'save'),
+                        array('documento', 'length', 'max'=>455, 'on'=>'save,update'),
+			array('str_codigo_contrato,punto_cuenta,puntocuenta', 'length', 'max'=>50),
+			array('str_pto_critico', 'length', 'max'=>100),
+                        array('imagen, imagen2, imagen3, imagen4, imagen5, imagen6, imagen7, imagen8', 'file','types'=>'jpg, gif, png,jpeg', 'allowEmpty'=>true, 'on'=>'update'),
+                        array('imagen, imagen2, imagen3, imagen4, imagen5, imagen6, imagen7, imagen8', 'file','types'=>'jpg, gif, png,jpeg', 'allowEmpty'=>true, 'on'=>'safe'),
+                        array('imagen, imagen2, imagen3, imagen4, imagen5, imagen6, imagen7, imagen8',  'length', 'max'=>255, 'on'=>'save,update'), 
+                        array('dt_fecha_inicio, bln_borrado, gobierno_calle, obras_emblematica, normal, instruccion_presidencial, instruccion_ministro, grandes_obras, gobierno_paz, dt_fecha_final, dt_fecha_actualizacion, igestadal, igresidente, dt_fecha_inauguracion, txt_observacion, created_by, created_date, modified_by, modified_date, txt_actividades,id_tipo_accion,str_alias, txt_beneficios_usuarios,txt_sectores_atendidos, ano, accionobra, txt_beneficios_usuarios, id_tipo_obra, id_obra_relacionada, txt_avances_impacto, id_perfil_direccion,id_contratista, asig_usuario,fechainicio, fechap,fechacul, id_troncal,ruta_critica, id_troncal_2, alcance_politico,otro1, otro2, id_accionobra, campo_organismo, dias_paralizacion, id_estado_fk_3, fechap_range, id_redi, id_tipo_accion', 'safe'),
+	// The following rule is used by search().
+			// Please remove those attributes that should not be searched.
+			array('id_obra_pk, str_descripcion, dt_fecha_inicio, id_estado_fk, id_municipio_fk,id_municipio_fk2, id_estado_fk2, 
+                            id_parroquia_fk, str_ubicacion, int_km_prog, int_km_logr, int_por_km, int_m3_prog, 
+                            int_m3_logr, int_por_m3, bln_borrado, id_estatus_obra_fk, dt_fecha_final, 
+                            dt_fecha_actualizacion, str_lapso_ejecucion, gobierno_calle, obras_emblematica, normal, instruccion_presidencial, gobierno_paz, instruccion_ministro, grandes_obras, 				    dt_fecha_inauguracion, 
+                            db_total_horas_maquinaria, db_avance_fisico, db_total_horas_hombres, 
+                            db_total_costo_asociado, db_empleo_directo, db_empleo_indirecto, 
+                            db_cantidad_beneficiario, str_pto_critico, txt_observacion, txt_actividades, 
+                            id_organismo_ejecutor_fk, id_consejo_comunal_fk, ano, 
+                            imagen, imagen2, imagen3, imagen4, imagen5, imagen6, id_troncal, accionobra, id_troncal_2, fechacul_range, alcance_politico, documento,
+                            imagen7, imagen8id_persona_contacto_fk, asig_usuario,dob_avance_fisicor, id_estado_fk2, fechainicio_range,
+                            fechap, created_by, fechainicio,  created_date, modified_by, modified_date,txt_beneficios_usuarios,
+                            str_codigo_contrato,txt_avances_impacto,txt_sectores_atendidos,id_contratista,alcance,id_tipo,avance_financiero,
+                            id_fuente_financiamiento, idclasificacionobr, id_perfil_direccion, idingcontacto,punto_cuenta,puntocuenta,monto,
+                            ruta_critica,dt_fecha_inicio_range,otro1, otro2, id_accionobra, id_estado_fk_3, campo_organismo, dias_paralizacion, id_tipo_obra, id_obra_relacionada, fechap_range, id_tipo_accion, id_redi, id_fase', 'safe', 'on'=>'search'),
+
+		);
+	}   
+
+	/**
+	 * @return array relational rules.
+	 */
+	public function relations()
+	{
+		// NOTE: you may need to adjust the relation name and the related
+		// class name for the relations automatically generated below.
+		return array(
+                  'Estado' => array(self::BELONGS_TO, 'TblEstado', 'id_estado_fk'),
+                  'Estado2' => array(self::BELONGS_TO, 'TblEstado', 'id_estado_fk2'),
+                  'Municipio' => array(self::BELONGS_TO, 'TblMunicipio', 'id_municipio_fk'),
+                  'Municipio2' => array(self::BELONGS_TO, 'TblMunicipio', 'id_municipio_fk2'),
+                  'Parroquia' => array(self::BELONGS_TO, 'TblParroquia', 'id_parroquia_fk'),
+                  'Estatuso' => array(self::BELONGS_TO, 'EstatusObra', 'id_estatus_obra_fk'),
+                  'Organismoe' => array(self::BELONGS_TO, 'EnteEjecutor', 'id_organismo_ejecutor_fk'),
+                  'Personac' => array(self::BELONGS_TO, 'Funcionario', 'id_persona_contacto_fk'),
+                  'Tipo' => array(self::BELONGS_TO, 'AccionTipo', 'id_tipo_accion'),
+                  'Contratista' => array(self::BELONGS_TO, 'TblContratista', 'id_contratista'),
+                  'idTipo' => array(self::BELONGS_TO, 'TipoMedidas', 'id_tipo'),
+                  'idFuente' => array(self::BELONGS_TO, 'FuenteFinanciamiento', 'id_fuente_financiamiento'),
+                  'idVia' => array(self::BELONGS_TO, 'ClasificacionObra', 'idclasificacionobr'),
+                  'idContacto' => array(self::BELONGS_TO, 'IngContacto', 'idingcontacto'),
+                  'Residente' => array(self::BELONGS_TO, 'IngContacto', 'igresidente'),
+                  'Estadal' => array(self::BELONGS_TO, 'IngContacto', 'igestadal'),
+                  'Accion' => array(self::BELONGS_TO, 'AccionTipo', 'id_tipo_accion'),
+                  'Clasificacion' => array(self::BELONGS_TO, 'ClasificacionObra', 'idclasificacionobr'),
+  		'Ano' => array(self::BELONGS_TO, 'Accionobra', 'id_accionobra'),
+                  'Redi' => array(self::BELONGS_TO, 'TblRedi', 'id_redi'),
+		'Ano' => array(self::BELONGS_TO, 'Accionobra', 'id_accionobra'),
+		'Fase' => array(self::BELONGS_TO, 'Tblfase', 'id_fase'),
+		);
+	}
+
+	/**
+	 * @return array customized attribute labels (name=>label)
+	 */
+	public function attributeLabels()
+	{
+		return array(
+			'id_obra_pk' => 'Id',
+			'str_descripcion' => 'Nombre de la Obra',
+			'dt_fecha_inicio' => 'Fecha Inicio',
+			'id_estado_fk' => 'Estado',
+			'id_estado_fk_3' => 'Estado de la Obra',
+			'id_estado_fk2' => 'Estado',
+			'id_municipio_fk' => 'Municipio',
+			'id_municipio_fk2' => 'Municipio',
+			'id_parroquia_fk' => 'Parroquia',
+			'str_ubicacion' => 'Ubicacion',
+                       'int_km_prog' => 'Meta programada (Km)',
+			'int_km_logr' => 'Meta Ejecutada (Km)',
+			'int_por_km' => 'Meta por Ejecutar (Km)',
+			'int_m3_prog' => 'Meta programada (m3)',
+			'int_m3_logr' => 'Meta Ejecutada (m3)',
+			'int_por_m3' => 'Meta por Ejecutar (m3)',
+                        'bln_borrado' => 'Bln Borrado',
+			'id_estatus_obra_fk' => 'Estatus Obra',
+			'dt_fecha_final' => 'Fecha de Culminacion',
+			'dt_fecha_actualizacion' => 'Fecha Actualizacion',
+			'str_lapso_ejecucion' => 'Lapso Ejecucion',
+			'dt_fecha_inauguracion' => 'Fecha Inauguracion',
+			'db_total_horas_maquinaria' => 'Total Horas Maquinaria',
+			'db_avance_fisico' => 'Avance Fisico (%)',
+			'dob_avance_fisicor' => 'Avance Fisico por Ejecutar(%)',
+			'db_total_horas_hombres' => 'Total Horas Hombres',
+			'db_total_costo_asociado' => 'Total Costo Asociado',
+			'db_empleo_directo' => 'Empleos Directos',
+			'db_empleo_indirecto' => 'Empleos Indirecto',
+			'db_cantidad_beneficiario' => 'Cantidad Beneficiario',
+			'str_pto_critico' => 'Puntos Criticos',
+			'txt_observacion' => 'Observaciones',
+                        'txt_actividades' => 'Actividades Realizadas',                    
+			'id_organismo_ejecutor_fk' => 'Organismo Ejecutor',
+			'id_consejo_comunal_fk' => 'Consejo Comunal',
+			'id_persona_contacto_fk' => 'Persona Contacto',
+			'str_alias' => 'Alias',
+			'str_codigo_contrato' => 'Numero Contrato',
+			'txt_beneficios_usuarios' => 'Beneficios al Usuario',
+			'txt_avances_impacto' => 'Datos de Interes',
+			'txt_sectores_atendidos' => 'Sectores Atendidos',
+			'id_tipo_accion' => 'Regimen de Seguimiento',
+			'id_accionobra' => 'Año de la Obra',
+			'imagen' => 'Foto inical',
+			'imagen8' => 'Foto trabajo ejecución ó terminado',
+			'id_contratista' => 'Empresa',
+			'alcance' => 'Alcance',
+			'id_tipo' => 'Unid/Med.',
+			'avance_financiero' => 'Avance Financiero (%)',
+			'id_fuente_financiamiento' => 'Fuente Financiamiento',
+                        'idingcontacto'=>'Ingeniero Inspector',
+                        'igresidente'=>'Ingeniero Residente',
+                        'igestadal'=>'Director Estadal',
+                        'idclasificacionobr'=>'Tipo',
+                        'id_perfil_direccion'=>'Ente Adscrito',
+                        'ruta_critica'=>'Ruta Critrica',
+                        'asig_usuario'=>'Asignacion de Usuario',
+                        'punto_cuenta'=>'Punto de Cuenta',
+                        'puntocuenta'=>'Punto de Cuenta del Contrato',
+                        'monto'=>'Monto',
+                        'fechacul'=>'Fecha Culminacion',
+                        'fechainicio'=>'Fecha Inicio',
+                        'fechap'=>'Fecha Propuesta',
+                        'ano'=>'Año de la Obra',
+                        'id_troncal'=>'Tipo de Via',
+                        'id_troncal_2'=>'Tipo de Via',
+                        'alcance_politico'=>'Alcance de Impacto Politico',
+			'id_fase'=>'Fase de la Obra',
+                        'documento'=>'Plano',
+			'id_fase'=>'Fase de la Obra',
+                        'otro1'=>'Especificar',
+                        'otro2'=>'Especificar',
+                        'campo_organismo'=>'Especificar',
+			'id_redi'=>'Region',
+			'id_tipo_obra'=>'Tipo de Obra',
+			'id_obra_relacionada'=>'Obra Relacionada',
+                    
+                        
+
+		);
+	}
+
+	/**
+	 * Retrieves a list of models based on the current search/filter conditions.
+	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+	 */
+        
+        
+         public function direcciondocumento1(){
+        return Yii::app()->request->hostInfo.'/obra/documentos/'.$this->documento;
+        }
+        
+        
+       
+        
+	public function search()
+	{
+            
+            $id=Yii::app()->user->id; 
+            $sql='select * from maquinaria.usuario where id='.$id.';'; 
+                $connection=Yii::app()->db;
+                $command=$connection->createCommand($sql); 
+                $row=$command->queryRow(); 
+                $id_perfil=$row["id_perfil_direccion"];
+                $perfil=$row["id_perfil"];
+                $estado=$row["id_estado"];
+
+                $criteria=new CDbCriteria;
+                $sort=new CSort();
+                //$criteria->order='id_obra_pk desc';
+                 if($id_perfil=='16'|| $id_perfil=='1' || $id_perfil=='7' || $id_perfil=='8' || $id_perfil=='9' || $id_perfil=='10' || $id_perfil=='12' || $id_perfil=='14')
+                {
+
+                            if($perfil=='1' || $perfil=='5' || $perfil=='3' || $perfil=='2' || $perfil=='4')
+                            {
+                                                $criteria->order="ano desc";
+                                                    $criteria->condition="bln_borrado=false";
+
+                          //    $criteria->condition="id_perfil_direccion!=2";
+
+                            }
+                               /*  elseif ($perfil=='2' || $perfil=='4') {
+
+                               $criteria->condition="bln_borrado=false and asig_usuario=$id";
+                             }*/
+                }
+//carmen padilla infraestructura de vialidad
+                 elseif ($id_perfil=='6' ) {
+                     
+                     
+                       if($perfil=='1' || $perfil=='5' || $perfil=='3' || $perfil=='2' || $perfil=='4')
+                            {
+                $criteria->order="seguimiento=FALSE asc, id_estado_fk asc";
+                $criteria->condition="bln_borrado=false and idclasificacionobr!=74";
+                     
+                 }
+                 }
+// 2 vialidad 11 viceministerio 13 viceministro
+                 elseif ($id_perfil=='2' || $id_perfil=='13' || $id_perfil=='11') {
+             
+                     if($perfil=='5' || $perfil=='1'  || $perfil=='2'  || $perfil=='4')
+                     {
+
+//                $criteria->order="seguimiento=TRUE desc, id_estado_fk asc, fechap desc";
+  		 $criteria->order="seguimiento=FALSE asc, id_estado_fk asc";
+                 $criteria->condition="bln_borrado=false and id_accionobra in(8,7) and idclasificacionobr!=74 and id_tipo_obra=1 or bln_borrado=false and id_accionobra in(5,7) and idclasificacionobr!=74 and id_tipo_obra=1";
+
+                 //   $criteria->condition="bln_borrado=false and id_perfil_direccion=$id_perfil";
+                  // $criteria->condition="bln_borrado=false and id_perfil_direccion=$id_perfil";
+		
+                    }
+            /* elseif ($perfil=='4' || $perfil=='2') {
+             
+               $criteria->order="seguimiento=TRUE desc, id_estado_fk asc";
+                $criteria->condition="bln_borrado=false and id_accionobra=8 and idclasificacionobr!=74 and id_tipo_obra=1 or bln_borrado=false and id_accionobra=5 and idclasificacionobr!=74 and id_tipo_obra=1";
+
+              //   $criteria->condition="bln_borrado=false and asig_usuario=$id and id_perfil_direccion=$id_perfil";
+                
+                            }*/
+             }
+        else{
+              $criteria->order="seguimiento=FALSE asc, id_estado_fk asc";
+                $criteria->condition="bln_borrado=false";
+             //   $criteria->condition="id_perfil_direccion=$id_perfil";
+              // $criteria->condition="bln_borrado=false and id_perfil_direccion=$id_perfil";
+            
+        }
+        
+        	$criteria->compare('id_obra_pk',$this->id_obra_pk);
+		$criteria->compare('LOWER(str_descripcion)',  strtolower($this->str_descripcion),true);
+		//$criteria->compare('dt_fecha_inicio',$this->dt_fecha_inicio,true);
+		$criteria->compare('id_estado_fk',$this->id_estado_fk);
+		$criteria->compare('id_municipio_fk',$this->id_municipio_fk);
+		$criteria->compare('id_municipio_fk2',$this->id_municipio_fk2);
+		$criteria->compare('id_parroquia_fk',$this->id_parroquia_fk);
+		$criteria->compare('LOWER(str_ubicacion)',strtolower($this->str_ubicacion),true);
+		$criteria->compare('int_km_prog',$this->int_km_prog);
+		$criteria->compare('int_km_logr',$this->int_km_logr);
+		$criteria->compare('int_por_km',$this->int_por_km);
+		$criteria->compare('int_m3_prog',$this->int_m3_prog);
+		$criteria->compare('int_m3_logr',$this->int_m3_logr);
+		$criteria->compare('int_por_m3',$this->int_por_m3);
+		$criteria->compare('bln_borrado',$this->bln_borrado);
+		$criteria->compare('id_estatus_obra_fk',$this->id_estatus_obra_fk);
+		$criteria->compare('dt_fecha_final',$this->dt_fecha_final,true);
+		//$criteria->compare('fechacul',$this->fechacul,true);
+		$criteria->compare('to_char( fechacul,\'dd/mm/yyyy\' )',$this->fechacul,true);
+		$criteria->compare(' ano',$this->ano);
+		$criteria->compare('dt_fecha_actualizacion',$this->dt_fecha_actualizacion,true);
+		$criteria->compare('str_lapso_ejecucion',$this->str_lapso_ejecucion,true);
+		$criteria->compare('dt_fecha_inauguracion',$this->dt_fecha_inauguracion,true);
+		$criteria->compare('db_total_horas_maquinaria',$this->db_total_horas_maquinaria);
+		$criteria->compare('db_avance_fisico',$this->db_avance_fisico);
+		$criteria->compare('dob_avance_fisicor',$this->dob_avance_fisicor);
+		$criteria->compare('db_total_horas_hombres',$this->db_total_horas_hombres);
+		$criteria->compare('db_total_costo_asociado',$this->db_total_costo_asociado);
+		$criteria->compare('db_empleo_directo',$this->db_empleo_directo);
+		$criteria->compare('db_empleo_indirecto',$this->db_empleo_indirecto);
+		$criteria->compare('db_cantidad_beneficiario',$this->db_cantidad_beneficiario);
+		$criteria->compare('str_pto_critico',$this->str_pto_critico,true);
+		$criteria->compare('txt_observacion',$this->txt_observacion,true);
+                $criteria->compare('txt_actividades',$this->txt_actividades,true);                
+		$criteria->compare('id_organismo_ejecutor_fk',$this->id_organismo_ejecutor_fk);
+		$criteria->compare('id_consejo_comunal_fk',$this->id_consejo_comunal_fk);
+		$criteria->compare('id_persona_contacto_fk',$this->id_persona_contacto_fk);
+		$criteria->compare('txt_beneficios_usuarios',$this->txt_beneficios_usuarios,true);
+		$criteria->compare('id_tipo_accion',$this->id_tipo_accion);
+		$criteria->compare('id_accionobra',$this->id_accionobra);
+		$criteria->compare('id_accionobra',$this->id_accionobra);
+		$criteria->compare('str_alias',$this->str_alias,true);
+		$criteria->compare('id_contratista',$this->id_contratista);
+		$criteria->compare('LOWER(str_codigo_contrato)', strtolower($this->str_codigo_contrato),true);
+		$criteria->compare('txt_avances_impacto',$this->txt_avances_impacto,true);
+		$criteria->compare('txt_sectores_atendidos',$this->txt_sectores_atendidos,true);
+		$criteria->compare('alcance',$this->alcance);
+		$criteria->compare('id_tipo',$this->id_tipo);
+		$criteria->compare('avance_financiero',$this->avance_financiero);
+		$criteria->compare('id_fuente_financiamiento',$this->id_fuente_financiamiento);
+		$criteria->compare('idclasificacionobr',$this->idclasificacionobr);
+		$criteria->compare('punto_cuenta',$this->punto_cuenta);
+		$criteria->compare('puntocuenta',$this->puntocuenta);
+		$criteria->compare('otro1',$this->otro1);
+		$criteria->compare('otro2',$this->otro2);
+		$criteria->compare('gobierno_calle',$this->gobierno_calle);
+		$criteria->compare('gobierno_paz',$this->gobierno_paz);
+		$criteria->compare('grandes_obras',$this->grandes_obras);
+		$criteria->compare('instruccion_ministro',$this->instruccion_ministro);
+		$criteria->compare('instruccion_presidencial',$this->instruccion_presidencial);
+		$criteria->compare('normal',$this->normal);
+		$criteria->compare('obras_emblematica',$this->obras_emblematica);
+		$criteria->compare('seguimiento',$this->seguimiento);
+		
+                 //Buscar obra en valuaciones declao un arreglo con el nombre de la relacion
+             //   $criteria->with =array('Contratista');
+                //declaro la condicion de la busqueda con el case sensitive (buscar mayusculas minusculas)
+               // $criteria->addSearchCondition('LOWER("Contratista"."nomb_empr")',strtolower($this->id_contratista),true);
+              //  $criteria->with =array('Contratista');
+                //declaro la condicion de la busqueda con el case sensitive (buscar mayusculas minusculas)
+                //$criteria->addSearchCondition('LOWER("Contratista"."fechacul")',strtolower($this->id_contratista),true);
+        
+                                    
+                    //dt_fecha_inicio_range
+          $from = $to = '';
+          if (count($this->dt_fecha_inicio_range)>=1) {
+              if (isset($this->dt_fecha_inicio_range['from'])) {
+                  $from = $this->dt_fecha_inicio_range['from'];
+              }
+              if (isset($this->dt_fecha_inicio_range['to'])) {
+                  $to= $this->dt_fecha_inicio_range['to'];
+              }
+          }
+          if ($from!='' || $to !='') {
+              if ($from!='' && $to!='') {
+                  $from = date("Y-m-d", strtotime($from));
+                  $to = date("Y-m-d", strtotime($to));
+                  $criteria->compare('dt_fecha_inicio',">= $from",false);
+                  $criteria->compare('dt_fecha_inicio',"<= $to",false);
+              }
+              else {
+                  if ($from!='') $creation_time = $from;
+                  if ($to != '') $creation_time = $to;
+                  $creation_time = date("Y-m-d", strtotime($creation_time));
+                  $criteria->compare('dt_fecha_inicio', "$creation_time" ,false);
+              }
+          }
+                    //fechainicio_range
+          $from = $to = '';
+          if (count($this->fechainicio_range)>=1) {
+              if (isset($this->fechainicio_range['from'])) {
+                  $from = $this->fechainicio_range['from'];
+              }
+              if (isset($this->fechainicio_range['to'])) {
+                  $to= $this->fechainicio_range['to'];
+              }
+          }
+          if ($from!='' || $to !='') {
+              if ($from!='' && $to!='') {
+                  $from = date("Y-m-d", strtotime($from));
+                  $to = date("Y-m-d", strtotime($to));
+                  $criteria->compare('fechainicio',">= $from",false);
+                  $criteria->compare('fechainicio',"<= $to",false);
+              }
+              else {
+                  if ($from!='') $creation_time = $from;
+                  if ($to != '') $creation_time = $to;
+                  $creation_time = date("Y-m-d", strtotime($creation_time));
+                  $criteria->compare('fechainicio', "$creation_time" ,false);
+              }
+          }
+        ////////////////// FECHA CULMINACION //////////////////////////////    
+          
+          $from = $to = '';
+          if (count($this->fechacul_range)>=1) {
+              if (isset($this->fechacul_range['from'])) {
+                  $from = $this->fechacul_range['from'];
+              }
+              if (isset($this->fechacul_range['to'])) {
+                  $to= $this->fechacul_range['to'];
+              }
+          }
+          if ($from!='' || $to !='') {
+              if ($from!='' && $to!='') {
+                  $from = date("Y-m-d", strtotime($from));
+                  $to = date("Y-m-d", strtotime($to));
+                  $criteria->compare('fechacul',">= $from",false);
+                  $criteria->compare('fechacul',"<= $to",false);
+              }
+              else {
+                  if ($from!='') $creation_time = $from;
+                  if ($to != '') $creation_time = $to;
+                  $creation_time = date("Y-m-d", strtotime($creation_time));
+                  $criteria->compare('fechacul', "$creation_time" ,false);
+              }
+          }
+          
+          ///////////////////////// FECHA PROPUESTA /////////////////////////////////////
+          
+          $from = $to = '';
+          if (count($this->fechap_range)>=1) {
+              if (isset($this->fechap_range['from'])) {
+                  $from = $this->fechap_range['from'];
+              }
+              if (isset($this->fechap_range['to'])) {
+                  $to= $this->fechap_range['to'];
+              }
+          }
+          if ($from!='' || $to !='') {
+              if ($from!='' && $to!='') {
+                  $from = date("Y-m-d", strtotime($from));
+                  $to = date("Y-m-d", strtotime($to));
+                  $criteria->compare('fechap',">= $from",false);
+                  $criteria->compare('fechap',"<= $to",false);
+              }
+              else {
+                  if ($from!='') $creation_time = $from;
+                  if ($to != '') $creation_time = $to;
+                  $creation_time = date("Y-m-d", strtotime($creation_time));
+                  $criteria->compare('fechap', "$creation_time" ,false);
+              }
+          }
+
+
+
+
+		 $_SESSION['datos_filtrados'] = new CActiveDataProvider($this, array(
+                      'criteria'=>$criteria,
+                      'sort'=>$sort,
+                      'pagination'=>false,
+              ));
+                  
+
+                
+		return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+                        //'sort'=>$sort,
+		));
+	}
+        
+////////////////////// BUSQUEDAD DEL ADMIN_2 ///////////////////////////////////////////////////////
+
+	public function search_2()
+	{
+            
+            $id=Yii::app()->user->id; 
+            $sql='select * from maquinaria.usuario where id='.$id.';'; 
+                $connection=Yii::app()->db;
+                $command=$connection->createCommand($sql); 
+                $row=$command->queryRow(); 
+                $id_perfil=$row["id_perfil_direccion"];
+                $perfil=$row["id_perfil"];
+                $estado=$row["id_estado"];
+                
+                $criteria=new CDbCriteria;
+                $sort=new CSort();
+               
+                //$criteria->order='id_obra_pk desc';
+                 
+              
+                 if ($id_perfil=='2' || $id_perfil=='13' || $id_perfil=='11')
+		 {
+             
+                     if($perfil=='5' || $perfil=='1' || $perfil=='3' || $perfil=='4' || $perfil=='2')
+                     {
+				 $criteria->order="seguimiento=FALSE asc, id_estado_fk asc";
+				  $criteria->condition="bln_borrado=false and idclasificacionobr=74";
+
+				 //   $criteria->condition="bln_borrado=false and id_perfil_direccion=$id_perfil";
+				  // $criteria->condition="bln_borrado=false and id_perfil_direccion=$id_perfil";
+		
+                    }
+		}
+          
+        else	{
+				 $criteria->order="seguimiento=FALSE asc, id_estado_fk asc";
+				$criteria->condition="bln_borrado=false and idclasificacionobr=74";
+            
+        	}
+        
+        	$criteria->compare('id_obra_pk',$this->id_obra_pk);
+		$criteria->compare('LOWER(str_descripcion)',  strtolower($this->str_descripcion),true);
+		//$criteria->compare('dt_fecha_inicio',$this->dt_fecha_inicio,true);
+		$criteria->compare('id_estado_fk',$this->id_estado_fk);
+		$criteria->compare('id_municipio_fk',$this->id_municipio_fk);
+		$criteria->compare('id_municipio_fk2',$this->id_municipio_fk2);
+		$criteria->compare('id_parroquia_fk',$this->id_parroquia_fk);
+		$criteria->compare('LOWER(str_ubicacion)',strtolower($this->str_ubicacion),true);
+		$criteria->compare('int_km_prog',$this->int_km_prog);
+		$criteria->compare('int_km_logr',$this->int_km_logr);
+		$criteria->compare('int_por_km',$this->int_por_km);
+		$criteria->compare('int_m3_prog',$this->int_m3_prog);
+		$criteria->compare('int_m3_logr',$this->int_m3_logr);
+		$criteria->compare('int_por_m3',$this->int_por_m3);
+		$criteria->compare('bln_borrado',$this->bln_borrado);
+		$criteria->compare('id_estatus_obra_fk',$this->id_estatus_obra_fk);
+		$criteria->compare('dt_fecha_final',$this->dt_fecha_final,true);
+		//$criteria->compare('fechacul',$this->fechacul,true);
+		$criteria->compare('to_char( fechacul,\'dd/mm/yyyy\' )',$this->fechacul,true);
+		$criteria->compare(' ano',$this->ano);
+		$criteria->compare('dt_fecha_actualizacion',$this->dt_fecha_actualizacion,true);
+		$criteria->compare('str_lapso_ejecucion',$this->str_lapso_ejecucion,true);
+		$criteria->compare('dt_fecha_inauguracion',$this->dt_fecha_inauguracion,true);
+		$criteria->compare('db_total_horas_maquinaria',$this->db_total_horas_maquinaria);
+		$criteria->compare('db_avance_fisico',$this->db_avance_fisico);
+		$criteria->compare('dob_avance_fisicor',$this->dob_avance_fisicor);
+		$criteria->compare('db_total_horas_hombres',$this->db_total_horas_hombres);
+		$criteria->compare('db_total_costo_asociado',$this->db_total_costo_asociado);
+		$criteria->compare('db_empleo_directo',$this->db_empleo_directo);
+		$criteria->compare('db_empleo_indirecto',$this->db_empleo_indirecto);
+		$criteria->compare('db_cantidad_beneficiario',$this->db_cantidad_beneficiario);
+		$criteria->compare('str_pto_critico',$this->str_pto_critico,true);
+		$criteria->compare('txt_observacion',$this->txt_observacion,true);
+                $criteria->compare('txt_actividades',$this->txt_actividades,true);                
+		$criteria->compare('id_organismo_ejecutor_fk',$this->id_organismo_ejecutor_fk);
+		$criteria->compare('id_consejo_comunal_fk',$this->id_consejo_comunal_fk);
+		$criteria->compare('id_persona_contacto_fk',$this->id_persona_contacto_fk);
+		$criteria->compare('txt_beneficios_usuarios',$this->txt_beneficios_usuarios,true);
+		$criteria->compare('id_tipo_accion',$this->id_tipo_accion);
+		$criteria->compare('id_accionobra',$this->id_accionobra);
+		$criteria->compare('str_alias',$this->str_alias,true);
+		$criteria->compare('id_contratista',$this->id_contratista);
+		$criteria->compare('LOWER(str_codigo_contrato)', strtolower($this->str_codigo_contrato),true);
+		$criteria->compare('txt_avances_impacto',$this->txt_avances_impacto,true);
+		$criteria->compare('txt_sectores_atendidos',$this->txt_sectores_atendidos,true);
+		$criteria->compare('alcance',$this->alcance);
+		$criteria->compare('id_tipo',$this->id_tipo);
+		$criteria->compare('avance_financiero',$this->avance_financiero);
+		$criteria->compare('id_fuente_financiamiento',$this->id_fuente_financiamiento);
+		$criteria->compare('idclasificacionobr',$this->idclasificacionobr);
+		$criteria->compare('punto_cuenta',$this->punto_cuenta);
+		$criteria->compare('puntocuenta',$this->puntocuenta);
+		$criteria->compare('otro1',$this->otro1);
+		$criteria->compare('otro2',$this->otro2);
+		$criteria->compare('gobierno_calle',$this->gobierno_calle);
+		$criteria->compare('gobierno_paz',$this->gobierno_paz);
+		$criteria->compare('grandes_obras',$this->grandes_obras);
+		$criteria->compare('instruccion_ministro',$this->instruccion_ministro);
+		$criteria->compare('instruccion_presidencial',$this->instruccion_presidencial);
+		$criteria->compare('normal',$this->normal);
+		$criteria->compare('obras_emblematica',$this->obras_emblematica);
+		$criteria->compare('seguimiento',$this->seguimiento);
+		
+                 //Buscar obra en valuaciones declao un arreglo con el nombre de la relacion
+             //   $criteria->with =array('Contratista');
+                //declaro la condicion de la busqueda con el case sensitive (buscar mayusculas minusculas)
+               // $criteria->addSearchCondition('LOWER("Contratista"."nomb_empr")',strtolower($this->id_contratista),true);
+              //  $criteria->with =array('Contratista');
+                //declaro la condicion de la busqueda con el case sensitive (buscar mayusculas minusculas)
+                //$criteria->addSearchCondition('LOWER("Contratista"."fechacul")',strtolower($this->id_contratista),true);
+        
+                                    
+                    //dt_fecha_inicio_range
+          $from = $to = '';
+          if (count($this->dt_fecha_inicio_range)>=1) {
+              if (isset($this->dt_fecha_inicio_range['from'])) {
+                  $from = $this->dt_fecha_inicio_range['from'];
+              }
+              if (isset($this->dt_fecha_inicio_range['to'])) {
+                  $to= $this->dt_fecha_inicio_range['to'];
+              }
+          }
+          if ($from!='' || $to !='') {
+              if ($from!='' && $to!='') {
+                  $from = date("Y-m-d", strtotime($from));
+                  $to = date("Y-m-d", strtotime($to));
+                  $criteria->compare('dt_fecha_inicio',">= $from",false);
+                  $criteria->compare('dt_fecha_inicio',"<= $to",false);
+              }
+              else {
+                  if ($from!='') $creation_time = $from;
+                  if ($to != '') $creation_time = $to;
+                  $creation_time = date("Y-m-d", strtotime($creation_time));
+                  $criteria->compare('dt_fecha_inicio', "$creation_time" ,false);
+              }
+          }
+                    //fechainicio_range
+          $from = $to = '';
+          if (count($this->fechainicio_range)>=1) {
+              if (isset($this->fechainicio_range['from'])) {
+                  $from = $this->fechainicio_range['from'];
+              }
+              if (isset($this->fechainicio_range['to'])) {
+                  $to= $this->fechainicio_range['to'];
+              }
+          }
+          if ($from!='' || $to !='') {
+              if ($from!='' && $to!='') {
+                  $from = date("Y-m-d", strtotime($from));
+                  $to = date("Y-m-d", strtotime($to));
+                  $criteria->compare('fechainicio',">= $from",false);
+                  $criteria->compare('fechainicio',"<= $to",false);
+              }
+              else {
+                  if ($from!='') $creation_time = $from;
+                  if ($to != '') $creation_time = $to;
+                  $creation_time = date("Y-m-d", strtotime($creation_time));
+                  $criteria->compare('fechainicio', "$creation_time" ,false);
+              }
+          }
+                    //fechainicio_range
+          $from = $to = '';
+          if (count($this->fechacul_range)>=1) {
+              if (isset($this->fechacul_range['from'])) {
+                  $from = $this->fechacul_range['from'];
+              }
+              if (isset($this->fechacul_range['to'])) {
+                  $to= $this->fechacul_range['to'];
+              }
+          }
+          if ($from!='' || $to !='') {
+              if ($from!='' && $to!='') {
+                  $from = date("Y-m-d", strtotime($from));
+                  $to = date("Y-m-d", strtotime($to));
+                  $criteria->compare('fechacul',">= $from",false);
+                  $criteria->compare('fechacul',"<= $to",false);
+              }
+              else {
+                  if ($from!='') $creation_time = $from;
+                  if ($to != '') $creation_time = $to;
+                  $creation_time = date("Y-m-d", strtotime($creation_time));
+                  $criteria->compare('fechacul', "$creation_time" ,false);
+              }
+          }
+
+
+
+		 $_SESSION['datos_filtrados'] = new CActiveDataProvider($this, array(
+                      'criteria'=>$criteria,
+                      'sort'=>$sort,
+                      'pagination'=>false,
+              ));
+                  
+
+                
+		return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+                        //'sort'=>$sort,
+		));
+	}
+
+
+///////////////////////////ADMIN 3 ///////////////////////////////////////////////////////////////////////////////
+
+public function search_3()
+	{
+            
+            $id=Yii::app()->user->id; 
+            $sql='select * from maquinaria.usuario where id='.$id.';'; 
+                $connection=Yii::app()->db;
+                $command=$connection->createCommand($sql); 
+                $row=$command->queryRow(); 
+                $id_perfil=$row["id_perfil_direccion"];
+                $perfil=$row["id_perfil"];
+                $estado=$row["id_estado"];
+                
+                $criteria=new CDbCriteria;
+                $sort=new CSort();
+               
+                //$criteria->order='id_obra_pk desc';
+                 
+              
+                  if ($id_perfil=='2' || $id_perfil=='13' || $id_perfil=='11')
+		 {
+             
+                     if($perfil=='5' || $perfil=='1' || $perfil=='3' || $perfil=='4' || $perfil=='2')
+                     {
+		          $criteria->order="seguimiento=FALSE asc, id_estado_fk asc";
+		         $criteria->condition="bln_borrado=false and id_accionobra=8 and idclasificacionobr!=74 or bln_borrado=false and id_accionobra=5 and idclasificacionobr!=74";
+
+		         //   $criteria->condition="bln_borrado=false and id_perfil_direccion=$id_perfil";
+		          // $criteria->condition="bln_borrado=false and id_perfil_direccion=$id_perfil";
+		
+                    }
+           
+   
+             }
+        else{
+                  $criteria->order="seguimiento=FALSE asc, id_estado_fk asc";
+               $criteria->condition="bln_borrado=false and id_accionobra=8 and idclasificacionobr!=74 or bln_borrado=false and id_accionobra=5 and idclasificacionobr!=74";
+             //   $criteria->condition="id_perfil_direccion=$id_perfil";
+              // $criteria->condition="bln_borrado=false and id_perfil_direccion=$id_perfil";
+            
+        }
+        
+        	$criteria->compare('id_obra_pk',$this->id_obra_pk);
+		$criteria->compare('LOWER(str_descripcion)',  strtolower($this->str_descripcion),true);
+		//$criteria->compare('dt_fecha_inicio',$this->dt_fecha_inicio,true);
+		$criteria->compare('id_estado_fk',$this->id_estado_fk);
+		$criteria->compare('id_municipio_fk',$this->id_municipio_fk);
+		$criteria->compare('id_municipio_fk2',$this->id_municipio_fk2);
+		$criteria->compare('id_parroquia_fk',$this->id_parroquia_fk);
+		$criteria->compare('LOWER(str_ubicacion)',strtolower($this->str_ubicacion),true);
+		$criteria->compare('int_km_prog',$this->int_km_prog);
+		$criteria->compare('int_km_logr',$this->int_km_logr);
+		$criteria->compare('int_por_km',$this->int_por_km);
+		$criteria->compare('int_m3_prog',$this->int_m3_prog);
+		$criteria->compare('int_m3_logr',$this->int_m3_logr);
+		$criteria->compare('int_por_m3',$this->int_por_m3);
+		$criteria->compare('bln_borrado',$this->bln_borrado);
+		$criteria->compare('id_estatus_obra_fk',$this->id_estatus_obra_fk);
+		$criteria->compare('dt_fecha_final',$this->dt_fecha_final,true);
+		//$criteria->compare('fechacul',$this->fechacul,true);
+		$criteria->compare('to_char( fechacul,\'dd/mm/yyyy\' )',$this->fechacul,true);
+		$criteria->compare(' ano',$this->ano);
+		$criteria->compare('dt_fecha_actualizacion',$this->dt_fecha_actualizacion,true);
+		$criteria->compare('str_lapso_ejecucion',$this->str_lapso_ejecucion,true);
+		$criteria->compare('dt_fecha_inauguracion',$this->dt_fecha_inauguracion,true);
+		$criteria->compare('db_total_horas_maquinaria',$this->db_total_horas_maquinaria);
+		$criteria->compare('db_avance_fisico',$this->db_avance_fisico);
+		$criteria->compare('dob_avance_fisicor',$this->dob_avance_fisicor);
+		$criteria->compare('db_total_horas_hombres',$this->db_total_horas_hombres);
+		$criteria->compare('db_total_costo_asociado',$this->db_total_costo_asociado);
+		$criteria->compare('db_empleo_directo',$this->db_empleo_directo);
+		$criteria->compare('db_empleo_indirecto',$this->db_empleo_indirecto);
+		$criteria->compare('db_cantidad_beneficiario',$this->db_cantidad_beneficiario);
+		$criteria->compare('str_pto_critico',$this->str_pto_critico,true);
+		$criteria->compare('txt_observacion',$this->txt_observacion,true);
+                $criteria->compare('txt_actividades',$this->txt_actividades,true);                
+		$criteria->compare('id_organismo_ejecutor_fk',$this->id_organismo_ejecutor_fk);
+		$criteria->compare('id_consejo_comunal_fk',$this->id_consejo_comunal_fk);
+		$criteria->compare('id_persona_contacto_fk',$this->id_persona_contacto_fk);
+		$criteria->compare('txt_beneficios_usuarios',$this->txt_beneficios_usuarios,true);
+		$criteria->compare('id_tipo_accion',$this->id_tipo_accion);
+	$criteria->compare('id_accionobra',$this->id_accionobra);
+		$criteria->compare('str_alias',$this->str_alias,true);
+		$criteria->compare('id_contratista',$this->id_contratista);
+		$criteria->compare('LOWER(str_codigo_contrato)', strtolower($this->str_codigo_contrato),true);
+		$criteria->compare('txt_avances_impacto',$this->txt_avances_impacto,true);
+		$criteria->compare('txt_sectores_atendidos',$this->txt_sectores_atendidos,true);
+		$criteria->compare('alcance',$this->alcance);
+		$criteria->compare('id_tipo',$this->id_tipo);
+		$criteria->compare('avance_financiero',$this->avance_financiero);
+		$criteria->compare('id_fuente_financiamiento',$this->id_fuente_financiamiento);
+		$criteria->compare('idclasificacionobr',$this->idclasificacionobr);
+		$criteria->compare('punto_cuenta',$this->punto_cuenta);
+		$criteria->compare('puntocuenta',$this->puntocuenta);
+		$criteria->compare('otro1',$this->otro1);
+		$criteria->compare('otro2',$this->otro2);
+		$criteria->compare('gobierno_calle',$this->gobierno_calle);
+		$criteria->compare('gobierno_paz',$this->gobierno_paz);
+		$criteria->compare('grandes_obras',$this->grandes_obras);
+		$criteria->compare('instruccion_ministro',$this->instruccion_ministro);
+		$criteria->compare('instruccion_presidencial',$this->instruccion_presidencial);
+		$criteria->compare('normal',$this->normal);
+		$criteria->compare('obras_emblematica',$this->obras_emblematica);
+		$criteria->compare('seguimiento',$this->seguimiento);
+		
+                 //Buscar obra en valuaciones declao un arreglo con el nombre de la relacion
+             //   $criteria->with =array('Contratista');
+                //declaro la condicion de la busqueda con el case sensitive (buscar mayusculas minusculas)
+               // $criteria->addSearchCondition('LOWER("Contratista"."nomb_empr")',strtolower($this->id_contratista),true);
+              //  $criteria->with =array('Contratista');
+                //declaro la condicion de la busqueda con el case sensitive (buscar mayusculas minusculas)
+                //$criteria->addSearchCondition('LOWER("Contratista"."fechacul")',strtolower($this->id_contratista),true);
+        
+                                    
+                    //dt_fecha_inicio_range
+          $from = $to = '';
+          if (count($this->dt_fecha_inicio_range)>=1) {
+              if (isset($this->dt_fecha_inicio_range['from'])) {
+                  $from = $this->dt_fecha_inicio_range['from'];
+              }
+              if (isset($this->dt_fecha_inicio_range['to'])) {
+                  $to= $this->dt_fecha_inicio_range['to'];
+              }
+          }
+          if ($from!='' || $to !='') {
+              if ($from!='' && $to!='') {
+                  $from = date("Y-m-d", strtotime($from));
+                  $to = date("Y-m-d", strtotime($to));
+                  $criteria->compare('dt_fecha_inicio',">= $from",false);
+                  $criteria->compare('dt_fecha_inicio',"<= $to",false);
+              }
+              else {
+                  if ($from!='') $creation_time = $from;
+                  if ($to != '') $creation_time = $to;
+                  $creation_time = date("Y-m-d", strtotime($creation_time));
+                  $criteria->compare('dt_fecha_inicio', "$creation_time" ,false);
+              }
+          }
+                    //fechainicio_range
+          $from = $to = '';
+          if (count($this->fechainicio_range)>=1) {
+              if (isset($this->fechainicio_range['from'])) {
+                  $from = $this->fechainicio_range['from'];
+              }
+              if (isset($this->fechainicio_range['to'])) {
+                  $to= $this->fechainicio_range['to'];
+              }
+          }
+          if ($from!='' || $to !='') {
+              if ($from!='' && $to!='') {
+                  $from = date("Y-m-d", strtotime($from));
+                  $to = date("Y-m-d", strtotime($to));
+                  $criteria->compare('fechainicio',">= $from",false);
+                  $criteria->compare('fechainicio',"<= $to",false);
+              }
+              else {
+                  if ($from!='') $creation_time = $from;
+                  if ($to != '') $creation_time = $to;
+                  $creation_time = date("Y-m-d", strtotime($creation_time));
+                  $criteria->compare('fechainicio', "$creation_time" ,false);
+              }
+          }
+                    //fechainicio_range
+          $from = $to = '';
+          if (count($this->fechacul_range)>=1) {
+              if (isset($this->fechacul_range['from'])) {
+                  $from = $this->fechacul_range['from'];
+              }
+              if (isset($this->fechacul_range['to'])) {
+                  $to= $this->fechacul_range['to'];
+              }
+          }
+          if ($from!='' || $to !='') {
+              if ($from!='' && $to!='') {
+                  $from = date("Y-m-d", strtotime($from));
+                  $to = date("Y-m-d", strtotime($to));
+                  $criteria->compare('fechacul',">= $from",false);
+                  $criteria->compare('fechacul',"<= $to",false);
+              }
+              else {
+                  if ($from!='') $creation_time = $from;
+                  if ($to != '') $creation_time = $to;
+                  $creation_time = date("Y-m-d", strtotime($creation_time));
+                  $criteria->compare('fechacul', "$creation_time" ,false);
+              }
+          }
+
+
+
+		 $_SESSION['datos_filtrados'] = new CActiveDataProvider($this, array(
+                      'criteria'=>$criteria,
+                      'sort'=>$sort,
+                      'pagination'=>false,
+              ));
+                  
+
+                
+		return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+                        //'sort'=>$sort,
+		));
+	}
+
+
+/////////////////////////////////////////ADMIN 4////////////////////////////////////////////////////////////////////
+
+
+	public function search_4()
+	{
+            
+            $id=Yii::app()->user->id; 
+            $sql='select * from maquinaria.usuario where id='.$id.';'; 
+                $connection=Yii::app()->db;
+                $command=$connection->createCommand($sql); 
+                $row=$command->queryRow(); 
+                $id_perfil=$row["id_perfil_direccion"];
+                $perfil=$row["id_perfil"];
+                $estado=$row["id_estado"];
+                
+                $criteria=new CDbCriteria;
+                $sort=new CSort();
+               
+            if ($id_perfil=='2' || $id_perfil=='13' || $id_perfil=='11')
+		 {
+             
+                     if($perfil=='5' || $perfil=='1' || $perfil=='3' || $perfil=='4' || $perfil=='2')
+                     {
+                 
+ 
+                 $criteria->order="seguimiento=FALSE asc, id_estado_fk asc";
+                   $criteria->condition="bln_borrado=false and id_accionobra not in (8,5,7) and idclasificacionobr!=74 and id_tipo_obra=1";
+		    }
+		}
+else{
+
+ 		 $criteria->order="seguimiento=FALSE asc, id_estado_fk asc";
+                   $criteria->condition="bln_borrado=false and id_accionobra!=8 and  id_accionobra!=5 and idclasificacionobr!=74 and id_tipo_obra=1";
+}
+
+                 //   $criteria->condition="bln_borrado=false and id_perfil_direccion=$id_perfil";
+                  // $criteria->condition="bln_borrado=false and id_perfil_direccion=$id_perfil";
+	
+        	$criteria->compare('id_obra_pk',$this->id_obra_pk);
+		$criteria->compare('LOWER(str_descripcion)',  strtolower($this->str_descripcion),true);
+		//$criteria->compare('dt_fecha_inicio',$this->dt_fecha_inicio,true);
+		$criteria->compare('id_estado_fk',$this->id_estado_fk);
+		$criteria->compare('id_municipio_fk',$this->id_municipio_fk);
+		$criteria->compare('id_municipio_fk2',$this->id_municipio_fk2);
+		$criteria->compare('id_parroquia_fk',$this->id_parroquia_fk);
+		$criteria->compare('LOWER(str_ubicacion)',strtolower($this->str_ubicacion),true);
+		$criteria->compare('int_km_prog',$this->int_km_prog);
+		$criteria->compare('int_km_logr',$this->int_km_logr);
+		$criteria->compare('int_por_km',$this->int_por_km);
+		$criteria->compare('int_m3_prog',$this->int_m3_prog);
+		$criteria->compare('int_m3_logr',$this->int_m3_logr);
+		$criteria->compare('int_por_m3',$this->int_por_m3);
+		$criteria->compare('bln_borrado',$this->bln_borrado);
+		$criteria->compare('id_estatus_obra_fk',$this->id_estatus_obra_fk);
+		$criteria->compare('dt_fecha_final',$this->dt_fecha_final,true);
+		//$criteria->compare('fechacul',$this->fechacul,true);
+		$criteria->compare('to_char( fechacul,\'dd/mm/yyyy\' )',$this->fechacul,true);
+		$criteria->compare(' ano',$this->ano);
+		$criteria->compare('dt_fecha_actualizacion',$this->dt_fecha_actualizacion,true);
+		$criteria->compare('str_lapso_ejecucion',$this->str_lapso_ejecucion,true);
+		$criteria->compare('dt_fecha_inauguracion',$this->dt_fecha_inauguracion,true);
+		$criteria->compare('db_total_horas_maquinaria',$this->db_total_horas_maquinaria);
+		$criteria->compare('db_avance_fisico',$this->db_avance_fisico);
+		$criteria->compare('dob_avance_fisicor',$this->dob_avance_fisicor);
+		$criteria->compare('db_total_horas_hombres',$this->db_total_horas_hombres);
+		$criteria->compare('db_total_costo_asociado',$this->db_total_costo_asociado);
+		$criteria->compare('db_empleo_directo',$this->db_empleo_directo);
+		$criteria->compare('db_empleo_indirecto',$this->db_empleo_indirecto);
+		$criteria->compare('db_cantidad_beneficiario',$this->db_cantidad_beneficiario);
+		$criteria->compare('str_pto_critico',$this->str_pto_critico,true);
+		$criteria->compare('txt_observacion',$this->txt_observacion,true);
+                $criteria->compare('txt_actividades',$this->txt_actividades,true);                
+		$criteria->compare('id_organismo_ejecutor_fk',$this->id_organismo_ejecutor_fk);
+		$criteria->compare('id_consejo_comunal_fk',$this->id_consejo_comunal_fk);
+		$criteria->compare('id_persona_contacto_fk',$this->id_persona_contacto_fk);
+		$criteria->compare('txt_beneficios_usuarios',$this->txt_beneficios_usuarios,true);
+		$criteria->compare('id_tipo_accion',$this->id_tipo_accion);
+	$criteria->compare('id_accionobra',$this->id_accionobra);
+		$criteria->compare('str_alias',$this->str_alias,true);
+		$criteria->compare('id_contratista',$this->id_contratista);
+		$criteria->compare('LOWER(str_codigo_contrato)', strtolower($this->str_codigo_contrato),true);
+		$criteria->compare('txt_avances_impacto',$this->txt_avances_impacto,true);
+		$criteria->compare('txt_sectores_atendidos',$this->txt_sectores_atendidos,true);
+		$criteria->compare('alcance',$this->alcance);
+		$criteria->compare('id_tipo',$this->id_tipo);
+		$criteria->compare('avance_financiero',$this->avance_financiero);
+		$criteria->compare('id_fuente_financiamiento',$this->id_fuente_financiamiento);
+		$criteria->compare('idclasificacionobr',$this->idclasificacionobr);
+		$criteria->compare('punto_cuenta',$this->punto_cuenta);
+		$criteria->compare('puntocuenta',$this->puntocuenta);
+		$criteria->compare('otro1',$this->otro1);
+		$criteria->compare('otro2',$this->otro2);
+		$criteria->compare('gobierno_calle',$this->gobierno_calle);
+		$criteria->compare('gobierno_paz',$this->gobierno_paz);
+		$criteria->compare('grandes_obras',$this->grandes_obras);
+		$criteria->compare('instruccion_ministro',$this->instruccion_ministro);
+		$criteria->compare('instruccion_presidencial',$this->instruccion_presidencial);
+		$criteria->compare('normal',$this->normal);
+		$criteria->compare('obras_emblematica',$this->obras_emblematica);
+		$criteria->compare('seguimiento',$this->seguimiento);
+		
+                 //Buscar obra en valuaciones declao un arreglo con el nombre de la relacion
+             //   $criteria->with =array('Contratista');
+                //declaro la condicion de la busqueda con el case sensitive (buscar mayusculas minusculas)
+               // $criteria->addSearchCondition('LOWER("Contratista"."nomb_empr")',strtolower($this->id_contratista),true);
+              //  $criteria->with =array('Contratista');
+                //declaro la condicion de la busqueda con el case sensitive (buscar mayusculas minusculas)
+                //$criteria->addSearchCondition('LOWER("Contratista"."fechacul")',strtolower($this->id_contratista),true);
+        
+                                    
+                    //dt_fecha_inicio_range
+          $from = $to = '';
+          if (count($this->dt_fecha_inicio_range)>=1) {
+              if (isset($this->dt_fecha_inicio_range['from'])) {
+                  $from = $this->dt_fecha_inicio_range['from'];
+              }
+              if (isset($this->dt_fecha_inicio_range['to'])) {
+                  $to= $this->dt_fecha_inicio_range['to'];
+              }
+          }
+          if ($from!='' || $to !='') {
+              if ($from!='' && $to!='') {
+                  $from = date("Y-m-d", strtotime($from));
+                  $to = date("Y-m-d", strtotime($to));
+                  $criteria->compare('dt_fecha_inicio',">= $from",false);
+                  $criteria->compare('dt_fecha_inicio',"<= $to",false);
+              }
+              else {
+                  if ($from!='') $creation_time = $from;
+                  if ($to != '') $creation_time = $to;
+                  $creation_time = date("Y-m-d", strtotime($creation_time));
+                  $criteria->compare('dt_fecha_inicio', "$creation_time" ,false);
+              }
+          }
+                    //fechainicio_range
+          $from = $to = '';
+          if (count($this->fechainicio_range)>=1) {
+              if (isset($this->fechainicio_range['from'])) {
+                  $from = $this->fechainicio_range['from'];
+              }
+              if (isset($this->fechainicio_range['to'])) {
+                  $to= $this->fechainicio_range['to'];
+              }
+          }
+          if ($from!='' || $to !='') {
+              if ($from!='' && $to!='') {
+                  $from = date("Y-m-d", strtotime($from));
+                  $to = date("Y-m-d", strtotime($to));
+                  $criteria->compare('fechainicio',">= $from",false);
+                  $criteria->compare('fechainicio',"<= $to",false);
+              }
+              else {
+                  if ($from!='') $creation_time = $from;
+                  if ($to != '') $creation_time = $to;
+                  $creation_time = date("Y-m-d", strtotime($creation_time));
+                  $criteria->compare('fechainicio', "$creation_time" ,false);
+              }
+          }
+                    //fechainicio_range
+          $from = $to = '';
+          if (count($this->fechacul_range)>=1) {
+              if (isset($this->fechacul_range['from'])) {
+                  $from = $this->fechacul_range['from'];
+              }
+              if (isset($this->fechacul_range['to'])) {
+                  $to= $this->fechacul_range['to'];
+              }
+          }
+          if ($from!='' || $to !='') {
+              if ($from!='' && $to!='') {
+                  $from = date("Y-m-d", strtotime($from));
+                  $to = date("Y-m-d", strtotime($to));
+                  $criteria->compare('fechacul',">= $from",false);
+                  $criteria->compare('fechacul',"<= $to",false);
+              }
+              else {
+                  if ($from!='') $creation_time = $from;
+                  if ($to != '') $creation_time = $to;
+                  $creation_time = date("Y-m-d", strtotime($creation_time));
+                  $criteria->compare('fechacul', "$creation_time" ,false);
+              }
+          }
+
+
+
+		 $_SESSION['datos_filtrados'] = new CActiveDataProvider($this, array(
+                      'criteria'=>$criteria,
+                      'sort'=>$sort,
+                      'pagination'=>false,
+              ));
+                  
+
+                
+		return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+                        //'sort'=>$sort,
+		));
+	}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////ADMIN 5////////////////////////////////////////////////////////////////////
+
+
+	public function search_5()
+	{
+            
+         /*  $id=Yii::app()->user->id; 
+            $sql='select * from maquinaria.usuario where id='.$id.';'; 
+                $connection=Yii::app()->db;
+                $command=$connection->createCommand($sql); 
+                $row=$command->queryRow(); 
+                $id_perfil=$row["id_perfil_direccion"];
+                $perfil=$row["id_perfil"];
+                $estado=$row["id_estado"];*/
+                
+    /*    $sql25='select * from maquinaria.obra where id_obra_relacionada='.$_GET['id'].' order by id_obra_pk asc;';
+       // echo $sql25; exit;
+        $connection=Yii::app()->db;
+        $command=$connection->createCommand($sql25);
+        $row1=$command->queryAll();
+$a=0;
+        $obra=$row1[3]["id_obra_pk"];
+	echo $obra; exit;*/
+
+
+
+$sql25='select * from maquinaria.obra where id_obra_relacionada='.$_GET['id'].' order by id_obra_pk asc;';
+    $connection=Yii::app()->db;
+    $command=$connection->createCommand($sql25);
+    $row=$command->queryAll();
+    $imprime=''; 
+   $a=0;
+   $total=count($row);
+   while($a<$total){
+   
+    $id=$row[$a]["id_obra_relacionada"];
+    $id2=$row[$a]["id_obra_pk"];
+    $idtipo=$row[$a]["id_tipo_obra"];
+ 
+    $a++;
+
+   
+    $print1='id_obra_pk='.$id2.' or '; 
+    if ($a==$total){    
+    $print1='id_obra_pk='.$id2.' '; 
+    }
+   $imprime.=$print1;
+   } 
+
+   if ($imprime==''){
+		$imprime='id_obra_pk=0';
+	}
+
+//echo $imprime; exit;
+
+
+                
+                $criteria=new CDbCriteria;
+		//$criteria->condition='id_obra_relacionada='.$obra.'';
+                $sort=new CSort();
+               
+          //  if ($id_perfil=='2')
+	//	 {
+             
+          //           if($perfil=='5' || $perfil=='1' || $perfil=='3' || $perfil=='4' || $perfil=='2')
+            //         {
+                 
+ 
+              //   $criteria->order="seguimiento=TRUE desc, id_estado_fk asc, fechap desc";
+                   $criteria->condition="$imprime";
+		//    }
+		//}
+//else{
+
+ //$criteria->order="seguimiento=TRUE desc, id_estado_fk asc, fechap desc";
+   //                $criteria->condition="bln_borrado=false and id_accionobra!=8 and  id_accionobra!=5 and idclasificacionobr!=74";
+//}
+
+                 //   $criteria->condition="bln_borrado=false and id_perfil_direccion=$id_perfil";
+                  // $criteria->condition="bln_borrado=false and id_perfil_direccion=$id_perfil";
+	
+        	$criteria->compare('id_obra_pk',$this->id_obra_pk);
+		$criteria->compare('LOWER(str_descripcion)',  strtolower($this->str_descripcion),true);
+		//$criteria->compare('dt_fecha_inicio',$this->dt_fecha_inicio,true);
+		$criteria->compare('id_estado_fk',$this->id_estado_fk);
+		$criteria->compare('id_municipio_fk',$this->id_municipio_fk);
+		$criteria->compare('id_municipio_fk2',$this->id_municipio_fk2);
+		$criteria->compare('id_parroquia_fk',$this->id_parroquia_fk);
+		$criteria->compare('LOWER(str_ubicacion)',strtolower($this->str_ubicacion),true);
+		$criteria->compare('int_km_prog',$this->int_km_prog);
+		$criteria->compare('int_km_logr',$this->int_km_logr);
+		$criteria->compare('int_por_km',$this->int_por_km);
+		$criteria->compare('int_m3_prog',$this->int_m3_prog);
+		$criteria->compare('int_m3_logr',$this->int_m3_logr);
+		$criteria->compare('int_por_m3',$this->int_por_m3);
+		$criteria->compare('bln_borrado',$this->bln_borrado);
+		$criteria->compare('id_estatus_obra_fk',$this->id_estatus_obra_fk);
+		$criteria->compare('dt_fecha_final',$this->dt_fecha_final,true);
+		//$criteria->compare('fechacul',$this->fechacul,true);
+		$criteria->compare('to_char( fechacul,\'dd/mm/yyyy\' )',$this->fechacul,true);
+		$criteria->compare(' ano',$this->ano);
+		$criteria->compare('dt_fecha_actualizacion',$this->dt_fecha_actualizacion,true);
+		$criteria->compare('str_lapso_ejecucion',$this->str_lapso_ejecucion,true);
+		$criteria->compare('dt_fecha_inauguracion',$this->dt_fecha_inauguracion,true);
+		$criteria->compare('db_total_horas_maquinaria',$this->db_total_horas_maquinaria);
+		$criteria->compare('db_avance_fisico',$this->db_avance_fisico);
+		$criteria->compare('dob_avance_fisicor',$this->dob_avance_fisicor);
+		$criteria->compare('db_total_horas_hombres',$this->db_total_horas_hombres);
+		$criteria->compare('db_total_costo_asociado',$this->db_total_costo_asociado);
+		$criteria->compare('db_empleo_directo',$this->db_empleo_directo);
+		$criteria->compare('db_empleo_indirecto',$this->db_empleo_indirecto);
+		$criteria->compare('db_cantidad_beneficiario',$this->db_cantidad_beneficiario);
+		$criteria->compare('str_pto_critico',$this->str_pto_critico,true);
+		$criteria->compare('txt_observacion',$this->txt_observacion,true);
+                $criteria->compare('txt_actividades',$this->txt_actividades,true);                
+		$criteria->compare('id_organismo_ejecutor_fk',$this->id_organismo_ejecutor_fk);
+		$criteria->compare('id_consejo_comunal_fk',$this->id_consejo_comunal_fk);
+		$criteria->compare('id_persona_contacto_fk',$this->id_persona_contacto_fk);
+		$criteria->compare('txt_beneficios_usuarios',$this->txt_beneficios_usuarios,true);
+		$criteria->compare('id_tipo_accion',$this->id_tipo_accion);
+	$criteria->compare('id_accionobra',$this->id_accionobra);
+		$criteria->compare('str_alias',$this->str_alias,true);
+		$criteria->compare('id_contratista',$this->id_contratista);
+		$criteria->compare('LOWER(str_codigo_contrato)', strtolower($this->str_codigo_contrato),true);
+		$criteria->compare('txt_avances_impacto',$this->txt_avances_impacto,true);
+		$criteria->compare('txt_sectores_atendidos',$this->txt_sectores_atendidos,true);
+		$criteria->compare('alcance',$this->alcance);
+		$criteria->compare('id_tipo',$this->id_tipo);
+		$criteria->compare('avance_financiero',$this->avance_financiero);
+		$criteria->compare('id_fuente_financiamiento',$this->id_fuente_financiamiento);
+		$criteria->compare('idclasificacionobr',$this->idclasificacionobr);
+		$criteria->compare('punto_cuenta',$this->punto_cuenta);
+		$criteria->compare('puntocuenta',$this->puntocuenta);
+		$criteria->compare('otro1',$this->otro1);
+		$criteria->compare('otro2',$this->otro2);
+		$criteria->compare('id_tipo_obra',$this->id_tipo_obra);
+		$criteria->compare('id_obra_relacionada',$this->id_obra_relacionada);
+		
+                
+        
+                                    
+                    //dt_fecha_inicio_range
+          $from = $to = '';
+          if (count($this->dt_fecha_inicio_range)>=1) {
+              if (isset($this->dt_fecha_inicio_range['from'])) {
+                  $from = $this->dt_fecha_inicio_range['from'];
+              }
+              if (isset($this->dt_fecha_inicio_range['to'])) {
+                  $to= $this->dt_fecha_inicio_range['to'];
+              }
+          }
+          if ($from!='' || $to !='') {
+              if ($from!='' && $to!='') {
+                  $from = date("Y-m-d", strtotime($from));
+                  $to = date("Y-m-d", strtotime($to));
+                  $criteria->compare('dt_fecha_inicio',">= $from",false);
+                  $criteria->compare('dt_fecha_inicio',"<= $to",false);
+              }
+              else {
+                  if ($from!='') $creation_time = $from;
+                  if ($to != '') $creation_time = $to;
+                  $creation_time = date("Y-m-d", strtotime($creation_time));
+                  $criteria->compare('dt_fecha_inicio', "$creation_time" ,false);
+              }
+          }
+                    //fechainicio_range
+          $from = $to = '';
+          if (count($this->fechainicio_range)>=1) {
+              if (isset($this->fechainicio_range['from'])) {
+                  $from = $this->fechainicio_range['from'];
+              }
+              if (isset($this->fechainicio_range['to'])) {
+                  $to= $this->fechainicio_range['to'];
+              }
+          }
+          if ($from!='' || $to !='') {
+              if ($from!='' && $to!='') {
+                  $from = date("Y-m-d", strtotime($from));
+                  $to = date("Y-m-d", strtotime($to));
+                  $criteria->compare('fechainicio',">= $from",false);
+                  $criteria->compare('fechainicio',"<= $to",false);
+              }
+              else {
+                  if ($from!='') $creation_time = $from;
+                  if ($to != '') $creation_time = $to;
+                  $creation_time = date("Y-m-d", strtotime($creation_time));
+                  $criteria->compare('fechainicio', "$creation_time" ,false);
+              }
+          }
+                    //fechainicio_range
+          $from = $to = '';
+          if (count($this->fechacul_range)>=1) {
+              if (isset($this->fechacul_range['from'])) {
+                  $from = $this->fechacul_range['from'];
+              }
+              if (isset($this->fechacul_range['to'])) {
+                  $to= $this->fechacul_range['to'];
+              }
+          }
+          if ($from!='' || $to !='') {
+              if ($from!='' && $to!='') {
+                  $from = date("Y-m-d", strtotime($from));
+                  $to = date("Y-m-d", strtotime($to));
+                  $criteria->compare('fechacul',">= $from",false);
+                  $criteria->compare('fechacul',"<= $to",false);
+              }
+              else {
+                  if ($from!='') $creation_time = $from;
+                  if ($to != '') $creation_time = $to;
+                  $creation_time = date("Y-m-d", strtotime($creation_time));
+                  $criteria->compare('fechacul', "$creation_time" ,false);
+              }
+          }
+
+
+
+		 $_SESSION['datos_filtrados'] = new CActiveDataProvider($this, array(
+                      'criteria'=>$criteria,
+                      'sort'=>$sort,
+                      'pagination'=>false,
+              ));
+                  
+
+                
+		return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+                        //'sort'=>$sort,
+		));
+	}
+ 
+
+
+//////////////////////////ADMIN_6///////////////SOLUCIONES VIALES/////////////////////////////////////        
+        
+	public function search_6()
+	{
+            
+      
+            
+            
+            $id=Yii::app()->user->id; 
+            $sql='select * from maquinaria.usuario where id='.$id.';'; 
+                $connection=Yii::app()->db;
+                $command=$connection->createCommand($sql); 
+                $row=$command->queryRow(); 
+                $id_perfil=$row["id_perfil_direccion"];
+                $perfil=$row["id_perfil"];
+                $estado=$row["id_estado"];
+                
+                $criteria=new CDbCriteria;
+                $sort=new CSort();
+               
+                //$criteria->order='id_obra_pk desc';
+                 
+              
+                 
+                 $criteria->order="seguimiento=TRUE desc, id_estado_fk asc, fechap desc";
+               $criteria->condition="bln_borrado=false and idclasificacionobr=1";
+             //   $criteria->condition="id_perfil_direccion=$id_perfil";
+              // $criteria->condition="bln_borrado=false and id_perfil_direccion=$id_perfil";
+            
+        
+	
+        	$criteria->compare('id_obra_pk',$this->id_obra_pk);
+		$criteria->compare('LOWER(str_descripcion)',  strtolower($this->str_descripcion),true);
+		//$criteria->compare('dt_fecha_inicio',$this->dt_fecha_inicio,true);
+		$criteria->compare('id_estado_fk',$this->id_estado_fk);
+		$criteria->compare('id_municipio_fk',$this->id_municipio_fk);
+		$criteria->compare('id_municipio_fk2',$this->id_municipio_fk2);
+		$criteria->compare('id_parroquia_fk',$this->id_parroquia_fk);
+		$criteria->compare('LOWER(str_ubicacion)',strtolower($this->str_ubicacion),true);
+		$criteria->compare('int_km_prog',$this->int_km_prog);
+		$criteria->compare('int_km_logr',$this->int_km_logr);
+		$criteria->compare('int_por_km',$this->int_por_km);
+		$criteria->compare('int_m3_prog',$this->int_m3_prog);
+		$criteria->compare('int_m3_logr',$this->int_m3_logr);
+		$criteria->compare('int_por_m3',$this->int_por_m3);
+		$criteria->compare('bln_borrado',$this->bln_borrado);
+		$criteria->compare('id_estatus_obra_fk',$this->id_estatus_obra_fk);
+		$criteria->compare('dt_fecha_final',$this->dt_fecha_final,true);
+		//$criteria->compare('fechacul',$this->fechacul,true);
+		$criteria->compare('to_char( fechacul,\'dd/mm/yyyy\' )',$this->fechacul,true);
+		$criteria->compare(' ano',$this->ano);
+		$criteria->compare('dt_fecha_actualizacion',$this->dt_fecha_actualizacion,true);
+		$criteria->compare('str_lapso_ejecucion',$this->str_lapso_ejecucion,true);
+		$criteria->compare('dt_fecha_inauguracion',$this->dt_fecha_inauguracion,true);
+		$criteria->compare('db_total_horas_maquinaria',$this->db_total_horas_maquinaria);
+		$criteria->compare('db_avance_fisico',$this->db_avance_fisico);
+		$criteria->compare('dob_avance_fisicor',$this->dob_avance_fisicor);
+		$criteria->compare('db_total_horas_hombres',$this->db_total_horas_hombres);
+		$criteria->compare('db_total_costo_asociado',$this->db_total_costo_asociado);
+		$criteria->compare('db_empleo_directo',$this->db_empleo_directo);
+		$criteria->compare('db_empleo_indirecto',$this->db_empleo_indirecto);
+		$criteria->compare('db_cantidad_beneficiario',$this->db_cantidad_beneficiario);
+		$criteria->compare('str_pto_critico',$this->str_pto_critico,true);
+		$criteria->compare('txt_observacion',$this->txt_observacion,true);
+                $criteria->compare('txt_actividades',$this->txt_actividades,true);                
+		$criteria->compare('id_organismo_ejecutor_fk',$this->id_organismo_ejecutor_fk);
+		$criteria->compare('id_consejo_comunal_fk',$this->id_consejo_comunal_fk);
+		$criteria->compare('id_persona_contacto_fk',$this->id_persona_contacto_fk);
+		$criteria->compare('txt_beneficios_usuarios',$this->txt_beneficios_usuarios,true);
+		$criteria->compare('id_tipo_accion',$this->id_tipo_accion);
+	$criteria->compare('id_accionobra',$this->id_accionobra);
+		$criteria->compare('str_alias',$this->str_alias,true);
+		$criteria->compare('id_contratista',$this->id_contratista);
+		$criteria->compare('LOWER(str_codigo_contrato)', strtolower($this->str_codigo_contrato),true);
+		$criteria->compare('txt_avances_impacto',$this->txt_avances_impacto,true);
+		$criteria->compare('txt_sectores_atendidos',$this->txt_sectores_atendidos,true);
+		$criteria->compare('alcance',$this->alcance);
+		$criteria->compare('id_tipo',$this->id_tipo);
+		$criteria->compare('avance_financiero',$this->avance_financiero);
+		$criteria->compare('id_fuente_financiamiento',$this->id_fuente_financiamiento);
+		$criteria->compare('idclasificacionobr',$this->idclasificacionobr);
+		$criteria->compare('punto_cuenta',$this->punto_cuenta);
+		$criteria->compare('puntocuenta',$this->puntocuenta);
+		$criteria->compare('otro1',$this->otro1);
+		$criteria->compare('otro2',$this->otro2);
+		$criteria->compare('id_tipo_obra',$this->id_tipo_obra);
+		$criteria->compare('id_obra_relacionada',$this->id_obra_relacionada);
+		
+                 //Buscar obra en valuaciones declao un arreglo con el nombre de la relacion
+             //   $criteria->with =array('Contratista');
+                //declaro la condicion de la busqueda con el case sensitive (buscar mayusculas minusculas)
+               // $criteria->addSearchCondition('LOWER("Contratista"."nomb_empr")',strtolower($this->id_contratista),true);
+              //  $criteria->with =array('Contratista');
+                //declaro la condicion de la busqueda con el case sensitive (buscar mayusculas minusculas)
+                //$criteria->addSearchCondition('LOWER("Contratista"."fechacul")',strtolower($this->id_contratista),true);
+        
+                                    
+                    //dt_fecha_inicio_range
+          $from = $to = '';
+          if (count($this->dt_fecha_inicio_range)>=1) {
+              if (isset($this->dt_fecha_inicio_range['from'])) {
+                  $from = $this->dt_fecha_inicio_range['from'];
+              }
+              if (isset($this->dt_fecha_inicio_range['to'])) {
+                  $to= $this->dt_fecha_inicio_range['to'];
+              }
+          }
+          if ($from!='' || $to !='') {
+              if ($from!='' && $to!='') {
+                  $from = date("Y-m-d", strtotime($from));
+                  $to = date("Y-m-d", strtotime($to));
+                  $criteria->compare('dt_fecha_inicio',">= $from",false);
+                  $criteria->compare('dt_fecha_inicio',"<= $to",false);
+              }
+              else {
+                  if ($from!='') $creation_time = $from;
+                  if ($to != '') $creation_time = $to;
+                  $creation_time = date("Y-m-d", strtotime($creation_time));
+                  $criteria->compare('dt_fecha_inicio', "$creation_time" ,false);
+              }
+          }
+                    //fechainicio_range
+          $from = $to = '';
+          if (count($this->fechainicio_range)>=1) {
+              if (isset($this->fechainicio_range['from'])) {
+                  $from = $this->fechainicio_range['from'];
+              }
+              if (isset($this->fechainicio_range['to'])) {
+                  $to= $this->fechainicio_range['to'];
+              }
+          }
+          if ($from!='' || $to !='') {
+              if ($from!='' && $to!='') {
+                  $from = date("Y-m-d", strtotime($from));
+                  $to = date("Y-m-d", strtotime($to));
+                  $criteria->compare('fechainicio',">= $from",false);
+                  $criteria->compare('fechainicio',"<= $to",false);
+              }
+              else {
+                  if ($from!='') $creation_time = $from;
+                  if ($to != '') $creation_time = $to;
+                  $creation_time = date("Y-m-d", strtotime($creation_time));
+                  $criteria->compare('fechainicio', "$creation_time" ,false);
+              }
+          }
+                    //fechainicio_range
+          $from = $to = '';
+          if (count($this->fechacul_range)>=1) {
+              if (isset($this->fechacul_range['from'])) {
+                  $from = $this->fechacul_range['from'];
+              }
+              if (isset($this->fechacul_range['to'])) {
+                  $to= $this->fechacul_range['to'];
+              }
+          }
+          if ($from!='' || $to !='') {
+              if ($from!='' && $to!='') {
+                  $from = date("Y-m-d", strtotime($from));
+                  $to = date("Y-m-d", strtotime($to));
+                  $criteria->compare('fechacul',">= $from",false);
+                  $criteria->compare('fechacul',"<= $to",false);
+              }
+              else {
+                  if ($from!='') $creation_time = $from;
+                  if ($to != '') $creation_time = $to;
+                  $creation_time = date("Y-m-d", strtotime($creation_time));
+                  $criteria->compare('fechacul', "$creation_time" ,false);
+              }
+          }
+
+
+
+		 $_SESSION['datos_filtrados'] = new CActiveDataProvider($this, array(
+                      'criteria'=>$criteria,
+                      'sort'=>$sort,
+                      'pagination'=>false,
+              ));
+                  
+
+                
+		return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+                        //'sort'=>$sort,
+		));
+	}
+ 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+        
+      /*  public function comparar_fechas($attribute,$params) {
+            if(!empty($this->attributes['fecha_hasta'])) {
+            if(strtotime($this->attributes['fecha_hasta']) < strtotime($this->attributes['fecha_desde'])) {
+            $this->addError($attribute,'La Fecha de Inicio es Mayor a la Final');}
+            }
+        }*/
+        
+         public function comparar_fechas($attribute,$params) {
+            if(!empty($this->attributes['fechacul'])) {
+            if(strtotime($this->attributes['fechacul']) < strtotime($this->attributes['fechainicio'])) {
+            $this->addError($attribute,'La Fecha de Inicio es mayor a la de Culminacion');}
+            }
+        }
+        
+        
+         public function behaviors()
+{
+    return array(
+        'CTimestampBehavior' => array(
+            'class' => 'zii.behaviors.CTimestampBehavior',
+            'createAttribute' => 'created_date',
+            'updateAttribute' => 'modified_date',
+            'setUpdateOnCreate' => true,
+        ),
+        'BlameableBehavior' => array(
+            'class' => 'application.components.behaviors.BlameableBehavior',
+            'createdByColumn' => 'created_by', 
+            'updatedByColumn' => 'modified_by',  
+        ),
+    );  
+}
+        
+}

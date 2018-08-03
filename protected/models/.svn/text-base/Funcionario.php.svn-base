@@ -1,0 +1,143 @@
+<?php
+
+/**
+ * This is the model class for table "sismaq.funcionario".
+ *
+ * The followings are the available columns in table 'sismaq.funcionario':
+ * @property integer $id_funcionario_pk
+ * @property integer $int_cedula
+ * @property string $str_nombre
+ * @property string $str_apellido
+ * @property integer $id_cargo_fk
+ * @property string $str_telefono
+ * @property string $str_direccion
+ * @property integer $int_tipo
+ * @property string $str_especializacion
+ * @property boolean $bln_borrado
+ * @property integer $id_perfil_direccion
+ * @property integer $id_estado
+ *
+ * The followings are the available model relations:
+ * @property Cargo $idCargoFk
+ * @property MaqinariaFuncionario[] $maqinariaFuncionarios
+ * @property MaqinariaFuncionario[] $maqinariaFuncionarios1
+ */
+class Funcionario extends CActiveRecord
+{
+	/**
+	 * @return string the associated database table name
+	 */
+	public function tableName()
+	{
+		return 'sismaq.funcionario';
+	}
+
+	/**
+	 * @return array validation rules for model attributes.
+	 */
+	public function rules()
+	{
+		// NOTE: you should only define rules for those attributes that
+		// will receive user inputs.
+		return array(
+			array('int_cedula, id_cargo_fk, int_tipo, id_perfil_direccion, id_estado', 'numerical', 'integerOnly'=>true),
+			array('str_nombre, str_apellido, str_direccion, str_especializacion', 'length', 'max'=>150),
+			array('str_telefono', 'length', 'max'=>20),
+                        array('str_nombre,str_apellido, id_cargo_fk, int_tipo', 'required'),
+			array('str_nombre, str_apellido, id_perfil_direccion, id_estado', 'safe'),
+			// The following rule is used by search().
+			// @todo Please remove those attributes that should not be searched.
+			array('id_funcionario_pk, int_cedula, str_nombre, str_apellido, id_cargo_fk, str_telefono, str_direccion, int_tipo, str_especializacion, bln_borrado, id_perfil_direccion, id_estado', 'safe', 'on'=>'search'),
+		);
+	}
+
+	/**
+	 * @return array relational rules.
+	 */
+	public function relations()
+	{
+		// NOTE: you may need to adjust the relation name and the related
+		// class name for the relations automatically generated below.
+		return array(
+			'Cargo' => array(self::BELONGS_TO, 'Sismaqcargo', 'id_cargo_fk'),
+			'maqinariaFuncionarios' => array(self::HAS_MANY, 'MaqinariaFuncionario', 'id_operador_fk'),
+			'maqinariaFuncionarios1' => array(self::HAS_MANY, 'MaqinariaFuncionario', 'id_responsable_fk'),
+		);
+	}
+
+	/**
+	 * @return array customized attribute labels (name=>label)
+	 */
+	public function attributeLabels()
+	{
+		return array(
+			'id_funcionario_pk' => 'Funcionario',
+			'int_cedula' => 'Cedula',
+			'str_nombre' => 'Nombre',
+			'str_apellido' => 'Apellido',
+			'id_cargo_fk' => 'Cargo',
+			'str_telefono' => 'Telefono',
+			'str_direccion' => 'Direccion',
+			'int_tipo' => 'Operador',
+			'str_especializacion' => 'Especializacion',
+			'bln_borrado' => 'Bln Borrado',
+			'id_perfil_direccion' => 'Id Perfil Direccion',
+			'id_estado' => 'Id Estado',
+		);
+	}
+
+	/**
+	 * Retrieves a list of models based on the current search/filter conditions.
+	 *
+	 * Typical usecase:
+	 * - Initialize the model fields with values from filter form.
+	 * - Execute this method to get CActiveDataProvider instance which will filter
+	 * models according to data in model fields.
+	 * - Pass data provider to CGridView, CListView or any similar widget.
+	 *
+	 * @return CActiveDataProvider the data provider that can return the models
+	 * based on the search/filter conditions.
+	 */
+	public function search()
+	{
+		// @todo Please modify the following code to remove attributes that should not be searched.
+                $id=Yii::app()->user->id; 
+		$sql='select * from maquinaria.usuario where id='.$id.';'; 
+                $connection=Yii::app()->db;
+                $command=$connection->createCommand($sql); 
+                $row=$command->queryRow(); 
+                $id_perfil=$row["id_perfil_direccion"];
+                $estado=$row["id_estado"];
+                
+		$criteria=new CDbCriteria;
+                
+                $criteria->condition = "id_perfil_direccion=$id_perfil and id_estado=$estado and bln_borrado=false";
+		$criteria->compare('id_funcionario_pk',$this->id_funcionario_pk);
+		$criteria->compare('int_cedula',$this->int_cedula);
+		$criteria->compare('LOWER(str_nombre)',strtolower($this->str_nombre),true);
+		$criteria->compare('LOWER(str_apellido)',strtolower($this->str_apellido),true);
+		$criteria->compare('id_cargo_fk',$this->id_cargo_fk);
+		$criteria->compare('str_telefono',$this->str_telefono,true);
+		$criteria->compare('str_direccion',$this->str_direccion,true);
+		$criteria->compare('int_tipo',$this->int_tipo);
+		$criteria->compare('str_especializacion',$this->str_especializacion,true);
+		$criteria->compare('bln_borrado',$this->bln_borrado);
+		$criteria->compare('id_perfil_direccion',$this->id_perfil_direccion);
+		$criteria->compare('id_estado',$this->id_estado);
+
+		return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+		));
+	}
+
+	/**
+	 * Returns the static model of the specified AR class.
+	 * Please note that you should have this exact method in all your CActiveRecord descendants!
+	 * @param string $className active record class name.
+	 * @return Funcionario the static model class
+	 */
+	public static function model($className=__CLASS__)
+	{
+		return parent::model($className);
+	}
+}

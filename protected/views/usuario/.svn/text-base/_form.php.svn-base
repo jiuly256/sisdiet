@@ -1,0 +1,188 @@
+<?php
+  /*       $id=Yii::app()->user->id;
+     //    echo $id;
+                if ($id!='') {
+   $sql='select * from usuario where id='.$id.';';
+    $connection=Yii::app()->db;
+    $command=$connection->createCommand($sql);
+    $row=$command->queryRow();
+    $tipousuario=$row["id_tipo_usuario"];*/
+ ?>
+
+<?php
+    $id=Yii::app()->user->id;
+    $sql='select * from maquinaria.usuario where id='.$id.';';
+    $connection=Yii::app()->db;
+    $command=$connection->createCommand($sql);
+    $row=$command->queryRow();
+    $id_perfil=$row["id_perfil_direccion"];
+    $estado=$row["id_estado"];
+    $idperfil=$row["id_perfil"];
+    $username=$row["username"];
+?>
+
+
+
+<div class="form">
+
+<?php $form=$this->beginWidget('CActiveForm', array(
+	'id'=>'usuario-form',
+	'enableAjaxValidation'=>false,
+        'enableClientValidation'=>true,
+               'clientOptions' => array(
+                'validateOnSubmit' => true,
+))); ?>
+<center>
+
+	<p class="note">Campos con<span class="required">*</span> son obligatorio</p>
+
+	<?php echo $form->errorSummary($model); ?>
+
+	 <?php if($id_perfil!=1)
+            {
+            ?>
+        <tr>
+           
+           
+            <td>
+	<div class="row">
+		<?php echo $form->labelEx($model,'username'); ?>
+		<?php
+                if ($model->isnewrecord==true){
+                echo $form->textField($model,'username',array('size'=>23,'maxlength'=>50)); 
+                 }
+                 else{
+                echo $form->textField($model,'username',array('size'=>23,'maxlength'=>50,'readonly'=>true)); 
+                     
+                 }?>
+		<?php echo $form->error($model,'username'); ?>
+	</div>
+            </td>
+
+	<td>
+        <div class="row">
+		<?php echo $form->labelEx($model,'password'); ?>
+		<?php 
+                if ($model->isnewrecord==true){
+                echo $form->passwordField($model,'password',array('size'=>23,'maxlength'=>50)); 
+                }else{
+              echo $form->passwordField($model,'password',array('size'=>23,'maxlength'=>50,'readonly'=>true)); 
+
+                }
+                ?>
+            <?php echo $form->error($model,'password'); }
+            
+            else{
+            ?>
+	</div>
+        <td>
+            <div class="row">
+		<?php echo $form->labelEx($model,'username'); ?>
+		<?php
+                if ($model->isnewrecord==true){
+                echo $form->textField($model,'username',array('size'=>23,'maxlength'=>50)); 
+                 }
+                 else{
+                echo $form->textField($model,'username',array('size'=>23,'maxlength'=>50)); 
+                     
+                 }?>
+		<?php echo $form->error($model,'username'); ?>
+	</div>
+            </td>
+
+	<td>
+        <div class="row">
+		<?php echo $form->labelEx($model,'password'); ?>
+		<?php 
+                if ($model->isnewrecord==true){
+                echo $form->passwordField($model,'password',array('size'=>23,'maxlength'=>50)); 
+                }else{
+              echo $form->passwordField($model,'password',array('size'=>23,'maxlength'=>50)); 
+
+                }
+                ?>
+            <?php echo $form->error($model,'password'); }
+            ?>
+	</div>
+        <div class="row">
+                <?php
+                $perfil= new CDbCriteria;
+                $perfil->order= 'id asc';
+                if ($idperfil!=1){
+                 $perfil->condition='id >1';   
+                }
+                ?>  
+        <?php echo $form->labelEx($model,'id_perfil'); ?>
+         <?php 
+              echo $form->dropDownList($model,'id_perfil',
+                      CHtml::listData(Perfil::model()->findAll($perfil),'id','nombre_perfil'),
+                        array(
+                            'ajax' => array(
+                        
+                        ),'prompt' => 'Seleccione un perfil'
+                            
+                    )
+              );
+      ?>
+      </div>                    
+        <div class="row">
+                <?php
+                $perfil= new CDbCriteria;
+		if ($username=='jirojas' || $username=='francgarcia' || $username=='rtasigchana'){}else{
+                $perfil->condition= 'id_perfil_sistema = '.$id_perfil.'';}
+                ?>  
+        <?php echo $form->labelEx($model,'id_perfil_direccion'); ?>
+         <?php 
+              echo $form->dropDownList($model,'id_perfil_direccion',
+                      CHtml::listData(PerfilDireccion::model()->findAll($perfil),'id_perfil_sistema','nombre_descripcion'),
+                        array(
+                            'style'=>'width:300px',
+                            'ajax' => array(
+                         
+                        ),//'prompt' => 'Seleccione Direccion'
+                            
+                    )
+              );
+      ?>
+      </div>                    
+        <div class="row">
+                <?php
+                $perfil= new CDbCriteria;
+                $perfil->order= 'id asc';
+                ?>  
+        <?php echo $form->labelEx($model,'id_estado'); ?>
+         <?php 
+              echo $form->dropDownList($model,'id_estado',
+                      CHtml::listData(TblEstado::model()->findAll($perfil),'id','descripcion'),
+                        array(
+                            'ajax' => array(
+                         
+                        ),'prompt' => 'Seleccione Estado'
+                            
+                    )
+              );
+      ?>
+      </div>                    
+       <div class="row">
+		<?php echo $form->labelEx($model,'str_nombre'); ?>
+		<?php echo $form->textField($model,'str_nombre',array('size'=>23,'maxlength'=>50)); ?>
+		<?php echo $form->error($model,'str_nombre'); ?>
+	</div>
+	<div class="row">
+		<?php echo $form->labelEx($model,'str_apellido'); ?>
+		<?php echo $form->textField($model,'str_apellido',array('size'=>23,'maxlength'=>50)); ?>
+		<?php echo $form->error($model,'str_apellido'); ?>
+	</div>
+	<div class="row">
+		<?php echo $form->labelEx($model,'int_cedula'); ?>
+		<?php echo $form->textField($model,'int_cedula',array('size'=>23,'maxlength'=>50)); ?>
+		<?php echo $form->error($model,'int_cedula'); ?>
+	</div>
+	<div class="row buttons">
+	<center>	<?php echo CHtml::submitButton($model->isNewRecord ? 'Guardar' : 'Guardar'); ?></center>
+	</div>
+	</center>
+
+<?php $this->endWidget(); ?>
+
+</div><!-- form -->

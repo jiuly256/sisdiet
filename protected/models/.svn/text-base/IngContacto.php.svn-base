@@ -1,0 +1,129 @@
+<?php
+
+/**
+ * This is the model class for table "maquinaria.ing_contacto".
+ *
+ * The followings are the available columns in table 'maquinaria.ing_contacto':
+ * @property string $nombre
+ * @property string $telefono
+ * @property integer $id
+ * @property integer $identeadscrito
+ * @property integer $idcargo
+ * @property integer $id_estado_fk
+ * @property integer $cedula
+ * @property integer $id_perfil
+ *
+ * The followings are the available model relations:
+ * @property Cargo $idcargo
+ */
+class IngContacto extends CActiveRecord
+{
+	/**
+	 * @return string the associated database table name
+	 */
+	public function tableName()
+	{
+		return 'maquinaria.ing_contacto';
+	}
+
+	/**
+	 * @return array validation rules for model attributes.
+	 */
+	public function rules()
+	{
+		// NOTE: you should only define rules for those attributes that
+		// will receive user inputs.
+		return array(
+			array('identeadscrito, idcargo, id_estado_fk, cedula, id_perfil', 'numerical', 'integerOnly'=>true),
+			array('nombre', 'length', 'max'=>100),
+			array('telefono', 'length', 'max'=>15),
+                        array( 'idcargo, identeadscrito', 'required'),
+			// The following rule is used by search().
+			// @todo Please remove those attributes that should not be searched.
+			array('nombre, telefono, id, identeadscrito, idcargo, id_estado_fk, cedula, id_perfil', 'safe', 'on'=>'search'),
+		);
+	}
+
+	/**
+	 * @return array relational rules.
+	 */
+	public function relations()
+	{
+		// NOTE: you may need to adjust the relation name and the related
+		// class name for the relations automatically generated below.
+		return array(
+			'enteadscrito' => array(self::BELONGS_TO, 'DireccionEstadal', 'identeadscrito'),
+			'cargo' => array(self::BELONGS_TO, 'Cargo', 'idcargo'),
+		);
+	}
+
+	/**
+	 * @return array customized attribute labels (name=>label)
+	 */
+	public function attributeLabels()
+	{
+		return array(
+			'nombre' => 'Nombre',
+			'telefono' => 'Telefono',
+			'id' => 'Id',
+			'identeadscrito' => 'Ente Adscrito',
+			'enteadscrito.descripcion' => 'Ente Adscrito',
+			'idcargo' => 'Cargo',
+			'cargo.descripcion' => 'Cargo',
+			'id_estado_fk' => 'Estado',
+			'cedula' => 'Cedula',
+			'id_perfil' => 'Perfil',
+		);
+	}
+
+	/**
+	 * Retrieves a list of models based on the current search/filter conditions.
+	 *
+	 * Typical usecase:
+	 * - Initialize the model fields with values from filter form.
+	 * - Execute this method to get CActiveDataProvider instance which will filter
+	 * models according to data in model fields.
+	 * - Pass data provider to CGridView, CListView or any similar widget.
+	 *
+	 * @return CActiveDataProvider the data provider that can return the models
+	 * based on the search/filter conditions.
+	 */
+	public function search()
+	{
+		// @todo Please modify the following code to remove attributes that should not be searched.
+ $id=Yii::app()->user->id;
+    $sql='select * from maquinaria.usuario where id='.$id.';';
+    $connection=Yii::app()->db;
+    $command=$connection->createCommand($sql);
+    $row=$command->queryRow();
+    $id_perfil=$row["id_perfil_direccion"];
+    $idperfil=$row["id_perfil"];
+    $id_estado=$row["id_estado"];
+    
+		$criteria=new CDbCriteria;
+          //      $criteria->condition="id_perfil=$id_perfil";
+		$criteria->compare('LOWER(nombre)',strtolower($this->nombre),true);
+		$criteria->compare('telefono',$this->telefono,true);
+		$criteria->compare('id',$this->id);
+		$criteria->compare('identeadscrito',$this->identeadscrito);
+		$criteria->compare('idcargo',$this->idcargo);
+		$criteria->compare('id_estado_fk',$this->id_estado_fk);
+		$criteria->compare('cedula',$this->cedula);
+		$criteria->compare('id_perfil',$this->id_perfil);
+
+		return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+		));
+	}
+
+	/**
+	 * Returns the static model of the specified AR class.
+	 * Please note that you should have this exact method in all your CActiveRecord descendants!
+	 * @param string $className active record class name.
+	 * @return IngContacto the static model class
+	 */
+	public static function model($className=__CLASS__)
+	{
+		return parent::model($className);
+	}
+}

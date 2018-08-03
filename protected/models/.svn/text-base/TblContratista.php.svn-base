@@ -1,0 +1,306 @@
+<?php
+
+
+class TblContratista extends CActiveRecord
+{
+	/**
+	 * Returns the static model of the specified AR class.
+	 * @param string $className active record class name.
+	 * @return TblContratista the static model class
+	 */
+	public static function model($className=__CLASS__)
+	{
+		return parent::model($className);
+	}
+
+	/**
+	 * @return string the associated database table name
+	 */
+	public function tableName()
+	{
+		return 'maquinaria.tbl_contratista';
+	}
+
+	/**
+	 * @return array validation rules for model attributes.
+	 */
+	public function rules()
+	{
+		// NOTE: you should only define rules for those attributes that
+		// will receive user inputs.
+		return array(
+			array('nomb_empr,intrif', 'required'),
+			//array('intrif', 'uniqued'),
+                        array('intrif','unique',
+                             ),
+                     /*   array('intrif', 'length',
+                                'max'=>9,
+                                 'message'=>'El Rif debe de tener 9 numeros',
+                                ),*/
+                        array('intrif', 'length',
+                                'min'=>9,
+                                 'message'=>'El Rif debe de tener 9 numeros',
+                                ),
+			array('inspector, id_dcomercial, id_nivel_financiero, id_documento, id_banco, id_moneda, id_estado, id_municipio, id_parroquia, id_circunscripcion_judicial, create_user_id, update_user_id, id_pais, create_time, update_time, id_perfil_direccion', 'numerical', 'integerOnly'=>true),
+			array('capital, monto_maximo', 'numerical'),
+			array('intrif', 'length', 'max'=>9),
+			array('nomb_empr, email_empr, email_contc', 'length', 'max'=>100),
+			array('nac_empr, tipo_empr, tip_contribuyente_empr, tipo_contr_prov, status_empr, strif, strci_contc', 'length', 'max'=>1),
+			array('tlf_empr, fax_empr, tlf_contc, tlf_cel_contc, fax_contc, reg_sub', 'length', 'max'=>20),
+			array('pag_web_empr, urb_sector, calle_avda, casa_edif, piso_oficina, pto_ref', 'length', 'max'=>200),
+			array('cta_ban, num_lic', 'length', 'max'=>25),
+			array('gra_empr', 'length', 'max'=>4),
+			array('proveedor, obras, servicios', 'length', 'max'=>55),
+			array('intci_contc', 'length', 'max'=>9),
+			array('nom_contc, registro_mercantil', 'length', 'max'=>50),
+			array('nro_registro_rnc', 'length', 'max'=>35),
+			array('nro_reg_sso, nro_reg_ince, nro_reg', 'length', 'max'=>15),
+			array('tomo_reg, fol_reg', 'length', 'max'=>5),
+			array('fec_reg_rnc, fec_venc_rnc, fec_venc_sso, fec_venc_ince, fec_regsub, borrado, id_perfil_direccion, id_estado', 'safe'),
+			// The following rule is used by search().
+			// Please remove those attributes that should not be searched.
+			array('id, intrif, nomb_empr, nac_empr, tipo_empr, tlf_empr, fax_empr, id_perfil_direccion, id_estado, email_empr, pag_web_empr, capital, monto_maximo, cta_ban, gra_empr, tip_contribuyente_empr, tipo_contr_prov, proveedor, obras, servicios, status_empr, urb_sector, calle_avda, casa_edif, piso_oficina, pto_ref, intci_contc, nom_contc, email_contc, tlf_contc, tlf_cel_contc, fax_contc, nro_registro_rnc, fec_reg_rnc, fec_venc_rnc, nro_reg_sso, fec_venc_sso, nro_reg_ince, fec_venc_ince, reg_sub, fec_regsub, nro_reg, tomo_reg, fol_reg, num_lic, inspector, id_dcomercial, id_nivel_financiero, id_documento, id_banco, id_moneda, id_estado, id_municipio, id_parroquia, id_circunscripcion_judicial, create_user_id, update_user_id, id_pais, registro_mercantil, strif, strci_contc, borrado, create_time, update_time', 'safe', 'on'=>'search'),
+		);
+	}
+
+	/**
+	 * @return array relational rules.
+	 */
+	public function relations()
+	{
+		// NOTE: you may need to adjust the relation name and the related
+		// class name for the relations automatically generated below.
+		return array(
+		);
+	}
+
+	/**
+	 * @return array customized attribute labels (name=>label)
+	 */
+	public function attributeLabels()
+	{
+		return array(
+			'id' => 'ID',
+			'intrif' => 'Rif',
+			'nomb_empr' => 'Empresa',
+			'nac_empr' => 'Nac Empr',
+			'tipo_empr' => 'Tipo Empr',
+			'tlf_empr' => 'Tlf Empr',
+			'fax_empr' => 'Fax Empr',
+			'email_empr' => 'Email Empr',
+			'pag_web_empr' => 'Pag Web Empr',
+			'capital' => 'Capital',
+			'monto_maximo' => 'Monto Maximo',
+			'cta_ban' => 'Cta Ban',
+			'gra_empr' => 'Gra Empr',
+			'tip_contribuyente_empr' => 'Tip Contribuyente Empr',
+			'tipo_contr_prov' => 'Tipo Contr Prov',
+			'proveedor' => 'Proveedor',
+			'obras' => 'Obras',
+			'servicios' => 'Servicios',
+			'status_empr' => 'Status Empr',
+			'urb_sector' => 'Urb Sector',
+			'calle_avda' => 'Calle Avda',
+			'casa_edif' => 'Casa Edif',
+			'piso_oficina' => 'Piso Oficina',
+			'pto_ref' => 'Pto Ref',
+			'intci_contc' => 'Intci Contc',
+			'nom_contc' => 'Nom Contc',
+			'email_contc' => 'Email Contc',
+			'tlf_contc' => 'Tlf Contc',
+			'tlf_cel_contc' => 'Tlf Cel Contc',
+			'fax_contc' => 'Fax Contc',
+			'nro_registro_rnc' => 'Nro Registro Rnc',
+			'fec_reg_rnc' => 'Fec Reg Rnc',
+			'fec_venc_rnc' => 'Fec Venc Rnc',
+			'nro_reg_sso' => 'Nro Reg Sso',
+			'fec_venc_sso' => 'Fec Venc Sso',
+			'nro_reg_ince' => 'Nro Reg Ince',
+			'fec_venc_ince' => 'Fec Venc Ince',
+			'reg_sub' => 'Reg Sub',
+			'fec_regsub' => 'Fec Regsub',
+			'nro_reg' => 'Nro Reg',
+			'tomo_reg' => 'Tomo Reg',
+			'fol_reg' => 'Fol Reg',
+			'num_lic' => 'Num Lic',
+			'inspector' => 'Inspector',
+			'id_dcomercial' => 'Id Dcomercial',
+			'id_nivel_financiero' => 'Id Nivel Financiero',
+			'id_documento' => 'Id Documento',
+			'id_banco' => 'Id Banco',
+			'id_moneda' => 'Id Moneda',
+			'id_estado' => 'Id Estado',
+			'id_municipio' => 'Id Municipio',
+			'id_parroquia' => 'Id Parroquia',
+			'id_circunscripcion_judicial' => 'Id Circunscripcion Judicial',
+			'create_user_id' => 'Create User',
+			'update_user_id' => 'Update User',
+			'id_pais' => 'Id Pais',
+			'registro_mercantil' => 'Registro Mercantil',
+			'strif' => 'Strif',
+			'strci_contc' => 'Strci Contc',
+			'borrado' => 'Borrado',
+			'create_time' => 'Create Time',
+			'update_time' => 'Update Time',
+		);
+	}
+
+	/**
+	 * Retrieves a list of models based on the current search/filter conditions.
+	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+	 */
+	public function search()
+	{
+            
+            $id=Yii::app()->user->id; 
+            $sql='select * from maquinaria.usuario where id='.$id.';'; 
+                $connection=Yii::app()->db;
+                $command=$connection->createCommand($sql); 
+                $row=$command->queryRow(); 
+                $id_perfil=$row["id_perfil_direccion"];
+                $estado=$row["id_estado"];
+		// @todo Please modify the following code to remove attributes that should not be searched.
+
+                     $criteria=new CDbCriteria;
+                $sort=new CSort();
+               /* if($estado==99)
+                {*/
+                
+		
+               // $criteria->condition = "id!=0 and id_perfil_direccion=$id_perfil";	
+$criteria->order = "nomb_empr asc";
+		$criteria->compare('id',$this->id);
+		$criteria->compare('intrif',$this->intrif,true);
+		$criteria->compare('LOWER(nomb_empr)',  strtolower($this->nomb_empr),true);
+		$criteria->compare('nac_empr',$this->nac_empr,true);
+		$criteria->compare('tipo_empr',$this->tipo_empr,true);
+		$criteria->compare('tlf_empr',$this->tlf_empr,true);
+		$criteria->compare('fax_empr',$this->fax_empr,true);
+		$criteria->compare('email_empr',$this->email_empr,true);
+		$criteria->compare('pag_web_empr',$this->pag_web_empr,true);
+		$criteria->compare('capital',$this->capital);
+		$criteria->compare('monto_maximo',$this->monto_maximo);
+		$criteria->compare('cta_ban',$this->cta_ban,true);
+		$criteria->compare('gra_empr',$this->gra_empr,true);
+		$criteria->compare('tip_contribuyente_empr',$this->tip_contribuyente_empr,true);
+		$criteria->compare('tipo_contr_prov',$this->tipo_contr_prov,true);
+		$criteria->compare('proveedor',$this->proveedor,true);
+		$criteria->compare('obras',$this->obras,true);
+		$criteria->compare('servicios',$this->servicios,true);
+		$criteria->compare('status_empr',$this->status_empr,true);
+		$criteria->compare('urb_sector',$this->urb_sector,true);
+		$criteria->compare('calle_avda',$this->calle_avda,true);
+		$criteria->compare('casa_edif',$this->casa_edif,true);
+		$criteria->compare('piso_oficina',$this->piso_oficina,true);
+		$criteria->compare('pto_ref',$this->pto_ref,true);
+		$criteria->compare('intci_contc',$this->intci_contc,true);
+		$criteria->compare('nom_contc',$this->nom_contc,true);
+		$criteria->compare('email_contc',$this->email_contc,true);
+		$criteria->compare('tlf_contc',$this->tlf_contc,true);
+		$criteria->compare('tlf_cel_contc',$this->tlf_cel_contc,true);
+		$criteria->compare('fax_contc',$this->fax_contc,true);
+		$criteria->compare('nro_registro_rnc',$this->nro_registro_rnc,true);
+		$criteria->compare('fec_reg_rnc',$this->fec_reg_rnc,true);
+		$criteria->compare('fec_venc_rnc',$this->fec_venc_rnc,true);
+		$criteria->compare('nro_reg_sso',$this->nro_reg_sso,true);
+		$criteria->compare('fec_venc_sso',$this->fec_venc_sso,true);
+		$criteria->compare('nro_reg_ince',$this->nro_reg_ince,true);
+		$criteria->compare('fec_venc_ince',$this->fec_venc_ince,true);
+		$criteria->compare('reg_sub',$this->reg_sub,true);
+		$criteria->compare('fec_regsub',$this->fec_regsub,true);
+		$criteria->compare('nro_reg',$this->nro_reg,true);
+		$criteria->compare('tomo_reg',$this->tomo_reg,true);
+		$criteria->compare('fol_reg',$this->fol_reg,true);
+		$criteria->compare('num_lic',$this->num_lic,true);
+		$criteria->compare('inspector',$this->inspector);
+		$criteria->compare('id_dcomercial',$this->id_dcomercial);
+		$criteria->compare('id_nivel_financiero',$this->id_nivel_financiero);
+		$criteria->compare('id_documento',$this->id_documento);
+		$criteria->compare('id_banco',$this->id_banco);
+		$criteria->compare('id_moneda',$this->id_moneda);
+		$criteria->compare('id_estado',$this->id_estado);
+		$criteria->compare('id_municipio',$this->id_municipio);
+		$criteria->compare('id_parroquia',$this->id_parroquia);
+		$criteria->compare('id_circunscripcion_judicial',$this->id_circunscripcion_judicial);
+		$criteria->compare('create_user_id',$this->create_user_id);
+		$criteria->compare('update_user_id',$this->update_user_id);
+		$criteria->compare('id_pais',$this->id_pais);
+		$criteria->compare('registro_mercantil',$this->registro_mercantil,true);
+		$criteria->compare('strif',$this->strif,true);
+		$criteria->compare('strci_contc',$this->strci_contc,true);
+		$criteria->compare('borrado',$this->borrado);
+		$criteria->compare('create_time',$this->create_time);
+		$criteria->compare('update_time',$this->update_time);
+               /* }
+                else{
+                
+                //$criteria->condition = "id!=0 and id_perfil_direccion=$id_perfil";	
+                    $criteria->order = "nomb_empr asc";
+		$criteria->compare('id',$this->id);
+		$criteria->compare('intrif',$this->intrif,true);
+		$criteria->compare('nomb_empr',$this->nomb_empr,true);
+		$criteria->compare('nac_empr',$this->nac_empr,true);
+		$criteria->compare('tipo_empr',$this->tipo_empr,true);
+		$criteria->compare('tlf_empr',$this->tlf_empr,true);
+		$criteria->compare('fax_empr',$this->fax_empr,true);
+		$criteria->compare('email_empr',$this->email_empr,true);
+		$criteria->compare('pag_web_empr',$this->pag_web_empr,true);
+		$criteria->compare('capital',$this->capital);
+		$criteria->compare('monto_maximo',$this->monto_maximo);
+		$criteria->compare('cta_ban',$this->cta_ban,true);
+		$criteria->compare('gra_empr',$this->gra_empr,true);
+		$criteria->compare('tip_contribuyente_empr',$this->tip_contribuyente_empr,true);
+		$criteria->compare('tipo_contr_prov',$this->tipo_contr_prov,true);
+		$criteria->compare('proveedor',$this->proveedor,true);
+		$criteria->compare('obras',$this->obras,true);
+		$criteria->compare('servicios',$this->servicios,true);
+		$criteria->compare('status_empr',$this->status_empr,true);
+		$criteria->compare('urb_sector',$this->urb_sector,true);
+		$criteria->compare('calle_avda',$this->calle_avda,true);
+		$criteria->compare('casa_edif',$this->casa_edif,true);
+		$criteria->compare('piso_oficina',$this->piso_oficina,true);
+		$criteria->compare('pto_ref',$this->pto_ref,true);
+		$criteria->compare('intci_contc',$this->intci_contc,true);
+		$criteria->compare('nom_contc',$this->nom_contc,true);
+		$criteria->compare('email_contc',$this->email_contc,true);
+		$criteria->compare('tlf_contc',$this->tlf_contc,true);
+		$criteria->compare('tlf_cel_contc',$this->tlf_cel_contc,true);
+		$criteria->compare('fax_contc',$this->fax_contc,true);
+		$criteria->compare('nro_registro_rnc',$this->nro_registro_rnc,true);
+		$criteria->compare('fec_reg_rnc',$this->fec_reg_rnc,true);
+		$criteria->compare('fec_venc_rnc',$this->fec_venc_rnc,true);
+		$criteria->compare('nro_reg_sso',$this->nro_reg_sso,true);
+		$criteria->compare('fec_venc_sso',$this->fec_venc_sso,true);
+		$criteria->compare('nro_reg_ince',$this->nro_reg_ince,true);
+		$criteria->compare('fec_venc_ince',$this->fec_venc_ince,true);
+		$criteria->compare('reg_sub',$this->reg_sub,true);
+		$criteria->compare('fec_regsub',$this->fec_regsub,true);
+		$criteria->compare('nro_reg',$this->nro_reg,true);
+		$criteria->compare('tomo_reg',$this->tomo_reg,true);
+		$criteria->compare('fol_reg',$this->fol_reg,true);
+		$criteria->compare('num_lic',$this->num_lic,true);
+		$criteria->compare('inspector',$this->inspector);
+		$criteria->compare('id_dcomercial',$this->id_dcomercial);
+		$criteria->compare('id_nivel_financiero',$this->id_nivel_financiero);
+		$criteria->compare('id_documento',$this->id_documento);
+		$criteria->compare('id_banco',$this->id_banco);
+		$criteria->compare('id_moneda',$this->id_moneda);
+		$criteria->compare('id_estado',$this->id_estado);
+		$criteria->compare('id_municipio',$this->id_municipio);
+		$criteria->compare('id_parroquia',$this->id_parroquia);
+		$criteria->compare('id_circunscripcion_judicial',$this->id_circunscripcion_judicial);
+		$criteria->compare('create_user_id',$this->create_user_id);
+		$criteria->compare('update_user_id',$this->update_user_id);
+		$criteria->compare('id_pais',$this->id_pais);
+		$criteria->compare('registro_mercantil',$this->registro_mercantil,true);
+		$criteria->compare('strif',$this->strif,true);
+		$criteria->compare('strci_contc',$this->strci_contc,true);
+		$criteria->compare('borrado',$this->borrado);
+		$criteria->compare('create_time',$this->create_time);
+		$criteria->compare('update_time',$this->update_time);
+                }*/
+		return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+		));
+	}
+}

@@ -1,0 +1,115 @@
+
+#page {
+    margin-top: 40px;
+    padding: 20px;
+    background: none repeat scroll 0 0 rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(185, 185, 185, 0.3);
+    box-shadow: 0 4px 10px -1px rgba(119, 119, 119, 0.698);
+}
+
+#footer
+{
+	padding: 15px;
+  font-size: 0.8em;
+  text-align: center;
+  line-height: 0.8em;
+}
+
+#hconsulta {
+    background: url("../img/consultar.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+    float: left;
+    padding-right: 10px;
+    width: 32px;
+    height: 32px;
+}
+
+#hdetalle {
+    float: left;
+    padding-right: 10px;
+}
+
+#hempresa {
+    background: url("../img/empresa.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+    float: left;
+    padding-right: 4px;
+    width: 32px;
+    height: 32px;
+}
+
+#husuario {
+    float: left;
+    width: 32px;
+    height: 32px;
+}
+
+#hmodifica {
+    background: url("../img/modificar.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+    float: left;
+    padding-right: 4px;
+    width: 32px;
+    height: 32px;
+}
+
+hr.soften {
+  height: 1px;
+  margin: 20px 0;
+  background-image: -webkit-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,.1), rgba(0,0,0,0));
+  background-image:    -moz-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,.1), rgba(0,0,0,0));
+  background-image:     -ms-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,.1), rgba(0,0,0,0));
+  background-image:      -o-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,.1), rgba(0,0,0,0));
+  border: 0;
+}
+
+.sort-link { color:#666; }
+
+.header {
+  margin-right: 8px;
+  vertical-align: bottom;
+}
+
+tr.azul
+{
+        /*background: #4394f0;*/
+        color: #4394f0;
+        font-weight: bold;
+}
+tr.verde
+{
+        /*text-indent:0.2cm;*/
+        color: #13cb24;
+        font-weight: bold;
+}
+tr.naranja
+{
+        /*text-indent:0.4cm;*/
+        color: #ff5e00;
+        font-weight: bold;
+}
+tr.vinotinto
+{
+        /*text-indent:0.6cm;*/
+        color: #8A0808;
+        font-weight: bold;
+}
+tr.rojo
+{
+        /*text-indent:0.6cm;*/
+        color: #ee5f5b;
+        font-weight: bold;
+}
+tr.negrita
+{       
+    /*text-indent:0.8cm;*/
+        font-weight: bold;
+}
+tr.gris
+{
+        /*text-indent:1cm;*/
+        color: #585858;
+        font-weight: bold;
+}
+tr.white
+{
+        /*text-indent:1.2cm;*/
+        background: #FFFFFF;
+}

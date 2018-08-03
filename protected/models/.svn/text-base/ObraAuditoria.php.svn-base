@@ -1,0 +1,263 @@
+<?php
+
+/**
+ * This is the model class for table "maquinaria.obra_auditoria".
+ *
+ * The followings are the available columns in table 'maquinaria.obra_auditoria':
+ * @property integer $id_obra_pk
+ * @property string $str_descripcion
+ * @property integer $id_estado_fk
+ * @property integer $id_municipio_fk
+ * @property integer $id_parroquia_fk
+ * @property string $str_ubicacion
+ * @property boolean $bln_borrado
+ * @property integer $id_estatus_obra_fk
+ * @property string $txt_observacion
+ * @property integer $id_organismo_ejecutor_fk
+ * @property string $str_alias
+ * @property integer $id_tipo_accion
+ * @property integer $id_contratista
+ * @property integer $id_tipo
+ * @property integer $id_fuente_financiamiento
+ * @property integer $idclasificacionobr
+ * @property integer $idingcontacto
+ * @property string $puntocuenta
+ * @property double $monto
+ * @property string $fechainicio
+ * @property string $fechacul
+ * @property integer $created_by
+ * @property string $created_date
+ * @property integer $modified_by
+ * @property string $modified_date
+ * @property integer $igresidente
+ * @property integer $igestadal
+ * @property string $fechap
+ * @property integer $id_accionobra
+ * @property string $accion
+ * @property string $fecha_accion
+ */
+class ObraAuditoria extends CActiveRecord
+{
+    
+    
+    public $modified_date_range = array(); 
+	/**
+	 * @return string the associated database table name
+	 */
+	public function tableName()
+	{
+		return 'maquinaria.obra_auditoria';
+	}
+
+	/**
+	 * @return array validation rules for model attributes.
+	 */
+	public function rules()
+	{
+		// NOTE: you should only define rules for those attributes that
+		// will receive user inputs.
+		return array(
+			array('id_estado_fk, id_municipio_fk, id_parroquia_fk, id_estatus_obra_fk, id_organismo_ejecutor_fk, id_tipo_accion, id_contratista, id_tipo, id_fuente_financiamiento, idclasificacionobr, idingcontacto, created_by, modified_by, igresidente, igestadal, id_accionobra', 'numerical', 'integerOnly'=>true),
+			array('monto', 'numerical'),
+			array('str_ubicacion', 'length', 'max'=>1500),
+			array('str_alias', 'length', 'max'=>50),
+			array('str_descripcion, bln_borrado, txt_observacion, puntocuenta, fechainicio, fechacul, created_date, modified_date, fechap, accion, fecha_accion', 'safe'),
+			// The following rule is used by search().
+			// @todo Please remove those attributes that should not be searched.
+			array('id_obra_pk, str_descripcion, id_estado_fk, id_municipio_fk, id_parroquia_fk, str_ubicacion, bln_borrado, id_estatus_obra_fk, txt_observacion, id_organismo_ejecutor_fk, str_alias, id_tipo_accion, id_contratista, id_tipo, id_fuente_financiamiento, idclasificacionobr, idingcontacto, puntocuenta, monto, fechainicio, fechacul, created_by, created_date, modified_by, modified_date, igresidente, igestadal, fechap, id_accionobra, accion, fecha_accion, modified_date_range', 'safe', 'on'=>'search'),
+		);
+	}
+
+	/**
+	 * @return array relational rules.
+	 */
+	public function relations()
+	{
+		// NOTE: you may need to adjust the relation name and the related
+		// class name for the relations automatically generated below.
+		return array(
+                  'Estado' => array(self::BELONGS_TO, 'TblEstado', 'id_estado_fk'),
+                  'Estado2' => array(self::BELONGS_TO, 'TblEstado', 'id_estado_fk2'),
+                  'Municipio' => array(self::BELONGS_TO, 'TblMunicipio', 'id_municipio_fk'),
+                  'Municipio2' => array(self::BELONGS_TO, 'TblMunicipio', 'id_municipio_fk2'),
+                  'Parroquia' => array(self::BELONGS_TO, 'TblParroquia', 'id_parroquia_fk'),
+                  'Estatuso' => array(self::BELONGS_TO, 'EstatusObra', 'id_estatus_obra_fk'),
+                  'Organismoe' => array(self::BELONGS_TO, 'EnteEjecutor', 'id_organismo_ejecutor_fk'),
+                  'Personac' => array(self::BELONGS_TO, 'Funcionario', 'id_persona_contacto_fk'),
+                  'Tipo' => array(self::BELONGS_TO, 'AccionTipo', 'id_tipo_accion'),
+                  'Contratista' => array(self::BELONGS_TO, 'TblContratista', 'id_contratista'),
+                  'idTipo' => array(self::BELONGS_TO, 'TipoMedidas', 'id_tipo'),
+                  'idFuente' => array(self::BELONGS_TO, 'FuenteFinanciamiento', 'id_fuente_financiamiento'),
+                  'idVia' => array(self::BELONGS_TO, 'ClasificacionObra', 'idclasificacionobr'),
+                  'idContacto2' => array(self::BELONGS_TO, 'IngContacto', 'idingcontacto'),
+                  'Residente' => array(self::BELONGS_TO, 'IngContacto', 'igresidente'),
+                  'Estadal' => array(self::BELONGS_TO, 'IngContacto', 'igestadal'),
+                  'Accion' => array(self::BELONGS_TO, 'AccionTipo', 'id_tipo_accion'),
+                  'Clasificacion' => array(self::BELONGS_TO, 'ClasificacionObra', 'idclasificacionobr'),
+                  'Ano' => array(self::BELONGS_TO, 'Accionobra', 'id_accionobra'),
+                  'Usuario' => array(self::BELONGS_TO, 'Usuario', 'modified_by'),
+                  
+		);
+	}
+
+
+	/**
+	 * @return array customized attribute labels (name=>label)
+	 */
+	public function attributeLabels()
+	{
+		return array(
+			'id_obra_pk' => 'Id Obra',
+			'str_descripcion' => 'Descripcion',
+			'id_estado_fk' => 'Estado',
+			'id_municipio_fk' => 'Municipio',
+			//'id_parroquia_fk' => 'Id Parroquia Fk',
+			'str_ubicacion' => 'Ubicacion',
+			'bln_borrado' => 'Borrado',
+			'id_estatus_obra_fk' => 'Estatus',
+			'txt_observacion' => 'Observacion',
+			'id_organismo_ejecutor_fk' => 'Organismo Ejecutor',
+			'str_alias' => 'Alias Obra',
+			'id_tipo_accion' => 'Reguimen de Seguimiento',
+			'id_contratista' => 'Contratista',
+			'id_tipo' => 'Unidad',
+			'id_fuente_financiamiento' => 'Fuente Financiamiento',
+			'idclasificacionobr' => 'Tipo',
+			'idingcontacto' => 'Ing Contacto',
+			'puntocuenta' => 'Punto Cuenta',
+			'monto' => 'Monto',
+			'fechainicio' => 'Fecha Inicio',
+			'fechacul' => 'Fecha Culminacion',
+			'created_by' => 'Created By',
+			'created_date' => 'Created Date',
+			'modified_by' => 'Modified By',
+			'modified_date' => 'Modified Date',
+			'igresidente' => 'Ing Residente',
+			'igestadal' => 'Ing Estadal',
+			'fechap' => 'Fecha Propuesta',
+			'id_accionobra' => 'Año de la Obra',
+			'accion' => 'Accion',
+			'fecha_accion' => 'Fecha Accion',
+			'db_avance_fisico' => 'Avance Fisico (%)',
+		);
+	}
+
+	/**
+	 * Retrieves a list of models based on the current search/filter conditions.
+	 *
+	 * Typical usecase:
+	 * - Initialize the model fields with values from filter form.
+	 * - Execute this method to get CActiveDataProvider instance which will filter
+	 * models according to data in model fields.
+	 * - Pass data provider to CGridView, CListView or any similar widget.
+	 *
+	 * @return CActiveDataProvider the data provider that can return the models
+	 * based on the search/filter conditions.
+	 */
+	public function search()
+	{
+		// @todo Please modify the following code to remove attributes that should not be searched.
+
+		$criteria=new CDbCriteria;
+
+		$criteria->compare('id_obra_pk',$this->id_obra_pk);
+		$criteria->compare('LOWER(str_descripcion)',  strtolower($this->str_descripcion),true);
+		$criteria->compare('id_estado_fk',$this->id_estado_fk);
+		$criteria->compare('id_municipio_fk',$this->id_municipio_fk);
+		
+		$criteria->compare('LOWER(str_ubicacion)',strtolower($this->str_ubicacion),true);
+		$criteria->compare('bln_borrado',$this->bln_borrado);
+		$criteria->compare('id_estatus_obra_fk',$this->id_estatus_obra_fk);
+		$criteria->compare('txt_observacion',$this->txt_observacion,true);
+		$criteria->compare('id_organismo_ejecutor_fk',$this->id_organismo_ejecutor_fk);
+		$criteria->compare('str_alias',$this->str_alias,true);
+		$criteria->compare('id_tipo_accion',$this->id_tipo_accion);
+		$criteria->compare('id_contratista',$this->id_contratista);
+		$criteria->compare('id_tipo',$this->id_tipo);
+		$criteria->compare('id_fuente_financiamiento',$this->id_fuente_financiamiento);
+		$criteria->compare('idclasificacionobr',$this->idclasificacionobr);
+		$criteria->compare('idingcontacto',$this->idingcontacto);
+		$criteria->compare('punto_cuenta',$this->punto_cuenta,true);
+		$criteria->compare('monto',$this->monto);
+		$criteria->compare('fechainicio',$this->fechainicio,true);
+		$criteria->compare('fechacul',$this->fechacul,true);
+		$criteria->compare('created_by',$this->created_by);
+		$criteria->compare('created_date',$this->created_date,true);
+		$criteria->compare('modified_by',$this->modified_by);
+		
+		$criteria->compare('igresidente',$this->igresidente);
+		$criteria->compare('igestadal',$this->igestadal);
+		$criteria->compare('fechap',$this->fechap,true);
+		$criteria->compare('id_accionobra',$this->id_accionobra);
+		$criteria->compare('accion',$this->accion,true);
+		$criteria->compare('fecha_accion',$this->fecha_accion,true);
+
+		
+        
+        $from = $to = '';
+          if (count($this->modified_date_range)>=1) {
+              if (isset($this->modified_date_range['from'])) {
+                  $from = $this->modified_date_range['from'];
+              }
+              if (isset($this->modified_date_range['to'])) {
+                  $to= $this->modified_date_range['to'];
+              }
+          }
+          if ($from!='' || $to !='') {
+              if ($from!='' && $to!='') {
+                  $from = date("Y-m-d", strtotime($from));
+                  $to = date("Y-m-d", strtotime($to));
+                  $criteria->compare('modified_date',">= $from",false);
+                  $criteria->compare('modified_date',"<= $to",false);
+              }
+              else {
+                  if ($from!='') $creation_time = $from;
+                  if ($to != '') $creation_time = $to;
+                  $creation_time = date("Y-m-d", strtotime($creation_time));
+                  $criteria->compare('modified_date', "$creation_time" ,false);
+              }
+          }
+                    //fechainicio_range
+          $from = $to = '';
+          if (count($this->modified_date_range)>=1) {
+              if (isset($this->modified_date_range['from'])) {
+                  $from = $this->modified_date_range['from'];
+              }
+              if (isset($this->modified_date_range['to'])) {
+                  $to= $this->modified_date_range['to'];
+              }
+          }
+          if ($from!='' || $to !='') {
+              if ($from!='' && $to!='') {
+                  $from = date("Y-m-d", strtotime($from));
+                  $to = date("Y-m-d", strtotime($to));
+                  $criteria->compare('modified_date',">= $from",false);
+                  $criteria->compare('modified_date',"<= $to",false);
+              }
+              else {
+                  if ($from!='') $creation_time = $from;
+                  if ($to != '') $creation_time = $to;
+                  $creation_time = date("Y-m-d", strtotime($creation_time));
+                  $criteria->compare('modified_date', "$creation_time" ,false);
+              }
+          }
+          
+        
+          return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+		));
+	}
+        
+          
+
+	/**
+	 * Returns the static model of the specified AR class.
+	 * Please note that you should have this exact method in all your CActiveRecord descendants!
+	 * @param string $className active record class name.
+	 * @return ObraAuditoria the static model class
+	 */
+	public static function model($className=__CLASS__)
+	{
+		return parent::model($className);
+	}
+}

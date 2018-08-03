@@ -1,0 +1,225 @@
+<?php
+
+/**
+ * This is the model class for table "valuaciones.valuacionestatus".
+ *
+ * The followings are the available columns in table 'valuaciones.valuacionestatus':
+ * @property integer $id
+ * @property integer $id_valuacion
+ * @property integer $id_status
+ * @property integer $id_ubicvaluacion
+ * @property string $fechaexp
+ * @property string $observacion
+ * @property boolean $blnborrado
+ * @property string $created_date
+ * @property string $modified_date
+ * @property integer $created_by
+ * @property integer $modified_by
+ */
+class Valuacionestatus extends CActiveRecord
+{
+    public $fechaexp_range = array();
+	/**
+	 * @return string the associated database table name
+	 */
+	public function tableName()
+	{
+		return 'valuaciones.valuacionestatus';
+	}
+
+	/**
+	 * @return array validation rules for model attributes.
+	 */
+	public function rules()
+	{
+            
+            
+                $id=Yii::app()->user->id; 
+		$sql='select * from maquinaria.usuario where id='.$id.';'; 
+                $connection=Yii::app()->db;
+                $command=$connection->createCommand($sql); 
+                $row=$command->queryRow(); 
+                $id_perfil=$row["id_perfil_direccion"];
+                
+		// NOTE: you should only define rules for those attributes that
+		// will receive user inputs.
+                
+                 if($id_perfil==11){
+                return array(
+			array('id_valuacion, id_status, id_ubicvaluacion, valuacion_ante, created_by, modified_by', 'numerical', 'integerOnly'=>true),
+                        array('monto', 'numerical'),
+			array('hora,fechaexp, monto, observacion, blnborrado, valuacion_ante, created_date, encargado, documento,  modified_date', 'safe'),
+                        array('id_valuacion, monto,fechaexp, observacion', 'required'),
+                        array('documento', 'file','types'=>'jpg, gif, png,jpeg,JPG,JPEG,pdf,doc,ods', 'allowEmpty'=>true, 'on'=>'update'),
+                        array('documento', 'length', 'max'=>455, 'on'=>'insert,update'),
+               //        array('monto','compare','compareAttribute'=>'monto2','operator'=>'<=','message'=>'EL MONTO INGRESADO NO PUEDE SER SUPERIOR AL MONTO DEL CONTRATO'),
+			//array('imagen1', 'required'),
+			array('documento', 'unique'),
+			// The following rule is used by search().
+			// @todo Please remove those attributes that should not be searched.
+			array('hora,monto, id, id_valuacion, valuacion_ante, id_status, encargado, id_ubicvaluacion, fechaexp, observacion, blnborrado, documento, created_date, modified_date, created_by, modified_by', 'safe', 'on'=>'search'),
+		);    
+                 }else{
+		return array(
+			array('id_valuacion, id_status, id_ubicvaluacion, valuacion_ante, created_by, modified_by', 'numerical', 'integerOnly'=>true),
+                        array('monto', 'numerical'),
+			array('hora,fechaexp, monto, observacion, blnborrado, valuacion_ante, created_date, encargado, documento,  modified_date', 'safe'),
+                        array('id_valuacion, fechaexp, observacion', 'required'),
+                        array('documento', 'file','types'=>'jpg, gif, png,jpeg,JPG,JPEG,pdf,doc,ods', 'allowEmpty'=>true, 'on'=>'update'),
+                        array('documento', 'length', 'max'=>455, 'on'=>'insert,update'),
+               //        array('monto','compare','compareAttribute'=>'monto2','operator'=>'<=','message'=>'EL MONTO INGRESADO NO PUEDE SER SUPERIOR AL MONTO DEL CONTRATO'),
+			//array('imagen1', 'required'),
+			array('documento', 'unique'),
+			// The following rule is used by search().
+			// @todo Please remove those attributes that should not be searched.
+			array('hora,monto, id, id_valuacion, valuacion_ante, id_status, encargado, id_ubicvaluacion, fechaexp, observacion, blnborrado, documento, created_date, modified_date, created_by, modified_by', 'safe', 'on'=>'search'),
+		);
+        }}
+
+	/**
+	 * @return array relational rules.
+	 */
+	public function relations()
+	{
+            
+
+		// NOTE: you may need to adjust the relation name and the related
+		// class name for the relations automatically generated below.
+		return array(                    
+                 //   'Rstatusv1' => array(self::BELONGS_TO, 'Estatusvaluacion', 'id_status'),
+                    'Rubicv' => array(self::BELONGS_TO, 'PerfilDireccion', 'id_ubicvaluacion'),
+                    'Rubicv21' => array(self::BELONGS_TO, 'PerfilDireccion', 'valuacion_ante'),
+                    'Rstatusv' => array(self::BELONGS_TO, 'Estatusvaluacion', 'id_status'),
+                    
+                   
+		);
+	}
+
+	/**
+	 * @return array customized attribute labels (name=>label)
+	 */
+	public function attributeLabels()
+	{
+		return array(
+			'id' => 'ID',
+			'id_valuacion' => 'Id Valuacion',
+			'id_status' => 'Estatus de la valuacion',
+			'id_ubicvaluacion' => 'Ubicacion de la valuacion',
+			'fechaexp' => 'Fecha',
+			'observacion' => 'Observacion',
+			'blnborrado' => 'Blnborrado',
+			'created_date' => 'Created Date',
+			'modified_date' => 'Modified Date',
+			'created_by' => 'Created By',
+			'modified_by' => 'Modified By',
+                        'hora'=>'Hora',
+                        'monto'=>'Monto',
+                      'encargado'=>'Responsable',
+		);
+	}
+
+	/**
+	 * Retrieves a list of models based on the current search/filter conditions.
+	 *
+	 * Typical usecase:
+	 * - Initialize the model fields with values from filter form.
+	 * - Execute this method to get CActiveDataProvider instance which will filter
+	 * models according to data in model fields.
+	 * - Pass data provider to CGridView, CListView or any similar widget.
+	 *
+	 * @return CActiveDataProvider the data provider that can return the models
+	 * based on the search/filter conditions.
+         */
+        
+        
+        public function direcciondocumento(){
+        return Yii::app()->request->hostInfo.'/obra/documentos/'.$this->documento;
+        }
+	public function search()
+	{
+		// @todo Please modify the following code to remove attributes that should not be searched.
+
+		$criteria=new CDbCriteria;
+                $sort=new CSort();
+		$criteria=new CDbCriteria;
+
+		$criteria->compare('id',$this->id);
+		$criteria->compare('id_valuacion',$this->id_valuacion);
+		$criteria->compare('id_status',$this->id_status);
+		$criteria->compare('id_ubicvaluacion',$this->id_ubicvaluacion);
+		$criteria->compare('fechaexp',$this->fechaexp,true);
+                $criteria->compare('hora',$this->hora,true);
+		$criteria->compare('observacion',$this->observacion,true);
+		$criteria->compare('blnborrado',$this->blnborrado);
+		$criteria->compare('created_date',$this->created_date,true);
+		$criteria->compare('modified_date',$this->modified_date,true);
+		$criteria->compare('created_by',$this->created_by);
+		$criteria->compare('modified_by',$this->modified_by);
+                $criteria->compare('monto',$this->monto);
+
+                 //fechavaluacion_range
+          $from = $to = '';
+          if (count($this->fechaexp_range)>=1) {
+              if (isset($this->fechaexp_range['from'])) {
+                  $from = $this->fechaexp_range['from'];
+              }
+              if (isset($this->fechaexp_range['to'])) {
+                  $to= $this->fechaexp_range['to'];
+              }
+          }
+          if ($from!='' || $to !='') {
+              if ($from!='' && $to!='') {
+                  $from = date("Y-m-d", strtotime($from));
+                  $to = date("Y-m-d", strtotime($to));
+                  $criteria->compare('fechaexp',">= $from",false);
+                  $criteria->compare('fechaexp',"<= $to",false);
+              }
+              else {
+                  if ($from!='') $creation_time = $from;
+                  if ($to != '') $creation_time = $to;
+                  $creation_time = date("Y-m-d", strtotime($creation_time));
+                  $criteria->compare('fechaexp', "$creation_time" ,false);
+              }
+          }
+
+
+
+		 $_SESSION['datos_filtrados'] = new CActiveDataProvider($this, array(
+                      'criteria'=>$criteria,
+                      'sort'=>$sort,
+                      'pagination'=>false,
+              ));
+                
+		return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+		));
+	}
+
+	/**
+	 * Returns the static model of the specified AR class.
+	 * Please note that you should have this exact method in all your CActiveRecord descendants!
+	 * @param string $className active record class name.
+	 * @return Valuacionestatus the static model class
+	 */
+	public static function model($className=__CLASS__)
+	{
+		return parent::model($className);
+	}
+        
+         public function behaviors()
+{
+    return array(
+        'CTimestampBehavior' => array(
+            'class' => 'zii.behaviors.CTimestampBehavior',
+            'createAttribute' => 'created_date',
+            'updateAttribute' => 'modified_date',
+            'setUpdateOnCreate' => true,
+        ),
+        'BlameableBehavior' => array(
+            'class' => 'application.components.behaviors.BlameableBehavior',
+            'createdByColumn' => 'created_by', 
+            'updatedByColumn' => 'modified_by',  
+        ),
+    );  
+}
+}

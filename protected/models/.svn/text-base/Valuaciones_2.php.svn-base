@@ -1,0 +1,140 @@
+<?php
+
+/**
+ * This is the model class for table "valuaciones.valuaciones".
+ *
+ * The followings are the available columns in table 'valuaciones.valuaciones':
+ * @property integer $id
+ * @property integer $id_contrato
+ * @property integer $id_tipovaluacion
+ * @property string $nvaluacion
+ * @property string $observacion
+ * @property string $fechavaluacion
+ * @property integer $id_estatus
+ * @property boolean $blnborrado
+ * @property string $created_date
+ * @property string $modified_date
+ * @property integer $created_by
+ * @property integer $modified_by
+ * @property integer $id_ubicvaluacion
+ * @property double $montoneto
+ * @property integer $valoranticipo
+ * @property string $hora
+ */
+class Valuaciones extends CActiveRecord
+{
+	/**
+	 * @return string the associated database table name
+	 */
+	public function tableName()
+	{
+		return 'valuaciones.valuaciones';
+	}
+
+	/**
+	 * @return array validation rules for model attributes.
+	 */
+	public function rules()
+	{
+		// NOTE: you should only define rules for those attributes that
+		// will receive user inputs.
+		return array(
+			array('id_contrato, id_tipovaluacion, id_estatus, created_by, modified_by, id_ubicvaluacion, valoranticipo', 'numerical', 'integerOnly'=>true),
+			array('montoneto', 'numerical'),
+			array('nvaluacion, observacion, fechavaluacion, blnborrado, created_date, modified_date, hora', 'safe'),
+			// The following rule is used by search().
+			// @todo Please remove those attributes that should not be searched.
+			array('id, id_contrato, id_tipovaluacion, nvaluacion, observacion, fechavaluacion, id_estatus, blnborrado, created_date, modified_date, created_by, modified_by, id_ubicvaluacion, montoneto, valoranticipo, hora', 'safe', 'on'=>'search'),
+		);
+	}
+
+	/**
+	 * @return array relational rules.
+	 */
+	public function relations()
+	{
+		// NOTE: you may need to adjust the relation name and the related
+		// class name for the relations automatically generated below.
+		return array(                     
+                    'Rtipov' => array(self::BELONGS_TO, 'Tipovaluacion', 'id_tipovaluacion'),
+                    'Rstatusv' => array(self::BELONGS_TO, 'Estatusvaluacion', 'id_estatus'),
+                    'Rubicv' => array(self::BELONGS_TO, 'Ubicvaluacion', 'id_ubicvaluacion'),
+		);
+	}
+
+	/**
+	 * @return array customized attribute labels (name=>label)
+	 */
+	public function attributeLabels()
+	{
+		return array(
+			'id' => 'ID',
+			'id_contrato' => 'Id Contrato',
+			'id_tipovaluacion' => 'Id Tipovaluacion',
+			'nvaluacion' => 'Nvaluacion',
+			'observacion' => 'Observacion',
+			'fechavaluacion' => 'Fechavaluacion',
+			'id_estatus' => 'Id Estatus',
+			'blnborrado' => 'Blnborrado',
+			'created_date' => 'Created Date',
+			'modified_date' => 'Modified Date',
+			'created_by' => 'Created By',
+			'modified_by' => 'Modified By',
+			'id_ubicvaluacion' => 'Id Ubicvaluacion',
+			'montoneto' => 'Montoneto',
+			'valoranticipo' => 'Valoranticipo',
+			'hora' => 'Hora',
+		);
+	}
+
+	/**
+	 * Retrieves a list of models based on the current search/filter conditions.
+	 *
+	 * Typical usecase:
+	 * - Initialize the model fields with values from filter form.
+	 * - Execute this method to get CActiveDataProvider instance which will filter
+	 * models according to data in model fields.
+	 * - Pass data provider to CGridView, CListView or any similar widget.
+	 *
+	 * @return CActiveDataProvider the data provider that can return the models
+	 * based on the search/filter conditions.
+	 */
+	public function search()
+	{
+		// @todo Please modify the following code to remove attributes that should not be searched.
+
+		$criteria=new CDbCriteria;
+
+		$criteria->compare('id',$this->id);
+		$criteria->compare('id_contrato',$this->id_contrato);
+		$criteria->compare('id_tipovaluacion',$this->id_tipovaluacion);
+		$criteria->compare('nvaluacion',$this->nvaluacion,true);
+		$criteria->compare('observacion',$this->observacion,true);
+		$criteria->compare('fechavaluacion',$this->fechavaluacion,true);
+		$criteria->compare('id_estatus',$this->id_estatus);
+		$criteria->compare('blnborrado',$this->blnborrado);
+		$criteria->compare('created_date',$this->created_date,true);
+		$criteria->compare('modified_date',$this->modified_date,true);
+		$criteria->compare('created_by',$this->created_by);
+		$criteria->compare('modified_by',$this->modified_by);
+		$criteria->compare('id_ubicvaluacion',$this->id_ubicvaluacion);
+		$criteria->compare('montoneto',$this->montoneto);
+		$criteria->compare('valoranticipo',$this->valoranticipo);
+		$criteria->compare('hora',$this->hora,true);
+
+		return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+		));
+	}
+
+	/**
+	 * Returns the static model of the specified AR class.
+	 * Please note that you should have this exact method in all your CActiveRecord descendants!
+	 * @param string $className active record class name.
+	 * @return Valuaciones the static model class
+	 */
+	public static function model($className=__CLASS__)
+	{
+		return parent::model($className);
+	}
+}

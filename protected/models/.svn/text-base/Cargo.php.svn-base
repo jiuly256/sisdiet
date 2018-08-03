@@ -1,0 +1,120 @@
+<?php
+
+/**
+ * This is the model class for table "maquinaria.cargo".
+ *
+ * The followings are the available columns in table 'maquinaria.cargo':
+ * @property integer $id
+ * @property string $descripcion
+ *
+ * The followings are the available model relations:
+ * @property IngContacto[] $ingContactos
+ */
+class Cargo extends CActiveRecord
+{
+	/**
+	 * @return string the associated database table name
+	 */
+	public function tableName()
+	{
+		return 'maquinaria.cargo';
+	}
+
+	/**
+	 * @return array validation rules for model attributes.
+	 */
+	public function rules()
+	{
+		// NOTE: you should only define rules for those attributes that
+		// will receive user inputs.
+		return array(
+			array('descripcion', 'length', 'max'=>550),
+                    	array('descripcion', 'required'),
+                       array('id_estado_fk, id_perfil_direccion', 'numerical', 'integerOnly'=>true),
+			// The following rule is used by search().
+			// @todo Please remove those attributes that should not be searched.
+			array('id, descripcion, id_estado_fk, id_perfil_direccion ', 'safe', 'on'=>'search'),
+		);
+	}
+
+	/**
+	 * @return array relational rules.
+	 */
+	public function relations()
+	{
+		// NOTE: you may need to adjust the relation name and the related
+		// class name for the relations automatically generated below.
+		return array(
+			'ingContactos' => array(self::HAS_MANY, 'IngContacto', 'idcargo'),
+		);
+	}
+
+	/**
+	 * @return array customized attribute labels (name=>label)
+	 */
+	public function attributeLabels()
+	{
+		return array(
+			'id' => 'ID',
+			'descripcion' => 'Descripcion',
+		);
+	}
+
+	/**
+	 * Retrieves a list of models based on the current search/filter conditions.
+	 *
+	 * Typical usecase:
+	 * - Initialize the model fields with values from filter form.
+	 * - Execute this method to get CActiveDataProvider instance which will filter
+	 * models according to data in model fields.
+	 * - Pass data provider to CGridView, CListView or any similar widget.
+	 *
+	 * @return CActiveDataProvider the data provider that can return the models
+	 * based on the search/filter conditions.
+	 */
+	public function search()
+	{
+		// @todo Please modify the following code to remove attributes that should not be searched.
+    $id=Yii::app()->user->id; 
+            $sql='select * from maquinaria.usuario where id='.$id.';'; 
+                $connection=Yii::app()->db;
+                $command=$connection->createCommand($sql); 
+                $row=$command->queryRow(); 
+                $id_perfil=$row["id_perfil_direccion"];
+                $perfil=$row["id_perfil"];
+                $estado=$row["id_estado"];
+            
+
+			     $criteria=new CDbCriteria;
+                $sort=new CSort();
+              if($perfil=='1' || $perfil=='5')
+                {
+//                $criteria->condition="id_perfil_direccion=$id_perfil";
+
+		$criteria->compare('id',$this->id);
+		$criteria->compare('LOWER(descripcion)',strtolower($this->descripcion),true);
+                }
+                else
+                {
+               //     $criteria->condition="id_estado_fk=$estado and id_perfil_direccion=$id_perfil";
+
+		$criteria->compare('id',$this->id);
+		$criteria->compare('LOWER(descripcion)',strtolower($this->descripcion),true);
+                }
+                
+		return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+		));
+	}
+
+	/**
+	 * Returns the static model of the specified AR class.
+	 * Please note that you should have this exact method in all your CActiveRecord descendants!
+	 * @param string $className active record class name.
+	 * @return Cargo the static model class
+	 */
+	public static function model($className=__CLASS__)
+	{
+		return parent::model($className);
+	}
+}

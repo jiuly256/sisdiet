@@ -1,0 +1,287 @@
+<?php
+
+/**
+ * This is the model class for table "valuaciones.valuaciones".
+ *
+ * The followings are the available columns in table 'valuaciones.valuaciones':
+ * @property integer $id
+ * @property integer $id_contrato
+ * @property integer $id_tipovaluacion
+ * @property string $nvaluacion
+ * @property string $observacion
+ * @property string $fechavaluacion
+ * @property integer $id_estatus
+ * @property boolean $blnborrado
+ * @property string $created_date
+ * @property string $modified_date
+ * @property integer $created_by
+ * @property integer $modified_by
+ * @property integer $id_ubicvaluacion
+ */
+class Valuaciones extends CActiveRecord
+{
+    public $fechacul_range = array();
+    public $fechavaluacion_range = array();
+	/**
+	 * @return string the associated database table name
+	 */
+	public function tableName()
+	{
+		return 'valuaciones.valuaciones';
+	}
+
+	/**
+	 * @return array validation rules for model attributes.
+	 */
+	public function rules()
+	{
+		// NOTE: you should only define rules for those attributes that
+		// will receive user inputs.
+		return array(
+			array('id_contrato,valoranticipo, valuacion_ante, id_tipovaluacion, id_obra_pk, id_estatus, created_by, modified_by, id_ubicvaluacion', 'numerical', 'integerOnly'=>true),
+			array('nvaluacion, dias,  valoranticipo, fuente, montoneto, observacion, hora, valuacion_ante, fechacul, fechavaluacion, blnborrado, oculto, 				      id_obra_pk, created_date, modified_date, encargado', 'safe'),
+                        //array('id_contrato, id_tipovaluacion, id_ubicvaluacion, id_estatus', 'required'),
+			array('id_contrato, id_tipovaluacion, id_ubicvaluacion, id_estatus, fechavaluacion', 'required'),
+			// The following rule is used by search().
+			// @todo Please remove those attributes that should not be searched.
+			array('id, dias, id_contrato, hora, fuente, valoranticipo, valuacion_ante, encargado, fechavaluacion_range, fechacul, fechacul_range, montoneto, id_tipovaluacion, nvaluacion, id_obra_pk, observacion, fechavaluacion, id_estatus, blnborrado, oculto,  created_date, modified_date, created_by, modified_by, id_ubicvaluacion', 'safe', 'on'=>'search'),
+		);
+	}
+
+	/**
+	 * @return array relational rules.
+	 */
+	public function relations()
+	{
+		// NOTE: you may need to adjust the relation name and the related
+		// class name for the relations automatically generated below.
+		return array(
+                    'Rtipov' => array(self::BELONGS_TO, 'Tipovaluacion', 'id_tipovaluacion'),
+                    'Rstatusv' => array(self::BELONGS_TO, 'Estatusvaluacion', 'id_estatus'),
+                     'Rubicv' => array(self::BELONGS_TO, 'PerfilDireccion', 'id_ubicvaluacion'),
+                     'Rubicv21' => array(self::BELONGS_TO, 'PerfilDireccion', 'valuacion_ante'),
+                     'Obra1' => array(self::BELONGS_TO, 'Obra', 'id_obra_pk'),
+                     'Cont' => array(self::BELONGS_TO, 'Contrato', 'id_contrato'),
+                     'Cont1' => array(self::BELONGS_TO, 'Contrato', 'id_contrato'),
+                     'idFuente2' => array(self::BELONGS_TO, 'FuenteFinanciamiento', 'fuente'),
+		);
+	}
+
+	/**
+	 * @return array customized attribute labels (name=>label)
+	 */
+	public function attributeLabels()
+	{
+		return array(
+			'id' => 'ID',
+			'id_contrato' => 'Id Contrato',
+			'id_tipovaluacion' => 'Tipo de valuacion',
+			'nvaluacion' => 'N° de valuacion',
+			'observacion' => 'Observacion',
+			'fechavaluacion' => 'Fecha de creacion',
+			'id_estatus' => 'Estatus',
+			'blnborrado' => 'Blnborrado',
+			'created_date' => 'Created Date',
+			'modified_date' => 'Modified Date',
+			'created_by' => 'Created By',
+			'modified_by' => 'Modified By',
+			'id_ubicvaluacion' => 'Ubicacion de envio de la valuacion',
+                        'montoneto' => 'Monto neto',
+			'valoranticipo' => 'Porcentaje del anticipo',
+                        //'fechacul'=>'Fecha de Culminacion',
+                        'encargado'=>'Encargado',
+                        'dias'=>'Dias',
+                        'Rubicv.nombre_descripcion'=>'Ubicacion de la valuacion',
+                    
+
+                      
+                    
+                    
+                                        
+		);
+	}
+
+
+	public function search()
+	{
+            
+             $id=Yii::app()->user->id; 
+		$sql='select * from maquinaria.usuario where id='.$id.';'; 
+                $connection=Yii::app()->db;
+                $command=$connection->createCommand($sql); 
+                $row=$command->queryRow(); 
+                $id_perfil=$row["id_perfil_direccion"];
+                $perfil=$row["id_perfil"];
+            
+		// @todo Please modify the following code to remove attributes that should not be searched.
+                $criteria=new CDbCriteria;
+                $sort=new CSort();
+                if($id_perfil=='16'|| $id_perfil=='13' || $id_perfil=='11' || $id_perfil=='6' || $id_perfil=='1')
+                {
+                    if($perfil=='1' || $perfil=='5')
+                    {
+
+                        $criteria=new CDbCriteria;
+                      //  $criteria->condition = "blnborrado=false";
+                        $criteria->compare('id',$this->id);
+                
+                    }
+                    elseif ($perfil=='2' || $perfil=='4') {
+                        
+                         if($id_perfil=='6' || $id_perfil=='1'){
+                             
+                           //  $criteria->condition = "blnborrado=false";
+                         }
+                        else{
+
+                            $criteria=new CDbCriteria;
+                            $criteria->condition = "id_ubicvaluacion=$id_perfil";
+
+                                    }
+                    }
+
+                }
+                else{
+                
+                $criteria=new CDbCriteria;
+                if($id_perfil==7)
+                {
+                $criteria->condition = "id_ubicvaluacion=7 or id_ubicvaluacion=99";}
+                else{
+                $criteria->condition = "id_ubicvaluacion=$id_perfil"; 
+                
+                }
+		
+                }
+                
+		$criteria->compare('id',$this->id);
+                //$criteria->compare('id_obra_pk',$this->id_obra_pk);
+               // $criteria->with =array('id_obra_pk');
+             //   $criteria->addSearchCondition('Obra1->str_descripcion', $this->id_obra_pk);
+	         // $criteria->compare('fechacul',$this->fechacul,true);
+		//$criteria->compare('id_contrato',$this->id_contrato);
+		$criteria->compare('id_tipovaluacion',$this->id_tipovaluacion);
+		$criteria->compare('nvaluacion',$this->nvaluacion,true);
+		$criteria->compare('observacion',$this->observacion,true);
+		$criteria->compare('fuente',$this->fuente);
+		$criteria->compare('fechavaluacion',$this->fechavaluacion,true);
+		$criteria->compare('id_estatus',$this->id_estatus);
+		$criteria->compare('blnborrado',$this->blnborrado);
+		$criteria->compare('created_date',$this->created_date,true);
+		$criteria->compare('modified_date',$this->modified_date,true);
+		$criteria->compare('created_by',$this->created_by);
+                $criteria->compare('hora',$this->hora,true);
+		$criteria->compare('modified_by',$this->modified_by);
+		$criteria->compare('id_ubicvaluacion',$this->id_ubicvaluacion);
+		$criteria->compare('valuacion_ante',$this->valuacion_ante);
+                $criteria->compare('montoneto',$this->montoneto);
+                $criteria->compare('valoranticipo',$this->valoranticipo);
+                $criteria->compare('dias',$this->dias);
+                
+                //Buscar obra en valuaciones declao un arreglo con el nombre de la relacion
+                $criteria->with =array('Obra1');
+                //declaro la condicion de la busqueda con el case sensitive (buscar mayusculas minusculas)
+                $criteria->addSearchCondition('LOWER("Obra1"."str_descripcion")',strtolower($this->id_obra_pk),true);
+                $criteria->with =array('Cont');
+                //declaro la condicion de la busqueda con el case sensitive (buscar mayusculas minusculas)
+                $criteria->addSearchCondition('LOWER("Cont"."ncontrato")',strtolower($this->id_contrato),true);
+               // $criteria->with =array('idFuente2');
+               // $criteria->addSearchCondition('LOWER("idFuente2"."descripcion")',strtolower($this->fuente),true);
+             /*   $criteria->with =array('Cont1');
+                //declaro la condicion de la busqueda con el case sensitive (buscar mayusculas minusculas)
+                $criteria->addSearchCondition('LOWER("Cont1"."nombcontratista")',strtolower($this->id_contrato),true);
+               // $criteria->with =array('idFuente2');
+               // $criteria->addSearchCondition('LOWER("idFuente2"."descripcion")',strtolower($this->fuente),true);*/
+                
+                
+//fecha de culminacion
+          $from = $to = '';
+          if (count($this->fechacul_range)>=1) {
+              if (isset($this->fechacul_range['from'])) {
+                  $from = $this->fechacul_range['from'];
+              }
+              if (isset($this->fechacul_range['to'])) {
+                  $to= $this->fechacul_range['to'];
+              }
+          }
+          if ($from!='' || $to !='') {
+              if ($from!='' && $to!='') {
+                  $from = date("Y-m-d", strtotime($from));
+                  $to = date("Y-m-d", strtotime($to));
+                  $criteria->compare('fechacul',">= $from",false);
+                  $criteria->compare('fechacul',"<= $to",false);
+              }
+              else {
+                  if ($from!='') $creation_time = $from;
+                  if ($to != '') $creation_time = $to;
+                  $creation_time = date("Y-m-d", strtotime($creation_time));
+                  $criteria->compare('fechacul', "$creation_time" ,false);
+              }
+          }
+          
+          //fecha creacion
+          $from = $to = '';
+          if (count($this->fechavaluacion_range)>=1) {
+              if (isset($this->fechavaluacion_range['from'])) {
+                  $from = $this->fechavaluacion_range['from'];
+              }
+              if (isset($this->fechavaluacion_range['to'])) {
+                  $to= $this->fechavaluacion_range['to'];
+              }
+          }
+          if ($from!='' || $to !='') {
+              if ($from!='' && $to!='') {
+                  $from = date("Y-m-d", strtotime($from));
+                  $to = date("Y-m-d", strtotime($to));
+                  $criteria->compare('fechavaluacion',">= $from",false);
+                  $criteria->compare('fechavaluacion',"<= $to",false);
+              }
+              else {
+                  if ($from!='') $creation_time = $from;
+                  if ($to != '') $creation_time = $to;
+                  $creation_time = date("Y-m-d", strtotime($creation_time));
+                  $criteria->compare('fechavaluacion', "$creation_time" ,false);
+              }
+          }
+
+
+
+		 $_SESSION['datos_filtrados'] = new CActiveDataProvider($this, array(
+                      'criteria'=>$criteria,
+                      'sort'=>$sort,
+                      'pagination'=>false,
+              ));
+                
+		return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+		));
+	}
+
+	/**
+	 * Returns the static model of the specified AR class.
+	 * Please note that you should have this exact method in all your CActiveRecord descendants!
+	 * @param string $className active record class name.
+	 * @return Valuaciones the static model class
+	 */
+	public static function model($className=__CLASS__)
+	{
+		return parent::model($className);
+	}
+        
+         public function behaviors()
+{
+    return array(
+        'CTimestampBehavior' => array(
+            'class' => 'zii.behaviors.CTimestampBehavior',
+            'createAttribute' => 'created_date',
+            'updateAttribute' => 'modified_date',
+            'setUpdateOnCreate' => true,
+        ),
+        'BlameableBehavior' => array(
+            'class' => 'application.components.behaviors.BlameableBehavior',
+            'createdByColumn' => 'created_by', 
+            'updatedByColumn' => 'modified_by',  
+        ),
+    );  
+}
+}

@@ -1,0 +1,437 @@
+<?php
+
+/**
+ * This is the model class for table "mantenimiento1.obra_mantenimiento".
+ *
+ * The followings are the available columns in table 'mantenimiento1.obra_mantenimiento':
+ * @property integer $id_obra_pk2
+ * @property string $descripcion
+ * @property integer $id_estado_fk1
+ * @property string $str_ubicacion1
+ * @property integer $int_km_prog1
+ * @property integer $int_km_logr1
+ * @property integer $int_por_km1
+ * @property integer $int_m3_prog1
+ * @property boolean $bln_borrado
+ * @property integer $id_estatus_obra_fk1
+ * @property double $db_avance_fisico1
+ * @property double $db_empleo_directo1
+ * @property double $db_empleo_indirecto1
+ * @property double $db_cantidad_beneficiario1
+ * @property string $txt_observacion1
+ * @property integer $id_organismo_ejecutor_fk1
+ * @property string $txt_actividades1
+ * @property string $imagen1
+ * @property string $imagen2
+ * @property string $imagen3
+ * @property string $imagen4
+ * @property string $imagen5
+ * @property string $imagen6
+ * @property string $imagen7
+ * @property string $imagen8
+ * @property double $dob_avance_fisicor1
+ * @property string $str_alias1
+ * @property integer $id_tipo_accion1
+ * @property string $txt_beneficios_usuarios1
+ * @property string $str_codigo_contrato1
+ * @property string $txt_avances_impacto1
+ * @property string $txt_sectores_atendidos1
+ * @property integer $id_contratista1
+ * @property double $alcance1
+ * @property integer $id_tipo1
+ * @property double $avance_financiero1
+ * @property integer $idclasificacionobr1
+ * @property integer $idingcontacto1
+ * @property string $ruta_critica1
+ * @property string $puntocuenta1
+ * @property double $monto1
+ * @property string $fechainicio1
+ * @property string $fechacul1
+ * @property integer $created_by
+ * @property string $created_date
+ * @property integer $modified_by
+ * @property string $modified_date
+ * @property integer $igresidente1
+ * @property integer $igestadal1
+ * @property integer $id_accionobra1
+ * @property string $alcance_politico1
+ */
+class Obramantenimiento extends CActiveRecord
+{
+    
+     public $fechacul1_range = array();
+    
+    
+	/**
+	 * @return string the associated database table name
+	 */
+	public function tableName()
+	{
+		return 'mantenimiento1.obramantenimiento';
+	}
+
+	/**
+	 * @return array validation rules for model attributes.
+	 */
+	public function rules()
+	{
+		// NOTE: you should only define rules for those attributes that
+		// will receive user inputs.
+		return array(
+                        array('id_estado_fk1, descripcion,id_estatus_obra_fk1, fechainicio1, fechacul1, str_codigo_contrato1, id_contratista1, monto1, id_accionobra1, idclasificacionobr1, id_tipo_accion1, id_tipo1, db_avance_fisico1, dob_avance_fisicor1, id_troncal', 'required'),                       
+			array('id_estado_fk1, int_km_prog1, id_troncal, int_km_logr1, int_por_km1, int_m3_prog1, id_estatus_obra_fk1, id_organismo_ejecutor_fk1, id_tipo_accion1, id_contratista1, id_tipo1, idclasificacionobr1, idingcontacto1, created_by, modified_by, igresidente1, igestadal1, id_accionobra1', 'numerical', 'integerOnly'=>true),
+			array('db_avance_fisico1, db_empleo_directo1, db_empleo_indirecto1, db_cantidad_beneficiario1, dob_avance_fisicor1, alcance1, avance_financiero1, monto1', 'numerical'),
+			array('str_ubicacion1', 'length', 'max'=>1500),
+			array('str_alias1', 'length', 'max'=>150),
+			array('str_codigo_contrato1', 'length', 'max'=>100),
+			array('descripcion, bln_borrado, txt_observacion1, txt_actividades1, imagen1, imagen2, imagen3, imagen4, imagen5, imagen6, imagen7, imagen8, txt_beneficios_usuarios1, txt_avances_impacto1, txt_sectores_atendidos1, ruta_critica1, puntocuenta1, fechainicio1, fechacul1, created_date, modified_date, alcance_politico1, id_troncal, fechacul1_range', 'safe'),
+			// The following rule is used by search().
+			// @todo Please remove those attributes that should not be searched.
+			array('id_obra_pk2, descripcion, id_estado_fk1, fechacul1_range, str_ubicacion1, int_km_prog1, int_km_logr1, int_por_km1, int_m3_prog1, bln_borrado, id_estatus_obra_fk1, db_avance_fisico1, db_empleo_directo1, db_empleo_indirecto1, db_cantidad_beneficiario1, txt_observacion1, id_organismo_ejecutor_fk1, txt_actividades1, imagen1, id_troncal, imagen2, imagen3, imagen4, imagen5, imagen6, imagen7, imagen8, dob_avance_fisicor1, str_alias1, id_tipo_accion1, txt_beneficios_usuarios1, str_codigo_contrato1, txt_avances_impacto1, txt_sectores_atendidos1, id_contratista1, alcance1, id_tipo1, avance_financiero1, idclasificacionobr1, idingcontacto1, ruta_critica1, puntocuenta1, monto1, fechainicio1, fechacul1, created_by, created_date, modified_by, modified_date, igresidente1, igestadal1, id_accionobra1, alcance_politico1', 'safe', 'on'=>'search'),
+		);
+	}
+
+	/**
+	 * @return array relational rules.
+	 */
+	public function relations()
+	{
+		// NOTE: you may need to adjust the relation name and the related
+		// class name for the relations automatically generated below.
+		return array(
+                  'Estado' => array(self::BELONGS_TO, 'TblEstado', 'id_estado_fk1'),
+                  
+                  'Estatuso' => array(self::BELONGS_TO, 'EstatusObra', 'id_estatus_obra_fk1'),
+                  'Troncal' => array(self::BELONGS_TO, 'TroncalOVia', 'id_troncal'),
+                  
+              //    'Tipo' => array(self::BELONGS_TO, 'AccionTipo', 'id_tipo_accion1'),
+                  'Accion1' => array(self::BELONGS_TO, 'ReguimienMantenimiento', 'id_tipo_accion1'),
+                  'Contratista1' => array(self::BELONGS_TO, 'TblContratista', 'id_contratista1'),
+                  'idTipo' => array(self::BELONGS_TO, 'MedidasMantenimiento', 'id_tipo1'),
+                  
+                
+                  'Residente1' => array(self::BELONGS_TO, 'IngContacto', 'igresidente1'),
+                  'Estadal1' => array(self::BELONGS_TO, 'IngContacto', 'igestadal1'),
+         
+                  'Clasificacion1' => array(self::BELONGS_TO, 'ClasificacionMantenimientoObra', 'idclasificacionobr1'),
+  	
+		'Ano' => array(self::BELONGS_TO, 'Accionobra', 'id_accionobra1'),
+	
+		);
+	}
+
+	/**
+	 * @return array customized attribute labels (name=>label)
+	 */
+	public function attributeLabels()
+	{
+		return array(
+			'id_obra_pk2' => 'Id Obra Pk2',
+			'descripcion' => 'Nombre de la Obra',
+			'id_estado_fk1' => 'Estado',
+			//'str_ubicacion1' => 'Str Ubicacion1',
+			'int_km_prog1' => 'Int Km Prog1',
+			'int_km_logr1' => 'Int Km Logr1',
+			'int_por_km1' => 'Int Por Km1',
+			'int_m3_prog1' => 'Int M3 Prog1',
+			'bln_borrado' => 'Bln Borrado',
+			'id_estatus_obra_fk1' => 'Estatus',
+			'db_avance_fisico1' => 'Avance Fisico (Unidad)',
+			'db_empleo_directo1' => 'Cuadrilla',
+			'db_empleo_indirecto1' => 'Cooperativas',
+			'db_cantidad_beneficiario1' => 'Cantidad Personas',
+			'txt_observacion1' => 'Txt Observacion',
+			//'id_organismo_ejecutor_fk1' => 'Id Organismo Ejecutor Fk1',
+			'txt_actividades1' => 'Actividades',
+			'imagen1' => 'Imagen1',
+			'imagen2' => 'Imagen2',
+			'imagen3' => 'Imagen3',
+			'imagen4' => 'Imagen4',
+			'imagen5' => 'Imagen5',
+			'imagen6' => 'Imagen6',
+			'imagen7' => 'Imagen7',
+			'imagen8' => 'Imagen8',
+			//'dob_avance_fisicor1' => 'Dob Avance Fisicor1',
+			'str_alias1' => 'Alias',
+			'id_tipo_accion1' => 'Reguimen de Seguimiento',
+			'txt_beneficios_usuarios1' => 'Beneficios Usuarios',
+			'str_codigo_contrato1' => 'Codigo Contrato',
+			'txt_avances_impacto1' => 'Avances Impacto',
+			'txt_sectores_atendidos1' => 'Sectores Atendidos',
+			'id_contratista1' => 'Contratista',
+			'alcance1' => 'Alcance',
+			'id_tipo1' => 'Unidad',
+			'avance_financiero1' => 'Avance Financiero',
+			'idclasificacionobr1' => 'Tipo',
+                        'dob_avance_fisicor1'=>'Avance Fisico (%)',
+			//'idingcontacto1' => 'Ingeniero Responsable',
+			'ruta_critica1' => 'Ruta Critica',
+			'puntocuenta1' => 'Punto de Cuenta',
+			'monto1' => 'Monto',
+			'fechainicio1' => 'Fecha Inicio',
+			'fechacul1' => 'Fecha Culminacion',
+			'created_by' => 'Created By',
+			'created_date' => 'Created Date',
+			'modified_by' => 'Modified By',
+			'modified_date' => 'Modified Date',
+			'igresidente1' => 'Ingeniero Responsable',
+			'igestadal1' => 'Director Estadal',
+			'id_accionobra1' => 'Ano',
+			'alcance_politico1' => 'Alcance Politico',
+			'id_troncal' => 'Troncal',
+		);
+	}
+
+	/**
+	 * Retrieves a list of models based on the current search/filter conditions.
+	 *
+	 * Typical usecase:
+	 * - Initialize the model fields with values from filter form.
+	 * - Execute this method to get CActiveDataProvider instance which will filter
+	 * models according to data in model fields.
+	 * - Pass data provider to CGridView, CListView or any similar widget.
+	 *
+	 * @return CActiveDataProvider the data provider that can return the models
+	 * based on the search/filter conditions.
+	 */
+	public function search()
+	{
+		// @todo Please modify the following code to remove attributes that should not be searched.
+
+		$criteria=new CDbCriteria;
+                $sort=new CSort();
+                
+                $criteria->order=" id_estado_fk1 asc";
+                $criteria->condition="bln_borrado=false and idclasificacionobr1!=7";
+
+
+		$criteria->compare('id_obra_pk2',$this->id_obra_pk2);
+		$criteria->compare('descripcion',$this->descripcion,true);
+		$criteria->compare('id_estado_fk1',$this->id_estado_fk1);
+		$criteria->compare('str_ubicacion1',$this->str_ubicacion1,true);
+		$criteria->compare('int_km_prog1',$this->int_km_prog1);
+		$criteria->compare('int_km_logr1',$this->int_km_logr1);
+		$criteria->compare('int_por_km1',$this->int_por_km1);
+		$criteria->compare('int_m3_prog1',$this->int_m3_prog1);
+		$criteria->compare('bln_borrado',$this->bln_borrado);
+		$criteria->compare('id_estatus_obra_fk1',$this->id_estatus_obra_fk1);
+		$criteria->compare('db_avance_fisico1',$this->db_avance_fisico1);
+		$criteria->compare('db_empleo_directo1',$this->db_empleo_directo1);
+		$criteria->compare('db_empleo_indirecto1',$this->db_empleo_indirecto1);
+		$criteria->compare('db_cantidad_beneficiario1',$this->db_cantidad_beneficiario1);
+		$criteria->compare('txt_observacion1',$this->txt_observacion1,true);
+		$criteria->compare('id_organismo_ejecutor_fk1',$this->id_organismo_ejecutor_fk1);
+		$criteria->compare('txt_actividades1',$this->txt_actividades1,true);
+		$criteria->compare('imagen1',$this->imagen1,true);
+		$criteria->compare('imagen2',$this->imagen2,true);
+		$criteria->compare('imagen3',$this->imagen3,true);
+		$criteria->compare('imagen4',$this->imagen4,true);
+		$criteria->compare('imagen5',$this->imagen5,true);
+		$criteria->compare('imagen6',$this->imagen6,true);
+		$criteria->compare('imagen7',$this->imagen7,true);
+		$criteria->compare('imagen8',$this->imagen8,true);
+		$criteria->compare('dob_avance_fisicor1',$this->dob_avance_fisicor1);
+		$criteria->compare('str_alias1',$this->str_alias1,true);
+		$criteria->compare('id_tipo_accion1',$this->id_tipo_accion1);
+		$criteria->compare('txt_beneficios_usuarios1',$this->txt_beneficios_usuarios1,true);
+		$criteria->compare('str_codigo_contrato1',$this->str_codigo_contrato1,true);
+		$criteria->compare('txt_avances_impacto1',$this->txt_avances_impacto1,true);
+		$criteria->compare('txt_sectores_atendidos1',$this->txt_sectores_atendidos1,true);
+		$criteria->compare('id_contratista1',$this->id_contratista1);
+		$criteria->compare('alcance1',$this->alcance1);
+		$criteria->compare('id_tipo1',$this->id_tipo1);
+		$criteria->compare('avance_financiero1',$this->avance_financiero1);
+		$criteria->compare('idclasificacionobr1',$this->idclasificacionobr1);
+		$criteria->compare('idingcontacto1',$this->idingcontacto1);
+		$criteria->compare('ruta_critica1',$this->ruta_critica1,true);
+		$criteria->compare('puntocuenta1',$this->puntocuenta1,true);
+		$criteria->compare('monto1',$this->monto1);
+		$criteria->compare('fechainicio1',$this->fechainicio1,true);
+		$criteria->compare('fechacul1',$this->fechacul1,true);
+		$criteria->compare('created_by',$this->created_by);
+		$criteria->compare('created_date',$this->created_date,true);
+		$criteria->compare('modified_by',$this->modified_by);
+		$criteria->compare('modified_date',$this->modified_date,true);
+		$criteria->compare('igresidente1',$this->igresidente1);
+		$criteria->compare('igestadal1',$this->igestadal1);
+		$criteria->compare('id_accionobra1',$this->id_accionobra1);
+		$criteria->compare('alcance_politico1',$this->alcance_politico1,true);
+
+		 $from = $to = '';
+          if (count($this->fechacul1_range)>=1) {
+              if (isset($this->fechacul1_range['from'])) {
+                  $from = $this->fechacul1_range['from'];
+              }
+              if (isset($this->fechacul1_range['to'])) {
+                  $to= $this->fechacul1_range['to'];
+              }
+          }
+          if ($from!='' || $to !='') {
+              if ($from!='' && $to!='') {
+                  $from = date("Y-m-d", strtotime($from));
+                  $to = date("Y-m-d", strtotime($to));
+                  $criteria->compare('fechacul1',">= $from",false);
+                  $criteria->compare('fechacul1',"<= $to",false);
+              }
+              else {
+                  if ($from!='') $creation_time = $from;
+                  if ($to != '') $creation_time = $to;
+                  $creation_time = date("Y-m-d", strtotime($creation_time));
+                  $criteria->compare('fechacul1', "$creation_time" ,false);
+              }
+          }
+
+
+
+
+		 $_SESSION['datos_filtrados'] = new CActiveDataProvider($this, array(
+                      'criteria'=>$criteria,
+                      'sort'=>$sort,
+                      'pagination'=>false,
+              ));
+                  
+
+                
+		return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+                        //'sort'=>$sort,
+		));
+	}
+        
+////////////////////////////////////ALUMBRADO PUBLICO (OPERATIVO) 19-11-2014//////////////////////////////////////////////////////        
+	public function search_2()
+	{
+		// @todo Please modify the following code to remove attributes that should not be searched.
+
+		$criteria=new CDbCriteria;
+                $sort=new CSort();
+                
+
+	 $criteria->condition="bln_borrado=false and idclasificacionobr1=7";
+
+
+		$criteria->compare('id_obra_pk2',$this->id_obra_pk2);
+		$criteria->compare('descripcion',$this->descripcion,true);
+		$criteria->compare('id_estado_fk1',$this->id_estado_fk1);
+		$criteria->compare('str_ubicacion1',$this->str_ubicacion1,true);
+		$criteria->compare('int_km_prog1',$this->int_km_prog1);
+		$criteria->compare('int_km_logr1',$this->int_km_logr1);
+		$criteria->compare('int_por_km1',$this->int_por_km1);
+		$criteria->compare('int_m3_prog1',$this->int_m3_prog1);
+		$criteria->compare('bln_borrado',$this->bln_borrado);
+		$criteria->compare('id_estatus_obra_fk1',$this->id_estatus_obra_fk1);
+		$criteria->compare('db_avance_fisico1',$this->db_avance_fisico1);
+		$criteria->compare('db_empleo_directo1',$this->db_empleo_directo1);
+		$criteria->compare('db_empleo_indirecto1',$this->db_empleo_indirecto1);
+		$criteria->compare('db_cantidad_beneficiario1',$this->db_cantidad_beneficiario1);
+		$criteria->compare('txt_observacion1',$this->txt_observacion1,true);
+		$criteria->compare('id_organismo_ejecutor_fk1',$this->id_organismo_ejecutor_fk1);
+		$criteria->compare('txt_actividades1',$this->txt_actividades1,true);
+		$criteria->compare('imagen1',$this->imagen1,true);
+		$criteria->compare('imagen2',$this->imagen2,true);
+		$criteria->compare('imagen3',$this->imagen3,true);
+		$criteria->compare('imagen4',$this->imagen4,true);
+		$criteria->compare('imagen5',$this->imagen5,true);
+		$criteria->compare('imagen6',$this->imagen6,true);
+		$criteria->compare('imagen7',$this->imagen7,true);
+		$criteria->compare('imagen8',$this->imagen8,true);
+		$criteria->compare('dob_avance_fisicor1',$this->dob_avance_fisicor1);
+		$criteria->compare('str_alias1',$this->str_alias1,true);
+		$criteria->compare('id_tipo_accion1',$this->id_tipo_accion1);
+		$criteria->compare('txt_beneficios_usuarios1',$this->txt_beneficios_usuarios1,true);
+		$criteria->compare('str_codigo_contrato1',$this->str_codigo_contrato1,true);
+		$criteria->compare('txt_avances_impacto1',$this->txt_avances_impacto1,true);
+		$criteria->compare('txt_sectores_atendidos1',$this->txt_sectores_atendidos1,true);
+		$criteria->compare('id_contratista1',$this->id_contratista1);
+		$criteria->compare('alcance1',$this->alcance1);
+		$criteria->compare('id_tipo1',$this->id_tipo1);
+		$criteria->compare('avance_financiero1',$this->avance_financiero1);
+		$criteria->compare('idclasificacionobr1',$this->idclasificacionobr1);
+		$criteria->compare('idingcontacto1',$this->idingcontacto1);
+		$criteria->compare('ruta_critica1',$this->ruta_critica1,true);
+		$criteria->compare('puntocuenta1',$this->puntocuenta1,true);
+		$criteria->compare('monto1',$this->monto1);
+		$criteria->compare('fechainicio1',$this->fechainicio1,true);
+		$criteria->compare('fechacul1',$this->fechacul1,true);
+		$criteria->compare('created_by',$this->created_by);
+		$criteria->compare('created_date',$this->created_date,true);
+		$criteria->compare('modified_by',$this->modified_by);
+		$criteria->compare('modified_date',$this->modified_date,true);
+		$criteria->compare('igresidente1',$this->igresidente1);
+		$criteria->compare('igestadal1',$this->igestadal1);
+		$criteria->compare('id_accionobra1',$this->id_accionobra1);
+		$criteria->compare('alcance_politico1',$this->alcance_politico1,true);
+
+		 $from = $to = '';
+          if (count($this->fechacul1_range)>=1) {
+              if (isset($this->fechacul1_range['from'])) {
+                  $from = $this->fechacul1_range['from'];
+              }
+              if (isset($this->fechacul1_range['to'])) {
+                  $to= $this->fechacul1_range['to'];
+              }
+          }
+          if ($from!='' || $to !='') {
+              if ($from!='' && $to!='') {
+                  $from = date("Y-m-d", strtotime($from));
+                  $to = date("Y-m-d", strtotime($to));
+                  $criteria->compare('fechacul1',">= $from",false);
+                  $criteria->compare('fechacul1',"<= $to",false);
+              }
+              else {
+                  if ($from!='') $creation_time = $from;
+                  if ($to != '') $creation_time = $to;
+                  $creation_time = date("Y-m-d", strtotime($creation_time));
+                  $criteria->compare('fechacul1', "$creation_time" ,false);
+              }
+          }
+
+
+
+
+		 $_SESSION['datos_filtrados'] = new CActiveDataProvider($this, array(
+                      'criteria'=>$criteria,
+                      'sort'=>$sort,
+                      'pagination'=>false,
+              ));
+                  
+
+                
+		return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+                        //'sort'=>$sort,
+		));
+	}
+
+	/**
+	 * Returns the static model of the specified AR class.
+	 * Please note that you should have this exact method in all your CActiveRecord descendants!
+	 * @param string $className active record class name.
+	 * @return Obramantenimiento the static model class
+	 */
+	public static function model($className=__CLASS__)
+	{
+		return parent::model($className);
+	}
+        
+        
+                 public function behaviors()
+{
+    return array(
+        'CTimestampBehavior' => array(
+            'class' => 'zii.behaviors.CTimestampBehavior',
+            'createAttribute' => 'created_date',
+            'updateAttribute' => 'modified_date',
+            'setUpdateOnCreate' => true,
+        ),
+        'BlameableBehavior' => array(
+            'class' => 'application.components.behaviors.BlameableBehavior',
+            'createdByColumn' => 'created_by', 
+            'updatedByColumn' => 'modified_by',  
+        ),
+    );  
+}
+    
+        
+        
+}

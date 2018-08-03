@@ -1,0 +1,227 @@
+<?php
+
+/**
+ * This is the model class for table "mantenimiento1.actividad_mantenimiento".
+ *
+ * The followings are the available columns in table 'mantenimiento1.actividad_mantenimiento':
+ * @property integer $id
+ * @property string $fecha1
+ * @property string $actividad1
+ * @property string $regfotografico1
+ * @property integer $id_cumplimiento1
+ * @property integer $id_obra_fk
+ * @property integer $id_estado_fk2
+ * @property boolean $bnlborrado1
+ * @property integer $id_estatus1
+ * @property string $observacion1
+ * @property integer $dias1
+ * @property double $avance_fisico1
+ * @property integer $responsable1
+ * @property integer $created_by
+ * @property string $created_date
+ * @property integer $modified_by
+ * @property string $modified_date
+ */
+class ActividadMantenimiento extends CActiveRecord
+{
+    
+     public $fecha1_range = array(); 
+    
+	/**
+	 * @return string the associated database table name
+	 */
+	public function tableName()
+	{
+		return 'mantenimiento1.actividad_mantenimiento';
+	}
+
+	/**
+	 * @return array validation rules for model attributes.
+	 */
+	public function rules()
+	{
+		// NOTE: you should only define rules for those attributes that
+		// will receive user inputs.
+		return array(
+                        array( 'fecha1, avance_fisico_unidad, tipo_unidad, id_estatus1, avance_fisico1, id_cumplimiento1, responsable1', 'required'),
+			array('id_cumplimiento1, id_obra_fk, tipo_obra, tipo_unidad, avance_fisico_unidad, id_estado_fk2, id_estatus1, dias1, responsable1, created_by, modified_by, tipo_obra', 'numerical', 'integerOnly'=>true),
+			array('avance_fisico1', 'numerical'),
+			array('fecha1, actividad1, regfotografico1, tipo_obra, fecha1_range, tipo_unidad, bnlborrado1, avance_fisico_unidad, observacion1, created_date, modified_date', 'safe'),
+			// The following rule is used by search().
+			// @todo Please remove those attributes that should not be searched.
+			array('id, fecha1, actividad1, regfotografico1, tipo_obra, fecha1_range, id_cumplimiento1, tipo_unidad, avance_fisico_unidad, id_obra_fk, id_estado_fk2, bnlborrado1, id_estatus1, observacion1, dias1, avance_fisico1, responsable1, created_by, created_date, modified_by, modified_date', 'safe', 'on'=>'search'),
+		);
+	}
+
+	/**
+	 * @return array relational rules.
+	 */
+	public function relations()
+	{
+		// NOTE: you may need to adjust the relation name and the related
+		// class name for the relations automatically generated below.
+		return array(
+                  'idCumplimineto' => array(self::BELONGS_TO, 'CumplimientoPrograma', 'id_cumplimiento1'),
+                  'idObra1' => array(self::BELONGS_TO, 'Obramantenimiento', 'id_obra_fk'),
+                  'Estatus' => array(self::BELONGS_TO, 'EstatusObra', 'id_estatus1'),
+		   'Estado' => array(self::BELONGS_TO, 'TblEstado', 'id_estado_fk2'),
+                  'materiales' => array(self::BELONGS_TO, 'MaterialesObra', 'id_materiales1'),
+                  'Unidad' => array(self::BELONGS_TO, 'MedidasMantenimiento', 'tipo_unidad'),
+                //  'idUsuario' => array(self::BELONGS_TO, 'Obra', 'id_obra_pk1'),
+		);
+	}
+
+	/**
+	 * @return array customized attribute labels (name=>label)
+	 */
+	public function attributeLabels()
+	{
+		return array(
+			'id' => 'ID',
+			'fecha1' => 'Fecha',
+			'actividad1' => 'Actividad',
+			'regfotografico1' => 'Imagen',
+			'id_cumplimiento1' => 'Cumplimiento del Programa',
+			'id_obra_fk' => 'Obra',
+			'id_estado_fk2' => 'Estado',
+			'bnlborrado1' => 'Bnlborrado1',
+			'id_estatus1' => 'Estatus',
+			'observacion1' => 'Observacion',
+			'dias1' => 'Dias de Paralizacion',
+			'avance_fisico1' => 'Avance Fisico (%)',
+			'responsable1' => 'Responsable',
+			'created_by' => 'Created By',
+			'created_date' => 'Created Date',
+			'modified_by' => 'Modified By',
+			'modified_date' => 'Modified Date',
+			'avance_fisico_unidad' => 'Avance Fisico',
+			'tipo_unidad' => 'Unidad Metrica',
+		);
+	}
+
+	/**
+	 * Retrieves a list of models based on the current search/filter conditions.
+	 *
+	 * Typical usecase:
+	 * - Initialize the model fields with values from filter form.
+	 * - Execute this method to get CActiveDataProvider instance which will filter
+	 * models according to data in model fields.
+	 * - Pass data provider to CGridView, CListView or any similar widget.
+	 *
+	 * @return CActiveDataProvider the data provider that can return the models
+	 * based on the search/filter conditions.
+	 */
+	public function search()
+	{
+		// @todo Please modify the following code to remove attributes that should not be searched.
+
+		$criteria=new CDbCriteria;
+                 $sort=new CSort();
+
+		$criteria->compare('id',$this->id);
+		$criteria->compare('fecha1',$this->fecha1,true);
+		$criteria->compare('actividad1',$this->actividad1,true);
+		$criteria->compare('regfotografico1',$this->regfotografico1,true);
+		$criteria->compare('id_cumplimiento1',$this->id_cumplimiento1);
+		//$criteria->compare('id_obra_fk',$this->id_obra_fk);
+		$criteria->compare('id_estado_fk2',$this->id_estado_fk2);
+		$criteria->compare('bnlborrado1',$this->bnlborrado1);
+		$criteria->compare('id_estatus1',$this->id_estatus1);
+		$criteria->compare('observacion1',$this->observacion1,true);
+		$criteria->compare('dias1',$this->dias1);
+		$criteria->compare('avance_fisico1',$this->avance_fisico1);
+		$criteria->compare('responsable1',$this->responsable1);
+		$criteria->compare('created_by',$this->created_by);
+		$criteria->compare('created_date',$this->created_date,true);
+		$criteria->compare('modified_by',$this->modified_by);
+		$criteria->compare('modified_date',$this->modified_date,true);
+		$criteria->compare('avance_fisico_unidad',$this->avance_fisico_unidad);
+		$criteria->compare('tipo_unidad',$this->tipo_unidad);
+                $criteria->with =array('idObra1');
+                //declaro la condicion de la busqueda con el case sensitive (buscar mayusculas minusculas)
+                $criteria->addSearchCondition('LOWER("idObra1"."str_descripcion")',strtolower($this->id_obra_fk),true);
+                
+                
+                  $from = $to = '';
+                $_SESSION['from_emi'] = $_SESSION['to_emi'] = $_SESSION['cuenta'] = '';
+            if (count($this->fecha1_range)>=1) {
+                if (isset($this->fecha1_range['from'])) {
+                    $from = $this->fecha1_range['from'];
+                    $_SESSION['from_emi'] = $from; //Aca guardamos en sesion para tener el valor en el reporte y lo pasamos a traves del controlador
+                }
+                if (isset($this->fecha1_range['to'])) {
+                    $to= $this->fecha1_range['to'];
+                    $_SESSION['to_emi'] = $to; //Aca guardamos en sesion para tener el valor en el reporte y lo pasamos a traves del controlador
+                }
+            }
+           
+                
+                
+
+		  $from = $to = '';
+          if (count($this->fecha1_range)>=1) {
+              if (isset($this->fecha1_range['from'])) {
+                  $from = $this->fecha1_range['from'];
+              }
+              if (isset($this->fecha1_range['to'])) {
+                  $to= $this->fecha1_range['to'];
+              }
+          }
+          if ($from!='' || $to !='') {
+              if ($from!='' && $to!='') {
+                  $from = date("Y-m-d", strtotime($from));
+                  $to = date("Y-m-d", strtotime($to));
+                  $criteria->compare('fecha1',">= $from",false);
+                  $criteria->compare('fecha1',"<= $to",false);
+              }
+              else {
+                  if ($from!='') $creation_time = $from;
+                  if ($to != '') $creation_time = $to;
+                  $creation_time = date("Y-m-d", strtotime($creation_time));
+                  $criteria->compare('fecha1', "$creation_time" ,false);
+              }
+          }
+               
+                
+                 $_SESSION['datos_filtrados'] = new CActiveDataProvider($this, array(
+                      'criteria'=>$criteria,
+                      'sort'=>$sort,
+                      'pagination'=>false,
+              ));
+
+		return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+		));
+	}
+
+	/**
+	 * Returns the static model of the specified AR class.
+	 * Please note that you should have this exact method in all your CActiveRecord descendants!
+	 * @param string $className active record class name.
+	 * @return ActividadMantenimiento the static model class
+	 */
+	public static function model($className=__CLASS__)
+	{
+		return parent::model($className);
+	}
+        
+                         public function behaviors()
+{
+    return array(
+        'CTimestampBehavior' => array(
+            'class' => 'zii.behaviors.CTimestampBehavior',
+            'createAttribute' => 'created_date',
+            'updateAttribute' => 'modified_date',
+            'setUpdateOnCreate' => true,
+        ),
+        'BlameableBehavior' => array(
+            'class' => 'application.components.behaviors.BlameableBehavior',
+            'createdByColumn' => 'created_by', 
+            'updatedByColumn' => 'modified_by',  
+        ),
+    );  
+}
+        
+        
+        
+}

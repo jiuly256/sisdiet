@@ -1,0 +1,137 @@
+<?php
+
+/**
+ * This is the model class for table "plantas.tblplanta".
+ *
+ * The followings are the available columns in table 'plantas.tblplanta':
+ * @property integer $id_planta
+ * @property integer $id_tipo
+ * @property string $nombre_planta
+ * @property string $ubicacion_planta
+ * @property string $serial_chasis
+ * @property string $serial_motor
+ * @property integer $id_estado
+ * @property integer $id_marca
+ * @property integer $id_modelo
+ * @property integer $id_obra
+ * @property integer $id_turno
+ * @property string $organismo
+ * @property integer $id_estatus
+ * @property double $tonelada_produccion
+ * @property integer $id_unidad
+ * @property integer $id_tipo_mezcla
+ * @property integer $id_responsable
+ */
+class Tblplanta extends CActiveRecord
+{
+	/**
+	 * @return string the associated database table name
+	 */
+	public function tableName()
+	{
+		return 'plantas.tblplanta';
+	}
+
+	/**
+	 * @return array validation rules for model attributes.
+	 */
+	public function rules()
+	{
+		// NOTE: you should only define rules for those attributes that
+		// will receive user inputs.
+		return array(
+                        array('nombre_planta, ubicacion_planta', 'required'),        
+			array('id_estatus, dias_paralizacion, id_formato_paralizacion', 'numerical', 'integerOnly'=>true),
+			//array('tonelada_produccion', 'numerical'),
+			array('nombre_planta, ubicacion_planta, dias_paralizacion, id_formato_paralizacion', 'safe'),
+			// The following rule is used by search().
+			// @todo Please remove those attributes that should not be searched.
+			array('id_tipo, nombre_planta, ubicacion_planta, id_estatus, dias_paralizacion, id_formato_paralizacion', 'safe', 'on'=>'search'),
+		);
+	}
+
+	/**
+	 * @return array relational rules.
+	 */
+	public function relations()
+	{
+		// NOTE: you may need to adjust the relation name and the related
+		// class name for the relations automatically generated below.
+		return array(
+                  'Tipo' => array(self::BELONGS_TO, 'Tbltipo', 'id_tipo'),
+                  'Estatus' => array(self::BELONGS_TO, 'Tblestatus', 'id_estatus'),
+                 
+		);
+	}
+
+	/**
+	 * @return array customized attribute labels (name=>label)
+	 */
+	public function attributeLabels()
+	{
+		return array(
+			'id_planta' => 'Id Planta',
+			'id_tipo' => 'Tipo',
+			'nombre_planta' => 'Nombre Planta',
+			'ubicacion_planta' => 'Ubicacion Planta',
+			'serial_chasis' => 'Serial Chasis',
+			'serial_motor' => 'Serial Motor',
+			'id_estado' => 'Estado',
+			'id_marca' => 'Marca',
+			'id_modelo' => 'Modelo',
+			'id_obra' => 'Obra',
+			'id_turno' => 'Turno',
+			'organismo' => 'Organismo',
+			'id_estatus' => 'Estatus',
+			'tonelada_produccion' => 'Tonelada Produccion',
+			'id_unidad' => 'Unidad',
+			'id_tipo_mezcla' => 'Tipo Mezcla',
+			'id_responsable' => 'Responsable',
+                      
+                        'Estatus.descripcion'=>'Estatus de la Planta'
+		);
+	}
+
+	/**
+	 * Retrieves a list of models based on the current search/filter conditions.
+	 *
+	 * Typical usecase:
+	 * - Initialize the model fields with values from filter form.
+	 * - Execute this method to get CActiveDataProvider instance which will filter
+	 * models according to data in model fields.
+	 * - Pass data provider to CGridView, CListView or any similar widget.
+	 *
+	 * @return CActiveDataProvider the data provider that can return the models
+	 * based on the search/filter conditions.
+	 */
+	public function search()
+	{
+		// @todo Please modify the following code to remove attributes that should not be searched.
+
+		$criteria=new CDbCriteria;
+
+		$criteria->compare('id_planta',$this->id_planta);
+		$criteria->compare('id_estatus',$this->id_estatus);
+		$criteria->compare('dias_paralizacion',$this->dias_paralizacion);
+		$criteria->compare('id_formato_paralizacion',$this->id_formato_paralizacion);
+		$criteria->compare('nombre_planta',$this->nombre_planta,true);
+		$criteria->compare('ubicacion_planta',$this->ubicacion_planta,true);
+
+
+		return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+		));
+	}
+
+	/**
+	 * Returns the static model of the specified AR class.
+	 * Please note that you should have this exact method in all your CActiveRecord descendants!
+	 * @param string $className active record class name.
+	 * @return Tblplanta the static model class
+	 */
+	public static function model($className=__CLASS__)
+	{
+		return parent::model($className);
+	}
+}
+

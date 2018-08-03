@@ -1,0 +1,268 @@
+<?php
+
+/**
+ * This is the model class for table "alumbrado.solicitud".
+ *
+ * The followings are the available columns in table 'alumbrado.solicitud':
+ * @property integer $id_solicitud
+ * @property integer $id_estado
+ * @property integer $id_troncal_o_via
+ * @property string $evento
+ * @property integer $id_tipo_solicitud
+ * @property integer $id_tipo_evento
+ * @property integer $id_estatus
+ * @property string $direccion
+ * @property string $fecha_registro
+ * @property string $imagen
+ * @property integer $created_by
+ * @property integer $modified_by
+ * @property string $created_date
+ * @property string $modified_date
+ * @property string $longitud
+ * @property string $latitud
+ * @property integer $id_severidad
+ * @property string $calle_avenida
+ * @property integer $id_municipio
+ * @property boolean $blnborrado
+ * @property integer $id_clasificacion_evento_fk
+ * @property integer $id_direccion_fk
+ * @property integer $id_mantenimiento_fk
+ * @property integer $ubicacion
+ * @property string $progresiva
+ * @property integer $id_perfil_direccion
+ *
+ * The followings are the available model relations:
+ * @property Solicitudestatus[] $solicitudestatuses
+ * @property TblEstado $idEstado
+ * @property Estatusalumbrado $idEstatus
+ * @property TblMunicipio $idMunicipio
+ * @property Usuario $createdBy
+ */
+class Solicitud extends CActiveRecord
+{
+      public $fecha_registro_range = array();
+    public $imagen;
+	/**
+	 * @return string the associated database table name
+	 */
+	public function tableName()
+	{
+		return 'alumbrado.solicitud';
+	}
+
+	/**
+	 * @return array validation rules for model attributes.
+	 */
+	public function rules()
+	{
+		// NOTE: you should only define rules for those attributes that
+		// will receive user inputs.
+		return array(
+			array('id_estado, id_troncal_o_via, id_tipo_solicitud, id_tipo_evento,id_severidad, id_mantenimiento_fk, ubicacion, id_direccion_fk,  id_estatus, created_by, id_perfil_direccion', 'numerical', 'integerOnly'=>true),
+			array('id_clasificacion_evento_fk,id_estado, id_tipo_evento, id_clasificacion_evento_fk, evento ,id_severidad, id_mantenimiento_fk', 'required'),
+			array('imagen ', 'unique'),
+			array('evento, direccion, fecha_registro, id_clasificacion_evento_fk, calle_avenida, progresiva, progresiva, id_perfil_direccion', 'safe'),
+                        //array('imagen', 'file','types'=>'jpg, gif, png,jpeg', 'allowEmpty'=>true, 'on'=>'update'),
+                       // array('imagen', 'file', 'types'=>'jpg, gif, png'),
+                        array('imagen', 'file','types'=>'jpg, gif, png,jpeg', 'allowEmpty'=>true, 'on'=>'update'),
+                        array('imagen', 'file','types'=>'jpg, gif, png,jpeg', 'allowEmpty'=>true, 'on'=>'safe'),
+                        array('imagen,latitud,longitud',  'length', 'max'=>255, 'on'=>'save,update'), 
+			// The following rule is used by search().
+			// Please remove those attributes that should not be searched.
+			array('id_solicitud, id_estado, id_troncal_o_via,id_severidad, evento, id_tipo_solicitud, id_tipo_evento, 
+                                id_estatus, direccion, fecha_registro, 
+                                created_by,fecha_registro_range, imagen,latitud,longitud,id_municipio,id_perfil_direccion, id_clasificacion_evento_fk, progresiva, ubicacion, id_mantenimiento_fk, id_direccion_fk, calle_avenida', 'safe', 'on'=>'search'),
+		);
+	}
+
+	/**
+	 * @return array relational rules.
+	 */
+	public function relations()
+	{
+		// NOTE: you may need to adjust the relation name and the related
+		// class name for the relations automatically generated below.
+		return array(
+			'idEstado' => array(self::BELONGS_TO, 'TblEstado', 'id_estado'),
+			'idEstatus' => array(self::BELONGS_TO, 'Estatusalumbrado', 'id_estatus'),
+			'idTipoEvento' => array(self::BELONGS_TO, 'Tipoevento', 'id_tipo_evento'),
+                        'idSeveridad' => array(self::BELONGS_TO, 'Severidad', 'id_severidad'),
+			'idTipoSolicitud' => array(self::BELONGS_TO, 'Tiposolicitud', 'id_tipo_solicitud'),
+			'idMunicipio' => array(self::BELONGS_TO, 'TblMunicipio', 'id_municipio'),
+			'idTroncalOVia' => array(self::BELONGS_TO, 'TroncalOVia', 'id_troncal_o_via'),
+			'idDireccionFk' => array(self::BELONGS_TO, 'Tbldireccion', 'id_direccion_fk'),
+			'idMantenimientoFk' => array(self::BELONGS_TO, 'Tblmantenimiento', 'id_mantenimiento_fk'),
+			'idUsuario' => array(self::BELONGS_TO, 'Usuario', 'created_by'),
+			'idClasificacionEventoFk' => array(self::BELONGS_TO, 'Clasificacionevento', 'id_clasificacion_evento_fk'),
+			'idDireccion' => array(self::BELONGS_TO, 'TblDireccion', 'id_direccion_fk'),
+			'Ubicacion' => array(self::BELONGS_TO, 'TblCanal', 'ubicacion'),
+                    
+		);
+	}
+	/**
+	 * @return array customized attribute labels (name=>label)
+	 */
+	public function attributeLabels()
+	{
+		return array(
+			'id_solicitud' => 'N° Solicitud',
+			'id_estado' => 'Estado',
+			'id_troncal_o_via' => 'Troncal O Via',
+			'evento' => 'Evento',
+			'id_tipo_solicitud' => 'Tipo Solicitud',
+			'id_tipo_evento' => 'Tipo Evento',
+                        'id_severidad' => 'Severidad',
+			'id_estatus' => 'Estatus',
+			'direccion' => 'Direccion',
+			'fecha_registro' => 'Fecha Registro',
+			'created_by' => 'Usuario',
+                        'idEstado.descripcion'=>'Estado',
+                        'idTroncalOVia.descripcion'=>'Troncal o Via',
+                        'idTipoSolicitud.descripcion'=>'Tipo de Solicitud',
+                        'idTipoEvento.descripcion'=>'Tipo Evento',
+                        'idEstatus.descripcion'=>'Estatus',
+                        'idSeveridad.descripcion'=>'Severidad',
+                        'id_municipio'=>'Municipio',
+                        'idMunicipio.descripcion'=>'Municipio',
+                        'calle_avenida'=>'Calle/Avenida',
+                        'id_clasificacion_evento_fk'=>'Clasificacion del Evento',
+                        'id_mantenimiento_fk'=>'Mantenimiento',
+                        'id_direccion_fk'=>'Departamento o Direccion'
+		);
+	}
+
+	/**
+	 * Retrieves a list of models based on the current search/filter conditions.
+	 *
+	 * Typical usecase:
+	 * - Initialize the model fields with values from filter form.
+	 * - Execute this method to get CActiveDataProvider instance which will filter
+	 * models according to data in model fields.
+	 * - Pass data provider to CGridView, CListView or any similar widget.
+	 *
+	 * @return CActiveDataProvider the data provider that can return the models
+	 * based on the search/filter conditions.
+	 */
+	public function search()
+	{
+		// Warning: Please modify the following code to remove attributes that
+		// should not be searched.
+
+            $id=Yii::app()->user->id; 
+        /*    $sql='select * from usuario where id='.$id.';'; 
+                $connection=Yii::app()->db;
+                $command=$connection->createCommand($sql); 
+                $row=$command->queryRow(); 
+                $id_perfil=$row["id_perfil_direccion"];*/
+           
+            
+		$criteria=new CDbCriteria;
+		$sort=new CSort();
+                //$criteria->condition="blnborrado=false and imagen!='';";
+                $criteria->condition='blnborrado=false ';
+              /*    $sql=0;
+                    $status="blnborrado='false'";
+                    $sql="select * from solicitud where $status and imagen!='' and latitud!='';";
+                    $connection=Yii::app()->db;                    
+                    $command=$connection->createCommand($sql);
+                    $row=$command->queryAll();        
+                */
+                
+		$criteria->compare('id_solicitud',$this->id_solicitud);
+		$criteria->compare('id_estado',$this->id_estado);
+		$criteria->compare('id_troncal_o_via',$this->id_troncal_o_via);
+		$criteria->compare('evento',$this->evento,true);
+		$criteria->compare('id_tipo_solicitud',$this->id_tipo_solicitud);
+		$criteria->compare('id_tipo_evento',$this->id_tipo_evento);
+		$criteria->compare('id_clasificacion_evento_fk',$this->id_clasificacion_evento_fk);
+                $criteria->compare('id_severidad',$this->id_severidad);
+		$criteria->compare('id_estatus',$this->id_estatus);
+		$criteria->compare('id_mantenimiento_fk',$this->id_mantenimiento_fk);
+		$criteria->compare('id_direccion_fk',$this->id_direccion_fk);
+		$criteria->compare('direccion',$this->direccion,true);
+		$criteria->compare('imagen',$this->imagen,true);
+		$criteria->compare('fecha_registro',$this->fecha_registro,true);
+		$criteria->compare('created_by',$this->created_by);
+          
+
+                
+                
+                
+                
+                      $from = $to = '';
+            if (count($this->fecha_registro_range)>=1) {
+                if (isset($this->fecha_registro_range['from'])) {
+                    $from = $this->fecha_registro_range['from'];
+                }
+                if (isset($this->fecha_registro_range['to'])) {
+                    $to= $this->fecha_registro_range['to'];
+                }
+            }
+
+            if ($from!='' || $to !='') {
+                if ($from!='' && $to!='') {
+                    $from = date("Y-m-d", strtotime($from));
+                    $to = date("Y-m-d", strtotime($to));
+                    $criteria->compare('fecha_registro',">= $from",false);
+                    $criteria->compare('fecha_registro',"<= $to",false);
+                }
+                else {
+                    if ($from!='') $creation_time = $from;
+                    if ($to != '') $creation_time = $to;
+                    $creation_time = date("Y-m-d", strtotime($creation_time));
+
+                    $criteria->compare('fecha_registro', "$creation_time" ,false);
+                }
+            }
+                
+                   $_SESSION['datos_filtrados'] = new CActiveDataProvider($this, array(
+                      'criteria'=>$criteria,
+                      'sort'=>$sort,
+                      'pagination'=>false,
+              ));
+                  
+
+                
+		return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+                        //'sort'=>$sort,
+		));
+	}
+        
+    
+
+	/**
+	 * Returns the static model of the specified AR class.
+	 * Please note that you should have this exact method in all your CActiveRecord descendants!
+	 * @param string $className active record class name.
+	 * @return Solicitud the static model class
+	 */
+	public static function model($className=__CLASS__)
+	{
+		return parent::model($className);
+	}
+        
+        
+        public function behaviors()
+{
+    return array(
+        'CTimestampBehavior' => array(
+            'class' => 'zii.behaviors.CTimestampBehavior',
+            'createAttribute' => 'created_date',
+            'updateAttribute' => 'modified_date',
+            'setUpdateOnCreate' => true,
+        ),
+        'BlameableBehavior' => array(
+            'class' => 'application.components.behaviors.BlameableBehavior',
+            'createdByColumn' => 'created_by', 
+            'updatedByColumn' => 'modified_by',  
+        ),
+    );
+}
+        
+        
+}
+
+
+
+
