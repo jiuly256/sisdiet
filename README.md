@@ -1,15 +1,15 @@
-# Sisdiet
+<p align="center">
+  <img src="http://sisdiet.jiuly.com.ve/themes/abound/img/icons/favicon.png" alt="SIDIET logo"/>
+</p>
+
+# SIDIET
 
 _sistema para el control de dietas para mascotas - Sisdiet es un sistema para el control de diferentes dietas que se venden en una tienda de mascotas. Fue hecho con un dise?o bastante amigable, aunque sencillo._
 
 [![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat)](https://www.yiiframework.com/) 
-
 [![License](https://img.shields.io/badge/license-BSD3-orange.svg)](https://github.com/jiuly256/sisdiet/blob/master/README.md)
-
 [![Powered](https://img.shields.io/badge/Powered%20by-jiuly256-blue.svg)](https://jiuly.com.ve/wp/contacto/)
-
-[![Demo](https://img.shields.io/badge/Demo-sisdiet-yellowgreen.svg)](https://sisdiet.jiuly.com.ve/)
-
+[![Demo](https://img.shields.io/badge/Demo-sisdiet-yellowgreen.svg)](https://sisdiet.jiuly.com.ve/)]
 
 
 ## Comenzando ??
