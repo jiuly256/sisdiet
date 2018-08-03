@@ -103,7 +103,7 @@ También puedes mirar la lista de todos los [contribuyentes](https://github.com/
 
 ## Licencia 📄
 
-Este proyecto está bajo la Licencia (Licencia BSD 3) - mira el archivo [LICENSE](https://github.com/jiuly256/sisdiet/blob/master/)(LICENSE.md) para detalles
+Este proyecto está bajo la Licencia (Licencia BSD 3) - mira el archivo [LICENSE](https://github.com/jiuly256/sisdiet/blob/master/LICENSE.md)(LICENSE.md) para detalles
 
 ## Gracias 🎁
 
