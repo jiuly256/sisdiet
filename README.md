@@ -1,6 +1,6 @@
 Sisdiet
 ==========
-sistema para el control de dietas para mascotas - Sisdiet Sisdiet es un sistema para el control de diferentes dietas que se venden en una tienda de mascotas. Fue hecho con un diseño bastante amigable.
+sistema para el control de dietas para mascotas - Sisdiet es un sistema para el control de diferentes dietas que se venden en una tienda de mascotas. Fue hecho con un diseño bastante amigable, aunque sencillo. 
 
 
 El sistema tiene los siguientes módulos:
