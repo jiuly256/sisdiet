@@ -71,6 +71,7 @@ $this->breadcrumbs=array(
             <?php echo $form->error($model,'rememberMe'); ?>
         </div>
     
+		
         <div class="row buttons">
             <?php echo CHtml::submitButton('Entrar',array('class'=>'btn btn btn-primary')); ?>
         </div>
@@ -78,6 +79,11 @@ $this->breadcrumbs=array(
     <?php $this->endWidget(); ?>
     </div><!-- form -->
 
+	
+	
+            Usuario: admin<br>
+			Contraseña: admin
+   
 <?php $this->endWidget();?>
 
     </div>
