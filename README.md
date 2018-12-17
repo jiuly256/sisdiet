@@ -86,7 +86,7 @@ _yii framework y php_
 
 ## Contribuyendo 🖇️
 
-Por favor lee el [CONTRIBUTING.md](https://gist.github.com/jiuly256/sisdiet) para detalles de nuestro código de conducta, y el proceso para enviarnos pull requests.
+Por favor lee el [CONTRIBUTING.md](https://github.com/jiuly256/sisdiet/blob/master/CODE_OF_CONDUCT.md) para detalles de nuestro código de conducta, y el proceso para enviarnos pull requests.
 
 ## Versionado 📌
 
