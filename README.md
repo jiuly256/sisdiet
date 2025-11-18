@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="http://sisdiet.jiuly.com.ve/themes/abound/img/icons/favicon.png" alt="SIDIET logo"/>
+  <img src="https://github.com/jiuly256/sisdiet/blob/master/images/logo.png" alt="SIDIET logo"/>
 </p>
 
 # SIDIET
